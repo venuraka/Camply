@@ -3,6 +3,11 @@
         android:label="camply"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+
+        <meta-data
+            android:name="com.google.android.geo.AIzaSyAkkFszINHsPx4OykoJfdIrIIbuqV4jJC4"
+            android:value="AIzaSyAkkFszINHsPx4OykoJfdIrIIbuqV4jJC4" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
