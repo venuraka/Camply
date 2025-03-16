@@ -1,0 +1,28 @@
+com.example.camper.app-jetified-lifecycle-viewmodel-savedstate-2.7.0-0 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/06f45d34aebc29e6a17c24b9dfd5884d/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/res
+com.example.camper.app-lifecycle-livedata-2.7.0-1 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/1c91b40d8e703104aaf2e78bd3c92603/transformed/lifecycle-livedata-2.7.0/res
+com.example.camper.app-jetified-profileinstaller-1.3.1-2 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/1f74d148dd67fc32eb6b16838185338f/transformed/jetified-profileinstaller-1.3.1/res
+com.example.camper.app-lifecycle-livedata-core-2.7.0-3 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/3389402697af0e711431e0fb7cef8c3c/transformed/lifecycle-livedata-core-2.7.0/res
+com.example.camper.app-jetified-core-1.0.0-4 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/34378d93022ea9e3a1053b7a54dc0d1c/transformed/jetified-core-1.0.0/res
+com.example.camper.app-core-1.13.1-5 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/488b9f5b0b8e7f479ba70b1f86b180af/transformed/core-1.13.1/res
+com.example.camper.app-jetified-lifecycle-livedata-core-ktx-2.7.0-6 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/568cf18e99f8706777ab06875755e600/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/res
+com.example.camper.app-jetified-window-java-1.2.0-7 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/5a943d5a44cba5c326118fbc538addd4/transformed/jetified-window-java-1.2.0/res
+com.example.camper.app-jetified-lifecycle-process-2.7.0-8 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/6923b529f168146110f8dcff6f182c03/transformed/jetified-lifecycle-process-2.7.0/res
+com.example.camper.app-jetified-savedstate-1.2.1-9 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/6e1451b7ec9d5f37b98aa274736bf086/transformed/jetified-savedstate-1.2.1/res
+com.example.camper.app-fragment-1.7.1-10 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/7f4dcbbd24369b58280071ce0adbb0da/transformed/fragment-1.7.1/res
+com.example.camper.app-jetified-window-1.2.0-11 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/88ce7883115e6a4dd7a6a56e7c7506b1/transformed/jetified-window-1.2.0/res
+com.example.camper.app-jetified-annotation-experimental-1.4.0-12 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/8bff91b442a7001e32bdef51281911a3/transformed/jetified-annotation-experimental-1.4.0/res
+com.example.camper.app-jetified-tracing-1.2.0-13 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/900c2934ef6b93b331bfc0e68cfaf3a8/transformed/jetified-tracing-1.2.0/res
+com.example.camper.app-lifecycle-viewmodel-2.7.0-14 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/97ddc725399d8ef8b1ca5b668ca545b1/transformed/lifecycle-viewmodel-2.7.0/res
+com.example.camper.app-jetified-startup-runtime-1.1.1-15 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/9e184c81b5b5dc8cedb5a4dc17f89d03/transformed/jetified-startup-runtime-1.1.1/res
+com.example.camper.app-lifecycle-runtime-2.7.0-16 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/a79470f1b12d105c4fb9dda5969ed415/transformed/lifecycle-runtime-2.7.0/res
+com.example.camper.app-jetified-core-ktx-1.13.1-17 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/b166cd6ed6fc4ad9169c63dbf2a7e190/transformed/jetified-core-ktx-1.13.1/res
+com.example.camper.app-core-runtime-2.2.0-18 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/e241835055bf51abc628ac92f489aee6/transformed/core-runtime-2.2.0/res
+com.example.camper.app-jetified-activity-1.8.1-19 /Users/venurakaranasinghe/.gradle/caches/8.9/transforms/f193bbf088ce2d327bc22cd0b727259d/transformed/jetified-activity-1.8.1/res
+com.example.camper.app-debug-20 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/android/app/src/debug/res
+com.example.camper.app-main-21 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/android/app/src/main/res
+com.example.camper.app-pngs-22 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/generated/res/pngs/debug
+com.example.camper.app-resValues-23 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/generated/res/resValues/debug
+com.example.camper.app-rs-24 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/generated/res/rs/debug
+com.example.camper.app-mergeDebugResources-25 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/intermediates/incremental/debug/mergeDebugResources/merged.dir
+com.example.camper.app-mergeDebugResources-26 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/intermediates/incremental/debug/mergeDebugResources/stripped.dir
+com.example.camper.app-merged_res-27 /Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply/build/app/intermediates/merged_res/debug
