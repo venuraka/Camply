@@ -3,6 +3,8 @@ import 'camp_model.dart';
 import 'googlemaps/locationretrieval.dart';
 import 'package:geolocator/geolocator.dart';
 
+
+
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
 
@@ -39,7 +41,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
       Position position = await determinePosition(); // Call the service
       setState(() {
         _locationController.text =
-            'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+        'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
       });
     } catch (e) {
       print('Error getting location: $e');
@@ -229,3 +231,5 @@ class _CreateCampPageState extends State<CreateCampPage> {
     }
   }
 }
+
+
