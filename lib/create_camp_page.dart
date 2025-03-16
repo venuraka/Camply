@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'camp_model.dart';
+import 'googlemaps/locationretrieval.dart';
+import 'package:geolocator/geolocator.dart';
+
+
 
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
@@ -30,6 +34,21 @@ class _CreateCampPageState extends State<CreateCampPage> {
     _locationController.dispose();
     _detailsController.dispose();
     super.dispose();
+  }
+
+  Future<void> _getCurrentLocation() async {
+    try {
+      Position position = await determinePosition(); // Call the service
+      setState(() {
+        _locationController.text =
+        'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+      });
+    } catch (e) {
+      print('Error getting location: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Could not retrieve location.')),
+      );
+    }
   }
 
   @override
@@ -98,20 +117,29 @@ class _CreateCampPageState extends State<CreateCampPage> {
               // Location Field
               Text('Location', style: Theme.of(context).textTheme.titleMedium),
               const SizedBox(height: 8),
-              TextFormField(
-                controller: _locationController,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(8),
+              Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: _locationController,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a location';
+                        }
+                        return null;
+                      },
+                    ),
                   ),
-                  suffixIcon: const Icon(Icons.keyboard_arrow_down),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a location';
-                  }
-                  return null;
-                },
+                  IconButton(
+                    icon: const Icon(Icons.location_on),
+                    onPressed: _getCurrentLocation,
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
 
@@ -203,3 +231,5 @@ class _CreateCampPageState extends State<CreateCampPage> {
     }
   }
 }
+
+
