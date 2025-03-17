@@ -17,7 +17,7 @@ class NearbyTab extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       itemCount: nearbyPlaces.length,
       itemBuilder: (context, index) {
-        final place = nearbyPlaces.keys.elementAt(index);
+        final place = nearbyPlaces[index];
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           shape: RoundedRectangleBorder(
