@@ -8,10 +8,7 @@ import 'review_tab.dart';
 class CampDetailPage extends StatefulWidget {
   final CampSite campSite;
 
-  const CampDetailPage({
-    Key? key,
-    required this.campSite,
-  }) : super(key: key);
+  const CampDetailPage({Key? key, required this.campSite}) : super(key: key);
 
   @override
   State<CampDetailPage> createState() => _CampDetailPageState();
@@ -88,10 +85,13 @@ class _CampDetailPageState extends State<CampDetailPage>
           height: 250,
           width: double.infinity,
           color: Colors.grey.shade300,
-          child: widget.campSite.imageUrl != null
-              ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
-              : Image.asset('assets/images/default_camp.jpg',
-                  fit: BoxFit.cover),
+          child:
+              widget.campSite.imageUrl != null
+                  ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
+                  : Image.asset(
+                    'assets/images/default_camp.jpg',
+                    fit: BoxFit.cover,
+                  ),
         ),
 
         // Back button
@@ -119,8 +119,9 @@ class _CampDetailPageState extends State<CampDetailPage>
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(20),
+              ),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -162,10 +163,7 @@ class _CampDetailPageState extends State<CampDetailPage>
                 const SizedBox(height: 4),
                 Text(
                   widget.campSite.location,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade600,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 12),
 
@@ -179,9 +177,10 @@ class _CampDetailPageState extends State<CampDetailPage>
                         5,
                         (index) => Icon(
                           Icons.star,
-                          color: index < 4
-                              ? Colors.greenAccent
-                              : Colors.grey.shade300,
+                          color:
+                              index < 4
+                                  ? Colors.greenAccent
+                                  : Colors.grey.shade300,
                           size: 20,
                         ),
                       ),
@@ -233,7 +232,7 @@ class _CampDetailPageState extends State<CampDetailPage>
       'Thursday',
       'Friday',
       'Saturday',
-      'Sunday'
+      'Sunday',
     ];
     return days[date.weekday - 1];
   }
@@ -251,7 +250,7 @@ class _CampDetailPageState extends State<CampDetailPage>
       'Sep',
       'Oct',
       'Nov',
-      'Dec'
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }

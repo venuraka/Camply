@@ -4,16 +4,14 @@ import 'camp_model.dart';
 class NearbyTab extends StatelessWidget {
   final CampSite campSite;
 
-  const NearbyTab({
-    Key? key,
-    required this.campSite,
-  }) : super(key: key);
+  const NearbyTab({Key? key, required this.campSite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final nearbyPlaces = campSite.nearbyPlaces.isEmpty
-        ? CampSite.getDefaultNearbyPlaces()
-        : campSite.nearbyPlaces;
+    final nearbyPlaces =
+        campSite.nearbyPlaces.isEmpty
+            ? CampSite.getDefaultNearbyPlaces()
+            : campSite.nearbyPlaces;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),
@@ -31,10 +29,7 @@ class NearbyTab extends StatelessWidget {
             leading: _getPlaceIcon(place),
             title: Text(
               place,
-              style: const TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
+              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             trailing: ElevatedButton(
               onPressed: () {},
@@ -89,11 +84,7 @@ class NearbyTab extends StatelessWidget {
         color: color.withOpacity(0.1),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: Icon(
-        icon,
-        color: color,
-        size: 28,
-      ),
+      child: Icon(icon, color: color, size: 28),
     );
   }
 }

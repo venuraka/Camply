@@ -22,9 +22,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: const HomePage(),
-      routes: {
-        '/create_camp': (context) => const CreateCampPage(),
-      },
+      routes: {'/create_camp': (context) => const CreateCampPage()},
     );
   }
 }
@@ -42,17 +40,17 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Camping App'),
-      ),
+      appBar: AppBar(title: const Text('Camping App')),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
               onPressed: () async {
-                final newCampSite =
-                    await Navigator.pushNamed(context, '/create_camp');
+                final newCampSite = await Navigator.pushNamed(
+                  context,
+                  '/create_camp',
+                );
                 if (newCampSite != null && newCampSite is CampSite) {
                   setState(() {
                     campSites.add(newCampSite);
@@ -61,15 +59,14 @@ class _HomePageState extends State<HomePage> {
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2ECC71),
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 30,
+                  vertical: 15,
+                ),
               ),
               child: const Text(
                 'Create Camp Site',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white,
-                ),
+                style: TextStyle(fontSize: 18, color: Colors.white),
               ),
             ),
             const SizedBox(height: 30),
@@ -81,7 +78,9 @@ class _HomePageState extends State<HomePage> {
                     final camp = campSites[index];
                     return Card(
                       margin: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 8),
+                        horizontal: 16,
+                        vertical: 8,
+                      ),
                       child: ListTile(
                         title: Text(camp.name),
                         subtitle: Text(camp.location),
@@ -89,8 +88,8 @@ class _HomePageState extends State<HomePage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) =>
-                                  CampDetailPage(campSite: camp),
+                              builder:
+                                  (context) => CampDetailPage(campSite: camp),
                             ),
                           );
                         },
@@ -105,10 +104,7 @@ class _HomePageState extends State<HomePage> {
                 child: Text(
                   'No camp sites created yet. Tap the button above to create one.',
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
+                  style: TextStyle(fontSize: 16, color: Colors.grey),
                 ),
               ),
           ],

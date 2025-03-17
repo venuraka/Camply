@@ -1,9 +1,5 @@
 import 'package:flutter/material.dart';
 import 'camp_model.dart';
-import 'googlemaps/locationretrieval.dart';
-import 'package:geolocator/geolocator.dart';
-
-
 
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
@@ -17,6 +13,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _detailsController = TextEditingController();
+  String? _imageUrl;
 
   final Map<String, bool> _selectedAmenities = {
     'Washroom': false,
@@ -34,21 +31,6 @@ class _CreateCampPageState extends State<CreateCampPage> {
     _locationController.dispose();
     _detailsController.dispose();
     super.dispose();
-  }
-
-  Future<void> _getCurrentLocation() async {
-    try {
-      Position position = await determinePosition(); // Call the service
-      setState(() {
-        _locationController.text =
-        'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
-      });
-    } catch (e) {
-      print('Error getting location: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Could not retrieve location.')),
-      );
-    }
   }
 
   @override
@@ -78,9 +60,9 @@ class _CreateCampPageState extends State<CreateCampPage> {
                   ),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
+                  children: const [
                     Icon(Icons.add_photo_alternate_outlined, size: 40),
                     SizedBox(height: 8),
                     Text(
@@ -137,7 +119,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
                   ),
                   IconButton(
                     icon: const Icon(Icons.location_on),
-                    onPressed: _getCurrentLocation,
+                    onPressed: () {},
                   ),
                 ],
               ),
@@ -158,28 +140,32 @@ class _CreateCampPageState extends State<CreateCampPage> {
               const SizedBox(height: 16),
 
               // Property Amenities
-              Text('Property Amenities',
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Property Amenities',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 16,
                 runSpacing: 16,
-                children: _selectedAmenities.entries.map((entry) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: entry.value,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedAmenities[entry.key] = newValue ?? false;
-                          });
-                        },
-                      ),
-                      Text(entry.key),
-                    ],
-                  );
-                }).toList(),
+                children:
+                    _selectedAmenities.entries.map((entry) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: entry.value,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedAmenities[entry.key] =
+                                    newValue ?? false;
+                              });
+                            },
+                          ),
+                          Text(entry.key),
+                        ],
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 30),
 
@@ -212,10 +198,11 @@ class _CreateCampPageState extends State<CreateCampPage> {
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
       // Get selected amenities
-      final List<String> amenities = _selectedAmenities.entries
-          .where((entry) => entry.value)
-          .map((entry) => entry.key)
-          .toList();
+      final List<String> amenities =
+          _selectedAmenities.entries
+              .where((entry) => entry.value)
+              .map((entry) => entry.key)
+              .toList();
 
       // Create a new camp site object
       final newCampSite = CampSite(
@@ -224,6 +211,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
         details: _detailsController.text,
         amenities: amenities,
         nearbyPlaces: CampSite.getDefaultNearbyPlaces(),
+        imageUrl: _imageUrl,
       );
 
       // Return the new camp site to the previous screen
@@ -231,5 +219,3 @@ class _CreateCampPageState extends State<CreateCampPage> {
     }
   }
 }
-
-

@@ -4,10 +4,7 @@ import 'camp_model.dart';
 class LocationTab extends StatelessWidget {
   final CampSite campSite;
 
-  const LocationTab({
-    Key? key,
-    required this.campSite,
-  }) : super(key: key);
+  const LocationTab({Key? key, required this.campSite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,11 +22,7 @@ class LocationTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             child: const Center(
-              child: Icon(
-                Icons.map,
-                size: 80,
-                color: Colors.grey,
-              ),
+              child: Icon(Icons.map, size: 80, color: Colors.grey),
             ),
           ),
           const SizedBox(height: 16),
@@ -47,33 +40,22 @@ class LocationTab extends StatelessWidget {
                 children: [
                   const Text(
                     'Address',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   Text(
                     campSite.location,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      height: 1.5,
-                    ),
+                    style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
                   const SizedBox(height: 16),
                   const Text(
                     'Coordinates',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 8),
                   const Text(
                     '7.1777° N, 80.4197° E',
-                    style: TextStyle(
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(fontSize: 16),
                   ),
                   const SizedBox(height: 16),
                   Row(

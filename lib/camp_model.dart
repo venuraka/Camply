@@ -3,23 +3,27 @@ class CampSite {
   final String location;
   final String details;
   final List<String> amenities;
+  final List<String> nearbyPlaces;
   final String? imageUrl;
-  final Map<String, String> nearbyPlaces;
+  final double rating;
 
   CampSite({
     required this.name,
     required this.location,
     required this.details,
     required this.amenities,
+    required this.nearbyPlaces,
     this.imageUrl,
-    this.nearbyPlaces = const {},
+    this.rating = 0.0,
   });
 
-  // Default nearby places that will be shown for all camps
-  static Map<String, String> getDefaultNearbyPlaces() {
-    return {
-      'Hospital': 'assets/icons/hospital.png',
-      'Fire Department': 'assets/icons/fire_department.png',
-    };
+  static List<String> getDefaultNearbyPlaces() {
+    return [
+      'Hospital',
+      'Police Station',
+      'Fire Department',
+      'Pharmacy',
+      'Restaurant',
+    ];
   }
 }
