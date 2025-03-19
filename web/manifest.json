@@ -1,6 +1,6 @@
 {
-    "name": "camply",
-    "short_name": "camply",
+    "name": "cgp_menu",
+    "short_name": "cgp_menu",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
