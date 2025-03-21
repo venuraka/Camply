@@ -1,4 +1,4 @@
-package com.example.camply
+package com.example.location_details
 
 import io.flutter.embedding.android.FlutterActivity
 
