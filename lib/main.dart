@@ -41,7 +41,7 @@ class _CamperScreenState extends State<CamperScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        backgroundColor: const Color(0xFF50E3C2),
+        backgroundColor: Colors.green,
         title: const Text(
           "Camper",
           style: TextStyle(
@@ -202,7 +202,7 @@ class _PostCardState extends State<PostCard> {
                           () => showCommentPopup(context), // Show comment popup
                       child: const Icon(
                         Icons.chat_bubble_outline,
-                        color: Colors.teal,
+                        color: Colors.green,
                         size: 28,
                       ),
                     ),
@@ -215,7 +215,7 @@ class _PostCardState extends State<PostCard> {
                     color:
                         isBookmarked
                             ? const Color.fromARGB(255, 218, 200, 3)
-                            : Colors.teal,
+                            : Colors.green,
                     size: 28,
                   ),
                 ),
@@ -301,7 +301,7 @@ class BottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: const Color(0xFF50E3C2),
+      backgroundColor: Colors.green,
       unselectedItemColor: Colors.white,
       selectedItemColor: const Color.fromARGB(255, 5, 58, 7),
       showSelectedLabels: false,
