@@ -1,6 +1,6 @@
 {
-    "name": "location_details",
-    "short_name": "location_details",
+    "name": "camply",
+    "short_name": "camply",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
