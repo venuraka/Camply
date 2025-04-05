@@ -1,4 +1,4 @@
-package com.campsiteapp.camply
+package com.example.camply
 
 import io.flutter.embedding.android.FlutterActivity
 
