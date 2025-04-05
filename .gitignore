@@ -105,3 +105,4 @@ lib/l10n/l10n.yaml
 *.properties
 *.java
 *.m
+*.java
