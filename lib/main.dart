@@ -1,3 +1,4 @@
+import 'package:camply/screens/login.dart';
 import 'package:camply/screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +16,10 @@ void main() async {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       useMaterial3: true,
     ),
-    initialRoute: '/Register',
+    initialRoute: '/Login',
     routes: {
       '/Register': (context) => RegistrationScreen(),
-    //   '/job': (context) => Jobs(),
+      '/Login': (context) => LoginScreen(),
     //   '/events': (context) => Events(),
     //   '/searchPeople': (context) => UserSearchScreen(),
     //   '/courses': (context) => Courses(),

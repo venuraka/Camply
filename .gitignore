@@ -10,3 +10,13 @@ lib/firebase_options.dart
 /ios
 /.dart_tool
 /.idea
+*.xml
+/build
+*.sha1
+/build/app
+/build
+/build
+/build
+/build
+/build/app
+/build
