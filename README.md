@@ -1,4 +1,4 @@
-# cgp_menu
+# camply
 
 A new Flutter project.
 
