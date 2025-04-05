@@ -1,9 +1,9 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
-export "FLUTTER_ROOT=C:\Users\User\dev\flutter"
-export "FLUTTER_APPLICATION_PATH=E:\flutter_practice\Camply"
+export "FLUTTER_ROOT=/Users/venurakaranasinghe/FlutterTools/flutter"
+export "FLUTTER_APPLICATION_PATH=/Users/venurakaranasinghe/Library/CloudStorage/OneDrive-NSBM/2 nd year/Computing Group Project/Camply"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=lib\main.dart"
+export "FLUTTER_TARGET=lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "FLUTTER_BUILD_NAME=1.0.0"
 export "FLUTTER_BUILD_NUMBER=1"
