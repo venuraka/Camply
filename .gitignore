@@ -96,3 +96,5 @@ app.*.symbols
 *.iws
 *.ipr
 .DS_Store
+/ios
+/macos
