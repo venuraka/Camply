@@ -9,3 +9,4 @@ lib/firebase_options.dart
 /ios
 /ios
 /.dart_tool
+/.idea
