@@ -1,29 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'screens/register.dart';
 
-void main() {
-  runApp(const MyApp());
-}
+import 'firebase_options.dart';
 
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        inputDecorationTheme: InputDecorationTheme(
-          filled: true,
-          fillColor: Colors.grey[200],
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(25),
-            borderSide: BorderSide.none,
-          ),
-        ),
-      ),
-      home: const RegistrationScreen(), // Call RegistrationScreen
-    );
-  }
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      useMaterial3: true,
+    ),
+    // initialRoute: '/EditCourse',
+    // routes: {
+    //   '/login': (context) => Login(),
+    //   '/job': (context) => Jobs(),
+    //   '/events': (context) => Events(),
+    //   '/searchPeople': (context) => UserSearchScreen(),
+    //   '/courses': (context) => Courses(),
+    //   '/account': (context) => ProfilePage(),
+    //   '/Editjob':(context) => Editjob(jobId: '2'),
+    //   '/EditCourse':(context) => EditCourse(CourseId: '2'),
+    // },
+  ));
 }
