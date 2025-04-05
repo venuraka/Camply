@@ -20,3 +20,11 @@ lib/firebase_options.dart
 /build
 /build/app
 /build
+/build
+*.json
+*.bin
+*.apk
+*.apk
+/build/app
+/build/app
+/build/app

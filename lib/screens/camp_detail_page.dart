@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'camp_model.dart';
+import '../models/camp_model.dart';
 import 'detail_tab.dart';
 import 'location_tab.dart';
 import 'nearby_tab.dart';

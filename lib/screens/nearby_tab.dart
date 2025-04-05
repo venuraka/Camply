@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'camp_model.dart';
+import '../models/camp_model.dart';
 
 class NearbyTab extends StatelessWidget {
   final CampSite campSite;

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'camp_model.dart';
+import '../models/camp_model.dart';
 
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);

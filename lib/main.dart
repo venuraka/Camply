@@ -1,4 +1,9 @@
+import 'package:camply/screens/camp_detail_page.dart';
+import 'package:camply/screens/create_camp_page.dart';
+import 'package:camply/screens/detail_tab.dart';
+import 'package:camply/screens/location_tab.dart';
 import 'package:camply/screens/login.dart';
+import 'package:camply/screens/nearby_tab.dart';
 import 'package:camply/screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +25,12 @@ void main() async {
     routes: {
       '/Register': (context) => RegistrationScreen(),
       '/Login': (context) => LoginScreen(),
-    //   '/events': (context) => Events(),
-    //   '/searchPeople': (context) => UserSearchScreen(),
-    //   '/courses': (context) => Courses(),
-    //   '/account': (context) => ProfilePage(),
-    //   '/Editjob':(context) => Editjob(jobId: '2'),
-    //   '/EditCourse':(context) => EditCourse(CourseId: '2'),
+      // '/campdetails': (context) => CampDetailPage(),
+      '/createcamp': (context) => CreateCampPage(),
+       // '/Detail': (context) => DetailTab(),
+     // '/Location': (context) => LocationTab(),
+     //  '/Nearby':(context) => NearbyTab(),
+     // '/EditCourse':(context) => ReviewTab(),
     },
   ));
 }
