@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1072125858096",
+    "project_id": "camply-c99bb",
+    "storage_bucket": "camply-c99bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072125858096:android:16ab976b236f0538bc38f5",
+        "android_client_info": {
+          "package_name": "com.campsiteapp.camply"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Vg0KHSo0sC3cc7efsrqGALpE7CYJP3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
