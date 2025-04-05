@@ -1,22 +1,30 @@
+import 'package:camply/screens/register.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:camply/login.dart';
-void main() {
-  runApp(const MyApp());
+// import 'firebase_options.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    // options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(MaterialApp(
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      useMaterial3: true,
+    ),
+    initialRoute: '/Register',
+    routes: {
+      '/Register': (context) => RegistrationScreen(),
+    //   '/job': (context) => Jobs(),
+    //   '/events': (context) => Events(),
+    //   '/searchPeople': (context) => UserSearchScreen(),
+    //   '/courses': (context) => Courses(),
+    //   '/account': (context) => ProfilePage(),
+    //   '/Editjob':(context) => Editjob(jobId: '2'),
+    //   '/EditCourse':(context) => EditCourse(CourseId: '2'),
+    },
+  ));
 }
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Camping App Login',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-      ),
-      home: const LoginScreen(),
-    );
-  }
-}
-
