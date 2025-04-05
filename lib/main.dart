@@ -1,12 +1,12 @@
+import 'package:camply/screens/register.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-
-import 'firebase_options.dart';
+// import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+    // options: DefaultFirebaseOptions.currentPlatform,
   );
 
   runApp(MaterialApp(
@@ -15,9 +15,9 @@ void main() async {
       colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       useMaterial3: true,
     ),
-    // initialRoute: '/EditCourse',
-    // routes: {
-    //   '/login': (context) => Login(),
+    initialRoute: '/Register',
+    routes: {
+      '/Register': (context) => RegistrationScreen(),
     //   '/job': (context) => Jobs(),
     //   '/events': (context) => Events(),
     //   '/searchPeople': (context) => UserSearchScreen(),
@@ -25,6 +25,6 @@ void main() async {
     //   '/account': (context) => ProfilePage(),
     //   '/Editjob':(context) => Editjob(jobId: '2'),
     //   '/EditCourse':(context) => EditCourse(CourseId: '2'),
-    // },
+    },
   ));
 }
