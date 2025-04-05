@@ -28,3 +28,4 @@ lib/firebase_options.dart
 /build/app
 /build/app
 /build/app
+*.xml
