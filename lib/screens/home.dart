@@ -10,12 +10,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
-  void _onBottomNavTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,10 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
-        onTap: _onBottomNavTapped,
-      ),
+      bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
     );
   }
 }
@@ -152,19 +143,30 @@ class _PostCardState extends State<PostCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ListTile(
-            leading: CircleAvatar(backgroundImage: NetworkImage(widget.profileUrl)),
-            title: Text(widget.username, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(widget.profileUrl),
+            ),
+            title: Text(
+              widget.username,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
             subtitle: Text(widget.location),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
-              children: widget.badgeColors
-                  .map((color) => Container(
-                        width: 10,
-                        height: 10,
-                        margin: const EdgeInsets.symmetric(horizontal: 2),
-                        decoration: BoxDecoration(color: color, shape: BoxShape.circle),
-                      ))
-                  .toList(),
+              children:
+                  widget.badgeColors
+                      .map(
+                        (color) => Container(
+                          width: 10,
+                          height: 10,
+                          margin: const EdgeInsets.symmetric(horizontal: 2),
+                          decoration: BoxDecoration(
+                            color: color,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      )
+                      .toList(),
             ),
           ),
           ClipRRect(
@@ -204,7 +206,11 @@ class _PostCardState extends State<PostCard> {
                     const SizedBox(width: 15),
                     GestureDetector(
                       onTap: () => showCommentPopup(context),
-                      child: const Icon(Icons.chat_bubble_outline, color: Colors.green, size: 28),
+                      child: const Icon(
+                        Icons.chat_bubble_outline,
+                        color: Colors.green,
+                        size: 28,
+                      ),
                     ),
                     const SizedBox(width: 10),
                     // Beautifully displayed comment count
@@ -237,7 +243,10 @@ class _PostCardState extends State<PostCard> {
                   onTap: toggleBookmark,
                   child: Icon(
                     isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-                    color: isBookmarked ? const Color.fromARGB(255, 218, 200, 3) : Colors.green,
+                    color:
+                        isBookmarked
+                            ? const Color.fromARGB(255, 218, 200, 3)
+                            : Colors.green,
                     size: 28,
                   ),
                 ),
@@ -301,7 +310,10 @@ class _CommentPopupState extends State<CommentPopup> {
         children: [
           Row(
             children: [
-              CircleAvatar(radius: 18, backgroundImage: NetworkImage(comment.profileUrl)),
+              CircleAvatar(
+                radius: 18,
+                backgroundImage: NetworkImage(comment.profileUrl),
+              ),
               const SizedBox(width: 10),
               Expanded(
                 child: Column(
@@ -309,18 +321,31 @@ class _CommentPopupState extends State<CommentPopup> {
                   children: [
                     Row(
                       children: [
-                        Text(comment.username, style: const TextStyle(fontWeight: FontWeight.bold)),
+                        Text(
+                          comment.username,
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         const SizedBox(width: 6),
-                        Text(_formatTimeDifference(comment.timestamp),
-                            style: const TextStyle(fontSize: 12, color: Colors.grey)),
+                        Text(
+                          _formatTimeDifference(comment.timestamp),
+                          style: const TextStyle(
+                            fontSize: 12,
+                            color: Colors.grey,
+                          ),
+                        ),
                       ],
                     ),
                     Text(comment.text),
                     Row(
                       children: [
                         IconButton(
-                          icon: Icon(comment.isLiked ? Icons.favorite : Icons.favorite_border,
-                              size: 18, color: comment.isLiked ? Colors.red : Colors.grey),
+                          icon: Icon(
+                            comment.isLiked
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                            size: 18,
+                            color: comment.isLiked ? Colors.red : Colors.grey,
+                          ),
                           onPressed: () {
                             setState(() {
                               comment.isLiked = !comment.isLiked;
@@ -339,7 +364,10 @@ class _CommentPopupState extends State<CommentPopup> {
                               _replyTo = comment;
                             });
                           },
-                          child: const Text("Reply", style: TextStyle(color: Colors.blue)),
+                          child: const Text(
+                            "Reply",
+                            style: TextStyle(color: Colors.blue),
+                          ),
                         ),
                         if (comment.replies.isNotEmpty)
                           TextButton(
@@ -350,7 +378,9 @@ class _CommentPopupState extends State<CommentPopup> {
                             },
                             child: Text(
                               comment.showReplies ? "Hide " : "View ",
-                              style: const TextStyle(color: Color.fromARGB(255, 84, 97, 108)),
+                              style: const TextStyle(
+                                color: Color.fromARGB(255, 84, 97, 108),
+                              ),
                             ),
                           ),
                       ],
@@ -361,7 +391,12 @@ class _CommentPopupState extends State<CommentPopup> {
             ],
           ),
           if (comment.showReplies)
-            Column(children: comment.replies.map((reply) => _buildCommentTile(reply, isReply: true)).toList()),
+            Column(
+              children:
+                  comment.replies
+                      .map((reply) => _buildCommentTile(reply, isReply: true))
+                      .toList(),
+            ),
         ],
       ),
     );
@@ -392,14 +427,17 @@ class _CommentPopupState extends State<CommentPopup> {
         children: [
           const SizedBox(height: 10),
           Expanded(
-            child: _comments.isEmpty
-                ? const Center(child: Text("No comments yet."))
-                : ListView.builder(
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    reverse: true,
-                    itemCount: _comments.length,
-                    itemBuilder: (context, index) => _buildCommentTile(_comments[index]),
-                  ),
+            child:
+                _comments.isEmpty
+                    ? const Center(child: Text("No comments yet."))
+                    : ListView.builder(
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      reverse: true,
+                      itemCount: _comments.length,
+                      itemBuilder:
+                          (context, index) =>
+                              _buildCommentTile(_comments[index]),
+                    ),
           ),
           const Divider(),
           Container(
@@ -410,9 +448,14 @@ class _CommentPopupState extends State<CommentPopup> {
                   child: TextField(
                     controller: _commentController,
                     decoration: InputDecoration(
-                      hintText: _replyTo == null ? "Add a comment..." : "Replying to ${_replyTo!.username}",
+                      hintText:
+                          _replyTo == null
+                              ? "Add a comment..."
+                              : "Replying to ${_replyTo!.username}",
                       border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(horizontal: 12),
+                      contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 12,
+                      ),
                     ),
                     onSubmitted: (_) => _addComment(),
                   ),
@@ -458,13 +501,32 @@ class _Comment {
 // ---------- Bottom Navigation ----------
 class BottomNavBar extends StatelessWidget {
   final int selectedIndex;
-  final Function(int) onTap;
 
-  const BottomNavBar({
-    super.key,
-    required this.selectedIndex,
-    required this.onTap,
-  });
+  const BottomNavBar({super.key, required this.selectedIndex});
+
+  void _onItemTapped(BuildContext context, int index) {
+    switch (index) {
+      case 0:
+        Navigator.pushNamed(context, '/home');
+        break;
+      case 1:
+        // Navigator.pushNamed(context, '/search');
+        break;
+      case 2:
+        Navigator.pushNamed(context, '/addPhoto');
+        break;
+      case 3:
+        // Navigator.pushNamed(context, '/notifications');
+        break;
+      case 4:
+        Navigator.pushNamed(context, '/uesrProfile');
+        break;
+    }
+
+    // setState(() {
+    //   _selectedIndex = index;
+    // });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -476,14 +538,35 @@ class BottomNavBar extends StatelessWidget {
       showSelectedLabels: false,
       showUnselectedLabels: false,
       currentIndex: selectedIndex,
-      onTap: onTap,
+      onTap: (index) => _onItemTapped(context, index),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
         BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
         BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
-        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Notifications"),
-        BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile"),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications),
+          label: "Notifications",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: "Profile",
+        ),
       ],
     );
+    //   onTap: onTap,
+    //   items: const [
+    //     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+    //     BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
+    //     BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
+    //     BottomNavigationBarItem(
+    //       icon: Icon(Icons.notifications),
+    //       label: "Notifications",
+    //     ),
+    //     BottomNavigationBarItem(
+    //       icon: Icon(Icons.account_circle),
+    //       label: "Profile",
+    //     ),
+    //   ],
+    // );
   }
 }

@@ -6,9 +6,9 @@ import 'nearby_tab.dart';
 import 'review_tab.dart';
 
 class CampDetailPage extends StatefulWidget {
-  final CampSite campSite;
+  // final CampSite campSite;
 
-  const CampDetailPage({Key? key, required this.campSite}) : super(key: key);
+  // const CampDetailPage({Key? key, required this.campSite}) : super(key: key);
 
   @override
   State<CampDetailPage> createState() => _CampDetailPageState();
@@ -58,10 +58,10 @@ class _CampDetailPageState extends State<CampDetailPage>
             child: TabBarView(
               controller: _tabController,
               children: [
-                DetailTab(campSite: widget.campSite),
-                LocationTab(campSite: widget.campSite),
-                NearbyTab(campSite: widget.campSite),
-                ReviewTab(campSite: widget.campSite),
+                // DetailTab(campSite: widget.campSite),
+                // LocationTab(campSite: widget.campSite),
+                // NearbyTab(campSite: widget.campSite),
+                // ReviewTab(campSite: widget.campSite),
               ],
             ),
           ),
@@ -86,12 +86,10 @@ class _CampDetailPageState extends State<CampDetailPage>
           width: double.infinity,
           color: Colors.grey.shade300,
           child:
-              widget.campSite.imageUrl != null
-                  ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
-                  : Image.asset(
-                    'assets/images/default_camp.jpg',
-                    fit: BoxFit.cover,
-                  ),
+          // widget.campSite.imageUrl != null
+          //     ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
+          // : Image.asset(
+          Image.asset('assets/images/default_camp.jpg', fit: BoxFit.cover),
         ),
 
         // Back button
@@ -154,7 +152,8 @@ class _CampDetailPageState extends State<CampDetailPage>
 
                 // Camp name and location
                 Text(
-                  widget.campSite.name,
+                  // widget.campSite.name,
+                  "Yosmite Camp",
                   style: const TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -162,7 +161,8 @@ class _CampDetailPageState extends State<CampDetailPage>
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  widget.campSite.location,
+                  // widget.campSite.location,
+                  "East-Central California",
                   style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
                 ),
                 const SizedBox(height: 12),

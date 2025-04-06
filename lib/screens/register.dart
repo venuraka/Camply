@@ -1,3 +1,4 @@
+import 'package:camply/screens/login.dart';
 import 'package:flutter/material.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -162,9 +163,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         height: 40,
                         child: ElevatedButton(
                           onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              // Process form data
-                            }
+                            // if (_formKey.currentState!.validate()) {
+                            //   // Process form data
+                            // }
+
+                            Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => LoginScreen(),
+                              ),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: const Color(0xFF2ECC71),

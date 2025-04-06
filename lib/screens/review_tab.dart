@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/camp_model.dart';
 
 class ReviewTab extends StatelessWidget {
-  final CampSite campSite;
+  // final CampSite campSite;
 
-  const ReviewTab({Key? key, required this.campSite}) : super(key: key);
+  // const ReviewTab({Key? key, required this.campSite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

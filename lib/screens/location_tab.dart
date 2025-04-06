@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../models/camp_model.dart';
 
 class LocationTab extends StatelessWidget {
-  final CampSite campSite;
+  // final CampSite campSite;
 
-  const LocationTab({Key? key, required this.campSite}) : super(key: key);
+  // const LocationTab({Key? key, required this.campSite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +44,8 @@ class LocationTab extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    campSite.location,
+                    // campSite.location,
+                    "East-Central California",
                     style: const TextStyle(fontSize: 16, height: 1.5),
                   ),
                   const SizedBox(height: 16),

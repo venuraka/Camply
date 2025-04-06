@@ -2,16 +2,17 @@ import 'package:flutter/material.dart';
 import '../models/camp_model.dart';
 
 class NearbyTab extends StatelessWidget {
-  final CampSite campSite;
+  // final CampSite campSite;
 
-  const NearbyTab({Key? key, required this.campSite}) : super(key: key);
+  // const NearbyTab({Key? key, required this.campSite}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final nearbyPlaces =
-        campSite.nearbyPlaces.isEmpty
-            ? CampSite.getDefaultNearbyPlaces()
-            : campSite.nearbyPlaces;
+    final nearbyPlaces = ["Hospital", "Fire Department"];
+    // final nearbyPlaces =
+    //     campSite.nearbyPlaces.isEmpty
+    //         ? CampSite.getDefaultNearbyPlaces()
+    //         : campSite.nearbyPlaces;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),

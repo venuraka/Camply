@@ -1,5 +1,6 @@
+import 'package:camply/screens/home.dart';
+import 'package:camply/screens/register.dart';
 import 'package:flutter/material.dart';
-
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -22,7 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF2ECEA2), // Green background color matching the reference
+      backgroundColor: const Color(
+        0xFF2ECEA2,
+      ), // Green background color matching the reference
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
@@ -113,13 +116,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   alignment: Alignment.centerRight,
                   child: TextButton(
                     onPressed: () {
-                      // Handle forgot password
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => RegistrationScreen(),
+                        ),
+                      );
                     },
                     child: const Text(
-                      'Forgot Password?',
-                      style: TextStyle(
-                        color: Colors.black87,
-                      ),
+                      "Don't Have An Account Yet?",
+                      style: TextStyle(color: Colors.black87),
                     ),
                   ),
                 ),
@@ -129,7 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                   width: 200,
                   child: ElevatedButton(
                     onPressed: () {
-                      // Handle sign in
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
