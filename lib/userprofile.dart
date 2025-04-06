@@ -57,7 +57,7 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                       Row(
                         children: [
                           Container(
-                            margin: EdgeInsets.only(left: 50, right: 20), // You can use any value or direction
+                            margin: EdgeInsets.only(left: 50, right: 20),
                             child: Text(
                               'Mark Sepperd',
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
@@ -96,10 +96,9 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                       ),
                       const SizedBox(height: 12),
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(right: 100),
+                            margin: const EdgeInsets.only(left: 80), 
                             width: 130,
                             height: 35,
                             child: ElevatedButton(
@@ -120,6 +119,7 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                           ),
                         ],
                       ),
+
                     ],
                   ),
                 ),
