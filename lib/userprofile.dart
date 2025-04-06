@@ -55,14 +55,19 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Row(
-                        children: const [
-                          Text('Mark Sepperd', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                          Spacer(),
-                          CircleAvatar(radius: 6, backgroundColor: Colors.brown),
-                          SizedBox(width: 4),
-                          CircleAvatar(radius: 6, backgroundColor: Colors.grey),
-                          SizedBox(width: 4),
-                          CircleAvatar(radius: 6, backgroundColor: Colors.grey),
+                        children: [
+                          Container(
+                            margin: EdgeInsets.only(left: 50, right: 20), // You can use any value or direction
+                            child: Text(
+                              'Mark Sepperd',
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                          ),
+                          const CircleAvatar(radius: 6, backgroundColor: Colors.brown),
+                          const SizedBox(width: 4),
+                          const CircleAvatar(radius: 6, backgroundColor: Colors.grey),
+                          const SizedBox(width: 4),
+                          const CircleAvatar(radius: 6, backgroundColor: Colors.grey),
                         ],
                       ),
                       const SizedBox(height: 12),
