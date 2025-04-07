@@ -220,7 +220,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
         amenities: _selectedAmenities.entries
             .where((entry) => entry.value)
             .map((entry) => entry.key)
-            .toList(),
+            .toList(), id: '',
       );
 
       // Return the new camp to previous screen

@@ -12,7 +12,7 @@ class CampSite {
     required this.details,
     required this.amenities,
     this.imageUrl,
-    this.nearbyPlaces = const {},
+    this.nearbyPlaces = const {}, required String id,
   });
 
   // Default nearby places that will be shown for all camps
