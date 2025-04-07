@@ -11,9 +11,10 @@ class NearbyTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final nearbyPlaces = campSite.nearbyPlaces.isEmpty
+    // Check if nearbyPlaces is null or empty, and use default places if needed
+    final nearbyPlaces = (campSite.nearbyPlaces?.isEmpty ?? true)
         ? CampSite.getDefaultNearbyPlaces()
-        : campSite.nearbyPlaces;
+        : campSite.nearbyPlaces!;
 
     return ListView.builder(
       padding: const EdgeInsets.all(16),

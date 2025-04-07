@@ -16,7 +16,8 @@ class DatabaseMethods {
           id: doc.id,
           name: doc['name'],
           location: doc['location'],
-          details: doc['details'], amenities: [],
+          details: doc['details'],
+          amenities: List<String>.from(doc['amenities'] ?? []),
         );
       }).toList();
     });
