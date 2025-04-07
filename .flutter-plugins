@@ -1,5 +1,10 @@
 # This is a generated file; do not edit or check into version control.
+cloud_firestore=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/cloud_firestore-5.6.6/
+cloud_firestore_web=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/cloud_firestore_web-4.4.6/
+firebase_core=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/firebase_core-3.13.0/
+firebase_core_web=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/firebase_core_web-2.22.0/
 flutter_plugin_android_lifecycle=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.27/
+fluttertoast=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/fluttertoast-8.2.12/
 geolocator=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/geolocator-13.0.2/
 geolocator_android=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/geolocator_android-4.6.1/
 geolocator_apple=/Users/venurakaranasinghe/.pub-cache/hosted/pub.dev/geolocator_apple-2.3.9/
