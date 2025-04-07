@@ -1,13 +1,17 @@
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
     dependencies {
-        classpath 'com.google.gms:google-services:4.3.15'
+        classpath("com.google.gms:google-services:4.3.15")
     }
 }
 
 plugins {
     id("com.android.application")
     // START: FlutterFire Configuration
-    id("com.google.gms.google-services")
+    id("com.google.gms.google-services") version "4.3.15"
     // END: FlutterFire Configuration
     id("kotlin-android")
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
