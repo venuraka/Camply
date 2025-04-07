@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:random_string/random_string.dart';
-import 'Services/Database.dart';
 import 'camp_model.dart';
 import 'googlemaps/locationretrieval.dart';
 import 'package:geolocator/geolocator.dart';
+
+
 
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
@@ -42,7 +41,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
       Position position = await determinePosition(); // Call the service
       setState(() {
         _locationController.text =
-            'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
+        'Latitude: ${position.latitude}, Longitude: ${position.longitude}';
       });
     } catch (e) {
       print('Error getting location: $e');
@@ -186,48 +185,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
 
               // Submit Button
               ElevatedButton(
-                onPressed: () async {
-                  // Validate the form
-                  if (_formKey.currentState!.validate()) {
-                    try {
-                      String id = randomAlphaNumeric(10);
-                      Map<String, dynamic> addcampMap = {
-                        'id': id,
-                        'name': _nameController.text,
-                        'location': _locationController.text,
-                        'details': _detailsController.text,
-                        'amenities': _selectedAmenities.keys
-                            .where((key) => _selectedAmenities[key] == true)
-                            .toList(),
-                      };
-                      
-                      // Use await without then() for cleaner code
-                      await DatabaseMethods().addCamp(addcampMap, id);
-                      
-                      Fluttertoast.showToast(
-                        msg: "Camp created successfully",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.green,
-                        textColor: Colors.white,
-                        fontSize: 16.0
-                      );
-                      
-                      // Navigate back after successful creation
-                      Navigator.pop(context);
-                    } catch (e) {
-                      print("Error creating camp: $e");
-                      Fluttertoast.showToast(
-                        msg: "Failed to create camp: ${e.toString()}",
-                        toastLength: Toast.LENGTH_SHORT,
-                        gravity: ToastGravity.CENTER,
-                        backgroundColor: Colors.red,
-                        textColor: Colors.white,
-                      );
-                    }
-                  }
-                },
+                onPressed: _submitForm,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2ECC71),
                   padding: const EdgeInsets.symmetric(vertical: 15),
@@ -250,4 +208,28 @@ class _CreateCampPageState extends State<CreateCampPage> {
       ),
     );
   }
+
+  void _submitForm() {
+    if (_formKey.currentState!.validate()) {
+      // Get selected amenities
+      final List<String> amenities = _selectedAmenities.entries
+          .where((entry) => entry.value)
+          .map((entry) => entry.key)
+          .toList();
+
+      // Create a new camp site object
+      final newCampSite = CampSite(
+        name: _nameController.text,
+        location: _locationController.text,
+        details: _detailsController.text,
+        amenities: amenities,
+        nearbyPlaces: CampSite.getDefaultNearbyPlaces(),
+      );
+
+      // Return the new camp site to the previous screen
+      Navigator.pop(context, newCampSite);
+    }
+  }
 }
+
+
