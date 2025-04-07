@@ -52,7 +52,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="camply" >
         <meta-data
-            android:name="com.google.android.geo.AIzaSyAkkFszINHsPx4OykoJfdIrIIbuqV4jJC4"
+            android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyAkkFszINHsPx4OykoJfdIrIIbuqV4jJC4" />
 
         <activity
