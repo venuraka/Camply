@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'camp_model.dart';
 
-class LocationTab extends StatelessWidget {
+class LocationTab extends StatefulWidget {
   final CampSite campSite;
 
   const LocationTab({
@@ -9,6 +10,11 @@ class LocationTab extends StatelessWidget {
     required this.campSite,
   }) : super(key: key);
 
+  @override
+  State<LocationTab> createState() => _LocationTabState();
+}
+
+class _LocationTabState extends State<LocationTab> {
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -24,12 +30,20 @@ class LocationTab extends StatelessWidget {
               color: Colors.grey.shade300,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: const Center(
-              child: Icon(
-                Icons.map,
-                size: 80,
-                color: Colors.grey,
+            child:  Center(
+              child:  GoogleMap(
+                onMapCreated: _onMapCreated,
+                initialCameraPosition: CameraPosition(
+                  target: _center,
+                  zoom: 15.0,
+                ),
+                myLocationEnabled: true,
+                myLocationButtonEnabled: true,
               ),
+                if (_isLoading)
+          const Center(
+          child: CircularProgressIndicator(),
+    ),
             ),
           ),
           const SizedBox(height: 16),
@@ -54,7 +68,7 @@ class LocationTab extends StatelessWidget {
                   ),
                   const SizedBox(height: 8),
                   Text(
-                    campSite.location,
+                    widget.campSite.location,
                     style: const TextStyle(
                       fontSize: 16,
                       height: 1.5,

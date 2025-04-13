@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
-import 'locationretrieval.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 
 void main() {
@@ -24,41 +23,54 @@ class _MapScreenState extends State<MapScreen> {
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
-    _updateCameraPosition();
+    _fetchLocationFromFirestore();
   }
 
-  Future<void> _updateCameraPosition() async {
+  Future<void> _fetchLocationFromFirestore() async {
     try {
-      final position = await determinePosition();
-      if (mounted) {
-        setState(() {
-          _center = LatLng(position.latitude, position.longitude);
-          _isLoading = false;
-        });
-        mapController?.animateCamera(CameraUpdate.newLatLng(_center));
+      // Replace with your collection and document path
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('campsites')
+          .doc('id')
+          .get();
+
+      if (doc.exists) {
+        final locationString = doc['location'];
+        // Use RegExp to extract the values
+        final regex = RegExp(r'Latitude:\s*(-?\d+\.\d+),\s*Longitude:\s*(-?\d+\.\d+)');
+        final match = regex.firstMatch(locationString);
+
+        if (match != null) {
+          final latitude = double.parse(match.group(1)!);
+          final longitude = double.parse(match.group(2)!);
+
+          if (mounted) {
+            setState(() {
+              _center = LatLng(latitude, longitude);
+              _isLoading = false;
+            });
+
+            mapController?.animateCamera(CameraUpdate.newLatLng(_center));
+          }
+        } else {
+          print('Could not parse location string');
+          setState(() => _isLoading = false);
+        }
+      } else {
+        print('Document not found');
+        setState(() => _isLoading = false);
       }
     } catch (e) {
-      print("Error updating position: $e");
-      setState(() {
-        _isLoading = false;
-      });
+      print('Error fetching location: $e');
+      setState(() => _isLoading = false);
     }
   }
 
   @override
-  void initState() {
-    super.initState();
-    // Just fetch position for initial view, but don't update controller here
-    determinePosition().then((position) {
-      if (mounted) {
-        setState(() {
-          _center = LatLng(position.latitude, position.longitude);
-        });
-      }
-    }).catchError((e) {
-      print("Error getting position: $e");
-    });
-  }
+    void initState() {
+      super.initState();
+      _fetchLocationFromFirestore();
+    }
 
   @override
   Widget build(BuildContext context) {
