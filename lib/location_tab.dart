@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'camp_model.dart';
 
 class LocationTab extends StatefulWidget {
@@ -148,8 +149,16 @@ class _LocationTabState extends State<LocationTab> {
                     children: [
                       Expanded(
                         child: ElevatedButton.icon(
-                          onPressed: () {
-                            // Add navigation logic here if needed
+                          onPressed: () async {
+                            final url =
+                                'https://www.google.com/maps/search/?api=1&query=${_center.latitude},${_center.longitude}';
+                            if (await canLaunchUrl(Uri.parse(url))) {
+                            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                            } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(content: Text('Could not launch Google Maps')),
+                            );
+                            }
                           },
                           icon: const Icon(Icons.directions),
                           label: const Text('Directions'),
