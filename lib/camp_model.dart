@@ -42,7 +42,6 @@ class CampSite {
     };
   }
 
-  // Move this method outside of toMap()
   static Map<String, String> getDefaultNearbyPlaces() {
     return {
       'Hospital': '2 km',

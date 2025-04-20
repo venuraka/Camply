@@ -3,7 +3,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:random_string/random_string.dart';
 import 'Services/Database.dart';
 import 'camp_model.dart';
-import 'googlemaps/locationretrieval.dart';
+import 'Controllers/locationretrieval.dart';
 import 'package:geolocator/geolocator.dart';
 
 class CreateCampPage extends StatefulWidget {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'Components/WeatherInfo.dart';
+import 'Controllers/OpenWeatherMap.dart';
 import 'camp_model.dart';
 import 'detail_tab.dart';
 import 'location_tab.dart';
@@ -21,13 +23,29 @@ class _CampDetailPageState extends State<CampDetailPage>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
   final DateTime _currentDate = DateTime.now();
+  double? temperature;
+  String? description;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 4, vsync: this);
+    _loadWeather();
   }
 
+  Future<void> _loadWeather() async {
+    await Future.delayed(Duration(milliseconds: 100));
+
+    try {
+      final weatherData = await getWeatherDataFromLocationString(widget.campSite.location);
+      setState(() {
+        temperature = weatherData['main']['temp'];
+        description = weatherData['weather'][0]['description'];
+      });
+    } catch (e) {
+      print('Weather fetch error: $e');
+    }
+  }
   @override
   void dispose() {
     _tabController.dispose();
@@ -83,6 +101,7 @@ class _CampDetailPageState extends State<CampDetailPage>
   Widget _buildHeader() {
     return Stack(
       children: [
+
         // Camp image or placeholder
         Container(
           height: 250,
@@ -141,10 +160,21 @@ class _CampDetailPageState extends State<CampDetailPage>
                       style: const TextStyle(fontSize: 16),
                     ),
                     Row(
-                      children: const [
-                        Icon(Icons.cloud, color: Colors.grey),
-                        SizedBox(width: 8),
-                        Text('22 °C', style: TextStyle(fontSize: 16)),
+                      children: [
+                        if (temperature != null && description != null)
+                          WeatherInfoCard(
+                            temperature: temperature!,
+                            description: description!,
+                          )
+                        else
+                          const Padding(
+                            padding: EdgeInsets.all(8),
+                            child: SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
                       ],
                     ),
                   ],
