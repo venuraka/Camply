@@ -25,6 +25,7 @@ class _CampDetailPageState extends State<CampDetailPage>
   final DateTime _currentDate = DateTime.now();
   double? temperature;
   String? description;
+  String? icon;
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _CampDetailPageState extends State<CampDetailPage>
       setState(() {
         temperature = weatherData['main']['temp'];
         description = weatherData['weather'][0]['description'];
+        icon = weatherData['weather'][0]['icon'];
       });
     } catch (e) {
       print('Weather fetch error: $e');
@@ -165,6 +167,7 @@ class _CampDetailPageState extends State<CampDetailPage>
                           WeatherInfoCard(
                             temperature: temperature!,
                             description: description!,
+                            icon: icon!,
                           )
                         else
                           const Padding(
@@ -189,15 +192,9 @@ class _CampDetailPageState extends State<CampDetailPage>
                     fontWeight: FontWeight.bold,
                   ),
                 ),
-                const SizedBox(height: 4),
-                Text(
-                  widget.campSite.location,
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-                const SizedBox(height: 12),
+
+
+                const SizedBox(height: 2),
 
                 // Ratings and actions
                 Row(

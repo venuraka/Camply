@@ -14,7 +14,7 @@ Future<Map<String, dynamic>> getWeatherDataFromLocationString(String locationStr
 
   final apiKey = '4b9981418b0dda4fac1b397cf81b6b87';
   final url =
-      'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&units=metric&appid=$apiKey';
+      'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&exclude=current&units=metric&appid=$apiKey';
 
   print("Fetching from: $url");
 
