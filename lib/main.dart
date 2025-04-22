@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'create_camp_page.dart';
 import 'camp_detail_page.dart';
 import 'camp_model.dart';
+import 'camp_menu_page.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure binding is initialized
+  await Firebase.initializeApp(); // Initialize Firebase
   runApp(const MyApp());
 }
 
@@ -21,8 +25,11 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: const HomePage(),
-      routes: {'/create_camp': (context) => const CreateCampPage()},
+      home: const CreateCampPage(), // Set CreateCampPage as the home page
+      routes: {
+        '/create_camp': (context) => const CreateCampPage(),
+        '/camp_menu': (context) => const CampMenuPage(),
+      },
     );
   }
 }
