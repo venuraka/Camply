@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+<string name="app_name">Camply</string>
+<string name="facebook_app_id">1369481734371729</string>
+<string name="fb_login_protocol_scheme">fb1369481734371729</string>
+<string name="facebook_client_token">8c84ff486581cac0cf73aea9f13a4330</string>
+</resources>
