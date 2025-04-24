@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:geolocator/geolocator.dart';
 
 class AddPhoto extends StatefulWidget {
   const AddPhoto({super.key});
@@ -25,13 +26,49 @@ class _CreateCampPageState extends State<AddPhoto> {
     }
   }
 
+  Future<void> _getLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Location services are disabled.'),
+      ));
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Location permission is denied.'),
+        ));
+        return;
+      }
+    }
+
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+
+    setState(() {
+      _locationController.text = 'Lat: ${position.latitude}, Long: ${position.longitude}';
+    });
+  }
+
+  @override
+  void dispose() {
+    _locationController.dispose(); // ✅ Clean up the controller
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Insert Photo"),
-        backgroundColor: const Color.from(alpha: 1, red: 0.298, green: 0.686, blue: 0.314),
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
       body: Padding(
@@ -77,21 +114,25 @@ class _CreateCampPageState extends State<AddPhoto> {
               ),
               const SizedBox(height: 20),
               TextField(
-                controller: _locationController,
+                controller: _locationController, // ✅ Use the controller
                 decoration: InputDecoration(
                   labelText: 'Tag Location',
                   border: OutlineInputBorder(),
+                  prefixIcon: IconButton(
+                    icon: const Icon(Icons.location_on),
+                    onPressed: _getLocation,
+                  ),
                 ),
               ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
-                // location ekai Image ekai 
+                  // Handle submission logic here
                   print('Image: $_image');
                   print('Location: ${_locationController.text}');
                 },
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color.fromARGB(255, 19, 202, 19),
+                  backgroundColor: Colors.green,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(30),
                   ),

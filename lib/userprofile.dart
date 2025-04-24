@@ -42,9 +42,12 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
               children: [
                 Column(
                   children: [
-                    const CircleAvatar(
-                      radius: 35,
-                      backgroundImage: AssetImage('assets/profile.jpg'), // Replace with your image
+                    Padding(
+                      padding: const EdgeInsets.only(left: 10, top: 10),
+                      child: const CircleAvatar(
+                        radius: 50,
+                        backgroundImage: AssetImage('assets/profile.jpg'), // Replace with your image
+                      ),
                     ),
                     const SizedBox(height: 8),
                   ],
@@ -54,55 +57,38 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
+                       const SizedBox(height: 10),
                       Row(
-                        children: [
-                          Container(
-                            margin: EdgeInsets.only(left: 50, right: 20),
+                        children: const [
+                          Padding(
+                            padding: EdgeInsets.only(left: 10),
                             child: Text(
                               'Mark Sepperd',
                               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                             ),
                           ),
-                          const CircleAvatar(radius: 6, backgroundColor: Colors.brown),
-                          const SizedBox(width: 4),
-                          const CircleAvatar(radius: 6, backgroundColor: Colors.grey),
-                          const SizedBox(width: 4),
-                          const CircleAvatar(radius: 6, backgroundColor: Colors.grey),
                         ],
                       ),
-                      const SizedBox(height: 12),
+
+                      const SizedBox(height: 10),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: const [
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Followers\n', style: TextStyle(fontSize: 14)),
-                                TextSpan(text: '12k', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(text: 'Following\n', style: TextStyle(fontSize: 14)),
-                                TextSpan(text: '34k', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
-                              ],
-                            ),
-                            textAlign: TextAlign.center,
-                          ),
+                          Text('Followers\n12k', style: TextStyle(fontSize: 14)),
+                          Text('Following\n34k', style: TextStyle(fontSize: 14)),
                         ],
                       ),
                       const SizedBox(height: 12),
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(left: 80), 
+                            margin: const EdgeInsets.only(right: 100),
                             width: 130,
                             height: 35,
                             child: ElevatedButton(
                               onPressed: () {
+                                // Your logic when 'Follow' button is pressed
                                 print('Follow button pressed');
                               },
                               style: ElevatedButton.styleFrom(
@@ -119,7 +105,6 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
                           ),
                         ],
                       ),
-
                     ],
                   ),
                 ),
@@ -142,41 +127,89 @@ class _userprofileState extends State<userprofile> with TickerProviderStateMixin
             child: TabBarView(
               controller: _tabController,
               children: [
+
+
+
                 Stack(
-                  children: [
-                    GridView.count(
-                      padding: const EdgeInsets.all(10),
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 8,
-                      mainAxisSpacing: 8,
-                      children: List.generate(6, (index) {
-                        return Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12),
-                            image: const DecorationImage(
-                              image: AssetImage('assets/photo.jpeg'), // Replace with your photo asset
-                              fit: BoxFit.cover,
+                    children: [
+                      GridView.count(
+                        padding: const EdgeInsets.all(10),
+                        crossAxisCount: 1,
+                        mainAxisSpacing: 12,
+                        children: List.generate(6, (index) {
+                          return Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              border: Border.all(color: Colors.greenAccent),
+                              borderRadius: BorderRadius.circular(12),
                             ),
-                          ),
-                        );
-                      }),
-                    ),
-                    Positioned(
-                      bottom: 16,
-                      right: 16,
-                      child: FloatingActionButton(
-                        backgroundColor: const Color.fromARGB(255, 3, 159, 47),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(builder: (context) => const AddPhoto()),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const ListTile(
+                                  contentPadding: EdgeInsets.symmetric(horizontal: 12),
+                                  leading: CircleAvatar(
+                                    radius: 20,
+                                    backgroundImage: AssetImage('assets/profile.jpg'),
+                                  ),
+                                  title: Text(
+                                    'Zack Night',
+                                    style: TextStyle(fontWeight: FontWeight.bold),
+                                  ),
+                                  subtitle: Text('Yosemite Basecamp'),
+                                ),
+                                ClipRRect(
+                                  child: Image.asset(
+                                    'assets/photo.jpeg',
+                                    height: 250,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: const [
+                                      Row(
+                                        children: [
+                                          Icon(Icons.favorite_border, color: Colors.green),
+                                          SizedBox(width: 12),
+                                          Icon(Icons.chat_bubble_outline, color: Colors.green),
+                                        ],
+                                      ),
+                                      Icon(Icons.bookmark_border, color: Colors.green),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
                           );
-                        },
-                        child: const Icon(Icons.add),
+                        }),
                       ),
-                    ),
-                  ],
-                ),
+                      Positioned(
+                        bottom: 16,
+                        right: 16,
+                        child: FloatingActionButton(
+                          backgroundColor: const Color.fromARGB(255, 3, 159, 47),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const AddPhoto()),
+                            );
+                          },
+                          child: const Icon(Icons.add),
+                        ),
+                      ),
+                    ],
+                  ),
+
+
+
+
+
+
+
                 const Center(
                   child: Text('Experience content goes here'),
                 ),
