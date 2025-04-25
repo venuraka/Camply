@@ -6,8 +6,8 @@ import 'camp_model.dart';
 import 'camp_menu_page.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure binding is initialized
-  await Firebase.initializeApp(); // Initialize Firebase
+  WidgetsFlutterBinding.ensureInitialized(); 
+  await Firebase.initializeApp(); 
   runApp(const MyApp());
 }
 

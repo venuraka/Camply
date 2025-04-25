@@ -82,7 +82,7 @@ class _CampDetailPageState extends State<CampDetailPage>
       children: [
         // Camp image or placeholder
         Container(
-          height: 250,
+          height: 500,
           width: double.infinity,
           color: Colors.grey.shade300,
           child:
