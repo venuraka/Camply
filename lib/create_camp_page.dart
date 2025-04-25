@@ -47,27 +47,33 @@ class _CreateCampPageState extends State<CreateCampPage> {
 
     if (pickedFile != null) {
       final file = File(pickedFile.path);
-      final bytes = await file.readAsBytes();
-      final base64Image = base64Encode(bytes);
 
       final uri = Uri.parse(cloudinaryUploadUrl);
-      final response = await http.post(
-        uri,
-        body: {
-          'file': 'data:image/png;base64,$base64Image',
-          'upload_preset': uploadPreset,
-        },
-      );
+      final request =
+          http.MultipartRequest('POST', uri)
+            ..fields['upload_preset'] = uploadPreset
+            ..files.add(await http.MultipartFile.fromPath('file', file.path));
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        setState(() {
-          _imageUrl = data['secure_url'];
-        });
-      } else {
+      try {
+        final response = await request.send();
+
+        if (response.statusCode == 200) {
+          final respStr = await response.stream.bytesToString();
+          final data = jsonDecode(respStr);
+          setState(() {
+            _imageUrl = data['secure_url'];
+          });
+        } else {
+          final errorStr = await response.stream.bytesToString();
+          print('Upload failed: $errorStr');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Image upload failed')));
+        }
+      } catch (e) {
         ScaffoldMessenger.of(
           context,
-        ).showSnackBar(SnackBar(content: Text('Image upload failed')));
+        ).showSnackBar(SnackBar(content: Text('Upload error: $e')));
       }
     }
   }
