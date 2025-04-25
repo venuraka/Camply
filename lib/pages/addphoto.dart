@@ -1,11 +1,12 @@
 import 'dart:io';
+import 'package:camply/pages/create_camp_site.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
+import 'package:http/http.dart' 
 
 // Cloudinary configuration (replace with your actual values)
 const String CLOUDINARY_CLOUD_NAME = 'dvoesribg';
@@ -38,36 +39,36 @@ class _AddPhotoState extends State<AddPhoto> {
   }
 
   // Get current location
-  Future<void> _getLocation() async {
-    try {
-      bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-      if (!serviceEnabled) {
-        _showSnackBar('Location services are disabled.');
-        return;
-      }
+  // Future<void> _getLocation() async {
+  //   try {
+  //     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  //     if (!serviceEnabled) {
+  //       _showSnackBar('Location services are disabled.');
+  //       return;
+  //     }
 
-      LocationPermission permission = await Geolocator.checkPermission();
-      if (permission == LocationPermission.denied) {
-        permission = await Geolocator.requestPermission();
-        if (permission == LocationPermission.denied) {
-          _showSnackBar('Location permission is denied.');
-          return;
-        }
-      }
+  //     LocationPermission permission = await Geolocator.checkPermission();
+  //     if (permission == LocationPermission.denied) {
+  //       permission = await Geolocator.requestPermission();
+  //       if (permission == LocationPermission.denied) {
+  //         _showSnackBar('Location permission is denied.');
+  //         return;
+  //       }
+  //     }
 
-      if (permission == LocationPermission.deniedForever) {
-        _showSnackBar('Location permissions are permanently denied.');
-        return;
-      }
+  //     if (permission == LocationPermission.deniedForever) {
+  //       _showSnackBar('Location permissions are permanently denied.');
+  //       return;
+  //     }
 
-      Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
-      setState(() {
-        _locationController.text = 'Lat: ${position.latitude}, Long: ${position.longitude}';
-      });
-    } catch (e) {
-      _showSnackBar('Failed to get location: $e');
-    }
-  }
+  //    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+  //     setState(() {
+  //       _locationController.text = 'Lat: ${position.latitude}, Long: ${position.longitude}';
+  //     });
+  //   } catch (e) {
+  //     _showSnackBar('Failed to get location: $e');
+  //   }
+  // }
 
   // Upload image to Cloudinary
   Future<String> uploadImageToCloudinary(List<int> imageBytes) async {
