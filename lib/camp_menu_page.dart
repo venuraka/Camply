@@ -40,18 +40,10 @@ class CampMenuPage extends StatelessWidget {
               final camp = campsites[index];
               return Card(
                 margin: const EdgeInsets.all(8),
-                child: ListTile(
-                  leading:
-                      camp.imageUrl != null
-                          ? Image.network(
-                            camp.imageUrl!,
-                            width: 50,
-                            height: 50,
-                            fit: BoxFit.cover,
-                          )
-                          : const Icon(Icons.image, size: 50),
-                  title: Text(camp.name),
-                  subtitle: Text(camp.location),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: InkWell(
                   onTap: () {
                     Navigator.push(
                       context,
@@ -60,6 +52,62 @@ class CampMenuPage extends StatelessWidget {
                       ),
                     );
                   },
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Image on top
+                      ClipRRect(
+                        borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(12),
+                        ),
+                        child:
+                            camp.imageUrl != null
+                                ? Image.network(
+                                  camp.imageUrl!,
+                                  width: double.infinity,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                                : Container(
+                                  width: double.infinity,
+                                  height: 150,
+                                  color: Colors.grey.shade300,
+                                  child: const Icon(
+                                    Icons.image,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                      ),
+                      const SizedBox(height: 8),
+
+                      // Camp name
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          camp.name,
+                          style: const TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+
+                      // Camp location
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: Text(
+                          camp.location,
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey.shade600,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                    ],
+                  ),
                 ),
               );
             },
