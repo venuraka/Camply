@@ -1,0 +1,170 @@
+{
+  "project_info": {
+    "project_number": "1072125858096",
+    "project_id": "camply-c99bb",
+    "storage_bucket": "camply-c99bb.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072125858096:android:16ab976b236f0538bc38f5",
+        "android_client_info": {
+          "package_name": "com.campsiteapp.camply"
+        }
+      },
+<<<<<<< HEAD
+      "oauth_client": [
+        {
+          "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+=======
+      "oauth_client": [],
+>>>>>>> d17a85e84d0f2e69b055869f6918969c82ceacf0
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Vg0KHSo0sC3cc7efsrqGALpE7CYJP3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+<<<<<<< HEAD
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072125858096-036mtr8daatnimqqs2ddp2h9och5smot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.userprofile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072125858096:android:5dd8cbb8cf83b742bc38f5",
+        "android_client_info": {
+          "package_name": "com.example.add_experience"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Vg0KHSo0sC3cc7efsrqGALpE7CYJP3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072125858096-036mtr8daatnimqqs2ddp2h9och5smot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.userprofile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072125858096:android:14066ec89f646f99bc38f5",
+        "android_client_info": {
+          "package_name": "com.example.camply"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072125858096-0t48s67sskucngua65m25msen12na56f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.camply",
+            "certificate_hash": "858474129a6a1b432633c5ff77c53d0921a52a9b"
+          }
+        },
+        {
+          "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Vg0KHSo0sC3cc7efsrqGALpE7CYJP3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072125858096-036mtr8daatnimqqs2ddp2h9och5smot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.userprofile"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1072125858096:android:a9cc071f48223670bc38f5",
+        "android_client_info": {
+          "package_name": "com.example.userprofile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA_Vg0KHSo0sC3cc7efsrqGALpE7CYJP3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1072125858096-vvvnl9ra2b7hndkkr5is3r8sk64hq6bc.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1072125858096-036mtr8daatnimqqs2ddp2h9och5smot.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.userprofile"
+              }
+            }
+          ]
+=======
+          "other_platform_oauth_client": []
+>>>>>>> d17a85e84d0f2e69b055869f6918969c82ceacf0
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
