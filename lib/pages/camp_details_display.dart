@@ -29,7 +29,9 @@ class _CampDetailsDisplayState extends State<CampDetailsDisplay> {
                   top: 40,
                   left: 16,
                   child: InkWell(
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.pop(context);
+                    },
                     child: Container(
                       width: 40,
                       height: 40,
@@ -187,36 +189,37 @@ class _CampDetailsDisplayState extends State<CampDetailsDisplay> {
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children:
                           ['Details', 'Location', 'Near By', 'Review'].map((
-                        tab,
-                      ) {
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              selectedTab = tab;
-                            });
-                          },
-                          child: Column(
-                            children: [
-                              Text(
-                                tab,
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: selectedTab == tab
-                                      ? Colors.green
-                                      : Colors.black,
-                                ),
+                            tab,
+                          ) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedTab = tab;
+                                });
+                              },
+                              child: Column(
+                                children: [
+                                  Text(
+                                    tab,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      color:
+                                          selectedTab == tab
+                                              ? Colors.green
+                                              : Colors.black,
+                                    ),
+                                  ),
+                                  if (selectedTab == tab)
+                                    Container(
+                                      margin: const EdgeInsets.only(top: 4),
+                                      height: 2,
+                                      width: 40,
+                                      color: Colors.green,
+                                    ),
+                                ],
                               ),
-                              if (selectedTab == tab)
-                                Container(
-                                  margin: const EdgeInsets.only(top: 4),
-                                  height: 2,
-                                  width: 40,
-                                  color: Colors.green,
-                                ),
-                            ],
-                          ),
-                        );
-                      }).toList(),
+                            );
+                          }).toList(),
                     ),
                   ),
                   const Divider(),
@@ -258,15 +261,14 @@ class _CampDetailsDisplayState extends State<CampDetailsDisplay> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => CreateCampSite()));
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => CreateCampSite()),
+          );
         },
         backgroundColor: Colors.green,
         icon: const Icon(Icons.chat, color: Colors.white),
-        label: const Text(
-          'Chat',
-          style: TextStyle(color: Colors.white),
-        ),
+        label: const Text('Chat', style: TextStyle(color: Colors.white)),
       ),
     );
   }

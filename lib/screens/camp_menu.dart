@@ -1,3 +1,5 @@
+import 'package:camply/models/camp_model.dart';
+import 'package:camply/pages/camp_details_display.dart';
 import 'package:flutter/material.dart';
 
 class CampMenu extends StatefulWidget {
@@ -8,7 +10,36 @@ class CampMenu extends StatefulWidget {
 }
 
 class _CampMenuState extends State<CampMenu> {
-  final List<CampSite> campSites = [];
+  final List<CampSite> campSites = [
+    CampSite(
+      name: "Yosmite Basecamp",
+      location: "East California",
+      details:
+          "Yosemite National Park, a UNESCO World Heritage Site, is a stunning area in California's Sierra Nevada, known for its granite cliffs, waterfalls, giant sequoia groves, and diverse ecosystems, attracting millions of visitors annually.",
+      amenities: ["Washroom", "Electricity"],
+      nearbyPlaces: [
+        'Hospital',
+        'Police Station',
+        'Fire Department',
+        'Pharmacy',
+        'Restaurant',
+      ],
+    ),
+    CampSite(
+      name: "Yala National Park",
+      location: " Southern Province and Uva Province, Sri Lanka",
+      details:
+          "Yosemite National Park, a UNESCO World Heritage Site, is a stunning area in California's Sierra Nevada, known for its granite cliffs, waterfalls, giant sequoia groves, and diverse ecosystems, attracting millions of visitors annually.",
+      amenities: ["Washroom", "Electricity"],
+      nearbyPlaces: [
+        'Hospital',
+        'Police Station',
+        'Fire Department',
+        'Pharmacy',
+        'Restaurant',
+      ],
+    ),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +53,7 @@ class _CampMenuState extends State<CampMenu> {
               onPressed: () async {
                 final newCampSite = await Navigator.pushNamed(
                   context,
-                  '/create_camp',
+                  '/createCampSite',
                 );
                 if (newCampSite != null && newCampSite is CampSite) {
                   setState(() {
@@ -61,8 +92,7 @@ class _CampMenuState extends State<CampMenu> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder:
-                                  (context) => CampDetailPage(campSite: camp),
+                              builder: (context) => CampDetailsDisplay(),
                             ),
                           );
                         },

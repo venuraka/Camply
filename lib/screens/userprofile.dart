@@ -37,7 +37,12 @@ class _userprofileState extends State<userprofile>
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.green,
-        leading: const Icon(Icons.arrow_back, color: Colors.white),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
         title: const Text('Camper', style: TextStyle(color: Colors.white)),
         actions: const [
           Padding(

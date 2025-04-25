@@ -3,6 +3,7 @@ import 'package:camply/pages/create_camp_site.dart';
 import 'package:camply/screens/add_experience_screen.dart';
 import 'package:camply/screens/addphoto.dart';
 import 'package:camply/screens/camp_detail_page.dart';
+import 'package:camply/screens/camp_menu.dart';
 import 'package:camply/screens/camper_experience_page.dart';
 import 'package:camply/screens/create_camp_page.dart';
 // import 'package:camply/screens/camp_detail_page.dart';
@@ -20,7 +21,7 @@ import 'package:camply/screens/user_review.dart';
 import 'package:camply/screens/userprofile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-// import 'firebase_options.dart';
+
 
 void main() async {
   // WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +36,7 @@ void main() async {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/Register',
+      initialRoute: '/home',
       routes: {
         '/Register': (context) => RegistrationScreen(),
         '/Login': (context) => LoginScreen(),
@@ -56,6 +57,7 @@ void main() async {
         '/Location': (context) => LocationTab(),
         '/Nearby': (context) => NearbyTab(),
         '/EditCourse': (context) => ReviewTab(),
+        '/campMenu': (context) => CampMenu(),
 
         //----------------------------------------------------
         // '/Register': (context) => RegistrationScreen(),
@@ -70,3 +72,4 @@ void main() async {
     ),
   );
 }
+

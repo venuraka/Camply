@@ -1,3 +1,4 @@
+import 'package:camply/pages/camp_details_display.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -29,38 +30,54 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: SingleChildScrollView(
         child: Column(
-          children: const [
-            PostCard(
-              username: "Zack Night",
-              location: "Yosemite Basecamp",
-              imageUrl:
-                  "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
-              profileUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-              badgeColors: [
-                Colors.brown,
-                Colors.orange,
-                Colors.grey,
-                Colors.green,
-              ],
-              likeCount: 10,
-              commentCount: 5,
-              shareCount: 99,
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CampDetailsDisplay()),
+                );
+              },
+              child: PostCard(
+                username: "Zack Night",
+                location: "Yosemite Basecamp",
+                imageUrl:
+                    "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
+                profileUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+                badgeColors: [
+                  Colors.brown,
+                  Colors.orange,
+                  Colors.grey,
+                  Colors.green,
+                ],
+                likeCount: 10,
+                commentCount: 5,
+                shareCount: 99,
+              ),
             ),
-            PostCard(
-              username: "Yoshiko Mura",
-              location: "Yosemite Basecamp",
-              imageUrl:
-                  "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
-              profileUrl: "https://randomuser.me/api/portraits/women/45.jpg",
-              badgeColors: [
-                Colors.brown,
-                Colors.orange,
-                Colors.grey,
-                Colors.green,
-              ],
-              likeCount: 20,
-              commentCount: 10,
-              shareCount: 12,
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => CampDetailsDisplay()),
+                );
+              },
+              child: PostCard(
+                username: "Yoshiko Mura",
+                location: "Yosemite Basecamp",
+                imageUrl:
+                    "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
+                profileUrl: "https://randomuser.me/api/portraits/women/45.jpg",
+                badgeColors: [
+                  Colors.brown,
+                  Colors.orange,
+                  Colors.grey,
+                  Colors.green,
+                ],
+                likeCount: 20,
+                commentCount: 10,
+                shareCount: 12,
+              ),
             ),
           ],
         ),
@@ -510,7 +527,7 @@ class BottomNavBar extends StatelessWidget {
         Navigator.pushNamed(context, '/home');
         break;
       case 1:
-        // Navigator.pushNamed(context, '/search');
+        Navigator.pushNamed(context, '/campMenu');
         break;
       case 2:
         Navigator.pushNamed(context, '/addPhoto');
