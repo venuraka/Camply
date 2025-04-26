@@ -195,17 +195,20 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          title: const Text('Add Experience'), backgroundColor: Colors.green),
+          title: Padding(
+            padding: const EdgeInsets.only(left: 55),
+            child: const Text('Add Experience', style: TextStyle(color: Colors.white)),
+          ), backgroundColor: Colors.green),
       body: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(children: [
           TextField(
               controller: _titleCtrl,
-              decoration: const InputDecoration(labelText: 'Title')),
+              decoration: InputDecoration(labelText: 'Title', border: OutlineInputBorder(),),),
           const SizedBox(height: 12),
           TextField(
             controller: _locCtrl,
-            decoration: const InputDecoration(labelText: 'Location'),
+            decoration: InputDecoration(labelText: 'Location', border: OutlineInputBorder(),),
             onChanged: (v) => setState(() => _showTag = v.isNotEmpty),
           ),
           if (_showTag)
@@ -218,14 +221,14 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
           const SizedBox(height: 12),
           TextField(
               controller: _descCtrl,
-              decoration: const InputDecoration(labelText: 'Description', alignLabelWithHint: true)),
+              decoration: const InputDecoration(labelText: 'Description', border: OutlineInputBorder(), alignLabelWithHint: true)),
           const SizedBox(height: 12),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(
                 onPressed: _submit,
                 style: ElevatedButton.styleFrom(backgroundColor: Colors.green),
-                child: const Text('Submit')),
+                child: const Text('Submit', style: TextStyle(fontSize: 16, color: Colors.white))),
           ),
         ]),
       ),
