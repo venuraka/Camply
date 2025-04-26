@@ -14,7 +14,7 @@ class UserProfile extends StatefulWidget {
 class _UserProfileState extends State<UserProfile> with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  int followerCount = 1100;
+  int followerCount = 110;
   bool isFollowing = false;
 
   @override
@@ -129,12 +129,11 @@ class _UserProfileState extends State<UserProfile> with TickerProviderStateMixin
       appBar: AppBar(
         backgroundColor: Colors.green,
         leading: const Icon(Icons.arrow_back, color: Colors.white),
-        title: const Text('Camper', style: TextStyle(color: Colors.white)),
+        title: Padding(
+          padding: const EdgeInsets.only(left: 80),
+          child: const Text('CAMPER', style: TextStyle(color: Colors.white), ),
+        ),
         actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 12),
-            child: Icon(Icons.menu, color: Colors.white),
-          ),
         ],
       ),
       floatingActionButton: _selectedIndex == 1
@@ -154,38 +153,54 @@ class _UserProfileState extends State<UserProfile> with TickerProviderStateMixin
           // Profile Header
           Container(
             color: Colors.white,
-            padding: const EdgeInsets.all(16),
+            padding: const EdgeInsets.all(18),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const CircleAvatar(
-                  radius: 50,
-                  backgroundImage: AssetImage('assets/proimg.jpg'),
+                Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 10),
+                  child: const CircleAvatar(
+                    radius: 60,
+                    backgroundImage: AssetImage('assets/proimg.jpg'),
+                  ),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Mark Sepperd', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                      const SizedBox(height: 8),
-                      Row(
-                        children: [
-                          Text('Followers\n$followerCount', textAlign: TextAlign.center),
-                          const SizedBox(width: 20),
-                          const Text('Following\n28', textAlign: TextAlign.center),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.only(left: 25, top: 10),
+                        child: Padding(
+                          padding: const EdgeInsets.only(top:10),
+                          child: const Text('Markensan Sepperd', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                        ),
                       ),
                       const SizedBox(height: 8),
-                      SizedBox(
-                        width: 120,
-                        child: ElevatedButton(
-                          onPressed: _toggleFollow,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
+                      Padding(
+                        padding: const EdgeInsets.only(left: 45),
+                        child: Row(
+                          children: [
+                            Text('Followers\n$followerCount', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold,),),
+                            const SizedBox(width: 20),
+                            const Text('Following\n28', textAlign: TextAlign.center, style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold,),),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 60),
+                        child: SizedBox(
+                          width: 110,
+                          height: 30,
+                          child: ElevatedButton(
+                            onPressed: _toggleFollow,
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: const Color.fromARGB(255, 96, 203, 99),
+                              foregroundColor: Colors.white,
+                            ),
+                            child: Text(isFollowing ? 'Following' : 'Follow'),
                           ),
-                          child: Text(isFollowing ? 'Following' : 'Follow'),
                         ),
                       ),
                     ],
