@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-
-void main() {
-  runApp(MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: UserReview(),
-  ));
-}
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class UserReview extends StatefulWidget {
   const UserReview({super.key});
@@ -24,8 +20,8 @@ class UserReviewState extends State<UserReview> {
   double waterAccess = 0;
   String selectedStatus = "Select";
   File? _selectedImage;
+  TextEditingController commentController = TextEditingController();
 
-  // Function to pick an image from gallery
   Future<void> _pickImage() async {
     final pickedFile = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (pickedFile != null) {
@@ -35,15 +31,27 @@ class UserReviewState extends State<UserReview> {
     }
   }
 
-  // Function to handle form submission
-  void _submitReview() {
-    print("Accessibility: $accessibility");
-    print("Cleanliness: $cleanliness");
-    print("Network Coverage: $networkCoverage");
-    print("Wildlife Presence: $wildlifePresence");
-    print("Water Access: $waterAccess");
-    print("Status: $selectedStatus");
-    print("Image Selected: ${_selectedImage != null ? "Yes" : "No"}");
+  Future<void> _submitReview() async {
+    String? imageUrl;
+    if (_selectedImage != null) {
+      final ref = FirebaseStorage.instance.ref().child('review_images/${DateTime.now()}.jpg');
+      await ref.putFile(_selectedImage!);
+      imageUrl = await ref.getDownloadURL();
+    }
+
+    await FirebaseFirestore.instance.collection('reviews').add({
+      'accessibility': accessibility,
+      'cleanliness': cleanliness,
+      'networkCoverage': networkCoverage,
+      'wildlifePresence': wildlifePresence,
+      'waterAccess': waterAccess,
+      'status': selectedStatus,
+      'comment': commentController.text,
+      'imageUrl': imageUrl,
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+
+    Navigator.pop(context);
   }
 
   @override
@@ -51,133 +59,85 @@ class UserReviewState extends State<UserReview> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.green,
-        title: Text("User Review Section", style: TextStyle(color: Colors.white)),
+        title: Text("Add your Review", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context);
-          },
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Image Upload 
-              GestureDetector(
-                onTap: _pickImage, 
-                child: Container(
-                  width: double.infinity,
-                  height: 150,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black26),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: _selectedImage == null
-                      ? Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(Icons.add_photo_alternate, size: 50, color: Colors.black54),
-                            SizedBox(height: 5),
-                            Text("Add Photo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          ],
-                        )
-                      : ClipRRect(
-                          borderRadius: BorderRadius.circular(12),
-                          child: Image.file(
-                            _selectedImage!,
-                            width: double.infinity,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-                ),
-              ),
-              SizedBox(height: 20),
-
-              Text("Add Your Comment", style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 4),
-              TextField(
-                maxLines: 3,
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              SizedBox(height: 15),
-
-              Text("Current Status", style: TextStyle(fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              Container(
-                padding: EdgeInsets.symmetric(horizontal: 12),
+        padding: EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            GestureDetector(
+              onTap: _pickImage,
+              child: Container(
+                width: double.infinity,
+                height: 150,
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black26),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  underline: SizedBox(),
-                  value: selectedStatus,
-                  items: ["Select", "Open", "Closed", "Under Maintenance"]
-                      .map((status) => DropdownMenuItem(
-                            value: status,
-                            child: Text(status),
-                          ))
-                      .toList(),
-                  onChanged: (value) {
-                    setState(() {
-                      selectedStatus = value!;
-                    });
-                  },
-                ),
+                child: _selectedImage == null
+                    ? Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(Icons.add_photo_alternate, size: 50, color: Colors.black54),
+                          SizedBox(height: 5),
+                          Text("Add Photo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                        ],
+                      )
+                    : ClipRRect(
+                        borderRadius: BorderRadius.circular(12),
+                        child: Image.file(_selectedImage!, width: double.infinity, height: 150, fit: BoxFit.cover),
+                      ),
               ),
-              SizedBox(height: 20),
+            ),
+            SizedBox(height: 20),
 
-              _buildSlider("Accessibility", accessibility, (value) {
-                setState(() {
-                  accessibility = value;
-                });
-              }),
-              _buildSlider("Cleanliness", cleanliness, (value) {
-                setState(() {
-                  cleanliness = value;
-                });
-              }),
-              _buildSlider("Network Coverage", networkCoverage, (value) {
-                setState(() {
-                  networkCoverage = value;
-                });
-              }),
-              _buildSlider("Wildlife Presence", wildlifePresence, (value) {
-                setState(() {
-                  wildlifePresence = value;
-                });
-              }),
-              _buildSlider("Water Access", waterAccess, (value) {
-                setState(() {
-                  waterAccess = value;
-                });
-              }),
+            Text("Add Your Comment", style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 4),
+            TextField(
+              controller: commentController,
+              maxLines: 3,
+              decoration: InputDecoration(border: OutlineInputBorder()),
+            ),
+            SizedBox(height: 15),
 
-              SizedBox(height: 20),
+            Text("Current Status", style: TextStyle(fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            DropdownButton<String>(
+              value: selectedStatus,
+              isExpanded: true,
+              underline: SizedBox(),
+              items: ["Select", "Open", "Closed", "Under Maintenance"].map((status) {
+                return DropdownMenuItem(value: status, child: Text(status));
+              }).toList(),
+              onChanged: (value) => setState(() => selectedStatus = value!),
+            ),
+            SizedBox(height: 20),
 
-              Align(
-                alignment: Alignment.centerRight, 
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                  ),
-                  onPressed: _submitReview, // Calls submit function
-                  child: Text("Submit", style: TextStyle(fontSize: 18, color: Colors.white)),
+            _buildSlider("Accessibility", accessibility, (val) => setState(() => accessibility = val)),
+            _buildSlider("Cleanliness", cleanliness, (val) => setState(() => cleanliness = val)),
+            _buildSlider("Network Coverage", networkCoverage, (val) => setState(() => networkCoverage = val)),
+            _buildSlider("Wildlife Presence", wildlifePresence, (val) => setState(() => wildlifePresence = val)),
+            _buildSlider("Water Access", waterAccess, (val) => setState(() => waterAccess = val)),
+
+            SizedBox(height: 20),
+            Align(
+              alignment: Alignment.centerRight,
+              child: ElevatedButton(
+                onPressed: _submitReview,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
+                child: Text("Submit", style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
