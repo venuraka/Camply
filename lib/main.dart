@@ -22,12 +22,20 @@ import 'package:camply/screens/userprofile.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+// Lock Orientation
+import 'package:flutter/services.dart';
+
 
 void main() async {
-  // WidgetsFlutterBinding.ensureInitialized();
-  // await Firebase.initializeApp(
-  //   // options: DefaultFirebaseOptions.currentPlatform,
-  // );
+   WidgetsFlutterBinding.ensureInitialized();
+   await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+   );
+
+    // locked orientation on portrait
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp, // Only portrait up
+  ]);
 
   runApp(
     MaterialApp(
