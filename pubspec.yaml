@@ -1,4 +1,4 @@
-name: flutter_application_2
+name: userprofile
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -19,7 +19,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.6.2
+  sdk: ^3.7.2
 
 # Dependencies specify other packages that your package needs in order to work.
 # To automatically upgrade your package dependencies to the latest versions
@@ -28,17 +28,25 @@ environment:
 # the latest version available on pub.dev. To see which dependencies have newer
 # versions available, run `flutter pub outdated`.
 dependencies:
+  geolocator: ^9.0.1
   flutter:
     sdk: flutter
+  image_picker: ^1.0.7
+  cupertino_icons: ^1.0.8
+  firebase_core: ^2.28.0
+  firebase_auth: ^4.17.3
+  cloud_firestore: ^4.16.0
+  font_awesome_flutter: ^10.7.0
+  google_fonts: ^6.2.1
+  flutter_image_compress: ^2.3.0
+  http:
+  cached_network_image:
+
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
-  font_awesome_flutter: ^10.8.0
-  # Remove the camply dependency
-  # camply:
-  #   path: ../lib
-
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -63,8 +71,7 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-   - images\images.jpeg
-  #   - images/a_dot_ham.jpeg
+    - assets/proimg.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
