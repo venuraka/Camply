@@ -39,6 +39,10 @@ android {
     }
 }
 
+dependencies {
+    implementation("com.facebook.android:facebook-android-sdk:latest.release")
+}
+
 flutter {
     source = "../.."
 }

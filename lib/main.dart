@@ -12,27 +12,34 @@ import 'package:camply/pages/user_review.dart';
 import 'package:camply/screens/detail_tab.dart';
 import 'package:camply/screens/home.dart';
 import 'package:camply/screens/location_tab.dart';
-import 'package:camply/screens/login.dart';
+
 import 'package:camply/screens/nearby_tab.dart';
 import 'package:camply/screens/register.dart';
 import 'package:camply/screens/review_tab.dart';
 import 'package:camply/screens/reviews.dart';
 import 'package:camply/screens/user_review.dart';
 import 'package:camply/screens/userprofile.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:flutter/material.dart';
 
 // Lock Orientation
 import 'package:flutter/services.dart';
 
+// Ayeshi Login
+import 'package:camply/screens/auth_warapper.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:camply/screens/login.dart';
+
+import 'package:firebase_core/firebase_core.dart';
+import 'package:camply/firebase_options.dart';
+import 'package:flutter/material.dart';
 
 void main() async {
-   WidgetsFlutterBinding.ensureInitialized();
-   await Firebase.initializeApp(
-      options: DefaultFirebaseOptions.currentPlatform,
-   );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
-    // locked orientation on portrait
+  // Facebook Auth Function
+  await FacebookAuth.instance.autoLogAppEventsEnabled(true);
+
+  // locked orientation on portrait
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp, // Only portrait up
   ]);
@@ -44,10 +51,13 @@ void main() async {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      initialRoute: '/home',
+      initialRoute: '/authWrapper',
       routes: {
-        '/Register': (context) => RegistrationScreen(),
-        '/Login': (context) => LoginScreen(),
+        // Login and Signup
+        '/authWrapper': (context) => AuthWrapper(), // Ayeshi
+        '/Register': (context) => RegistrationScreen(), // Ayeshi
+        '/Login': (context) => LoginScreen(), // Ayeshi
+
         '/home': (context) => HomeScreen(), // Ravindu
         '/camperExperience':
             (context) => CamperProfileExperienceScreen(), // Hansi
@@ -80,4 +90,3 @@ void main() async {
     ),
   );
 }
-

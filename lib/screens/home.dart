@@ -1,5 +1,6 @@
 import 'package:camply/pages/camp_details_display.dart';
 import 'package:flutter/material.dart';
+import 'package:camply/services/auth_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +12,55 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  // Ayeshi Login Signout Functionality
+  final AuthService _authService = AuthService();
+  Map<String, dynamic>? userData;
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserData();
+  }
+
+  Future<void> _loadUserData() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      if (_authService.currentUser != null) {
+        final data = await _authService.getUserData(
+          _authService.currentUser!.uid,
+        );
+        setState(() {
+          userData = data;
+        });
+      }
+    } catch (e) {
+      print('Error loading user data: $e');
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await _authService.signOut();
+      // Navigation will be handled by the AuthWrapper
+    } catch (e) {
+      print('Error signing out: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error signing out: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,6 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.green,
         title: const Text(
           "Camper",
+          // Can load user name to check if needed
+          // title: Text(
+          //   "Camper ${userData?['name'] ?? ''}",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -27,6 +80,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(icon: const Icon(Icons.logout), onPressed: _signOut),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
