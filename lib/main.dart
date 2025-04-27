@@ -1,7 +1,6 @@
 import 'package:camply/pages/camp_details_display.dart';
 import 'package:camply/pages/chat_screen.dart';
 import 'package:camply/pages/chat_test_camp_list.dart';
-import 'package:camply/pages/chat_test_login.dart';
 import 'package:camply/pages/chat_test_site_details.dart';
 import 'package:camply/pages/create_camp_site.dart';
 import 'package:camply/screens/add_experience_screen.dart';
@@ -89,7 +88,6 @@ void main() async {
         '/campMenu': (context) => CampMenu(),
 
         // Chat Testing
-        '/chatTestLogin': (context) => ChatTestLogin(),
         '/chat':
             (context) => ChatScreen(siteName: 'site-name', siteId: '000000'),
         '/çhatTestSiteDetail':
