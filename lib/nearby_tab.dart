@@ -27,7 +27,7 @@ class _NearbyTabState extends State<NearbyTab> {
   Map<String, Map<String, dynamic>> _categorizedPlaces = {};
   bool _isLoading = true;
 
-  static const String googleApiKey = 'AIzaSyB8la7aCaWeJMA8WBS2mzkq2rlVrrhXhnA';
+  static const String googleApiKey = 'AIzaSyBoB5AqC_QbDkLEw0KXBO-0LxFFb5-Kslw';
 
   @override
   void initState() {

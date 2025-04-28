@@ -24,13 +24,12 @@ class CampMenuPage extends StatelessWidget {
               snapshot.data!.docs.map((doc) {
                 final data = doc.data() as Map<String, dynamic>;
                 return CampSite(
+                  id: doc.id,
                   name: data['name'] ?? '',
                   location: data['location'] ?? '',
                   details: data['details'] ?? '',
                   amenities: List<String>.from(data['amenities'] ?? []),
-                  nearbyPlaces: [],
                   imageUrl: data['imageUrl'],
-                  rating: 0.0, id: '',
                 );
               }).toList();
 
@@ -61,23 +60,23 @@ class CampMenuPage extends StatelessWidget {
                           top: Radius.circular(12),
                         ),
                         child:
-                            camp.imageUrl != null
-                                ? Image.network(
-                                  camp.imageUrl!,
-                                  width: double.infinity,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                )
-                                : Container(
-                                  width: double.infinity,
-                                  height: 150,
-                                  color: Colors.grey.shade300,
-                                  child: const Icon(
-                                    Icons.image,
-                                    size: 50,
-                                    color: Colors.grey,
-                                  ),
-                                ),
+                        camp.imageUrl != null && camp.imageUrl!.isNotEmpty
+                            ? Image.network(
+                          camp.imageUrl!,
+                          width: double.infinity,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        )
+                            : Container(
+                          width: double.infinity,
+                          height: 150,
+                          color: Colors.grey.shade300,
+                          child: const Icon(
+                            Icons.image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        )
                       ),
                       const SizedBox(height: 8),
 
