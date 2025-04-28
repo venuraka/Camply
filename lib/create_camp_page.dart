@@ -6,6 +6,9 @@ import 'camp_model.dart';
 import 'Controllers/locationretrieval.dart';
 import 'package:geolocator/geolocator.dart';
 
+const String cloudinaryUploadUrl =
+    'https://api.cloudinary.com/v1_1/dzf4mceyk/image/upload';
+const String uploadPreset = 'campsite';
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
 
@@ -18,6 +21,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _detailsController = TextEditingController();
+    String? _imageUrl;
 
   final Map<String, bool> _selectedAmenities = {
     'Washroom': false,
@@ -35,6 +39,43 @@ class _CreateCampPageState extends State<CreateCampPage> {
     _locationController.dispose();
     _detailsController.dispose();
     super.dispose();
+  }
+
+Future<void> _pickAndUploadImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      final file = File(pickedFile.path);
+
+      final uri = Uri.parse(cloudinaryUploadUrl);
+      final request =
+          http.MultipartRequest('POST', uri)
+            ..fields['upload_preset'] = uploadPreset
+            ..files.add(await http.MultipartFile.fromPath('file', file.path));
+
+      try {
+        final response = await request.send();
+
+        if (response.statusCode == 200) {
+          final respStr = await response.stream.bytesToString();
+          final data = jsonDecode(respStr);
+          setState(() {
+            _imageUrl = data['secure_url'];
+          });
+        } else {
+          final errorStr = await response.stream.bytesToString();
+          print('Upload failed: $errorStr');
+          ScaffoldMessenger.of(
+            context,
+          ).showSnackBar(const SnackBar(content: Text('Image upload failed')));
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Upload error: $e')));
+      }
+    }
   }
 
   Future<void> _getCurrentLocation() async {
@@ -70,31 +111,45 @@ class _CreateCampPageState extends State<CreateCampPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Add Photo Container
-              Container(
-                height: 180,
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Colors.grey,
-                    style: BorderStyle.solid,
+             GestureDetector(
+                onTap: _pickAndUploadImage,
+                child: Container(
+                  height: 180,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.grey),
+                    borderRadius: BorderRadius.circular(12),
+                    image:
+                        _imageUrl != null
+                            ? DecorationImage(
+                              image: NetworkImage(_imageUrl!),
+                              fit: BoxFit.cover,
+                            )
+                            : null,
                   ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: const Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.add_photo_alternate_outlined, size: 40),
-                    SizedBox(height: 8),
-                    Text(
-                      'Add Photo',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
+                  child:
+                      _imageUrl == null
+                          ? Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.add_photo_alternate_outlined,
+                                size: 40,
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Add Photo',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          )
+                          : null,
                 ),
               ),
-              const SizedBox(height: 20),
+            
+               const SizedBox(height: 20),
 
               // Name Field
               Text('Name', style: Theme.of(context).textTheme.titleMedium),
@@ -113,6 +168,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
                   return null;
                 },
               ),
+
               const SizedBox(height: 16),
 
               // Location Field
@@ -195,6 +251,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
         'name': _nameController.text,
         'location': _locationController.text,
         'details': _detailsController.text,
+         'imageUrl': _imageUrl,
         'amenities': _selectedAmenities.keys
             .where((key) => _selectedAmenities[key] == true)
             .toList(),
@@ -217,7 +274,8 @@ class _CreateCampPageState extends State<CreateCampPage> {
         name: _nameController.text,
         location: _locationController.text,
         details: _detailsController.text,
-        amenities: _selectedAmenities.entries
+        amenities: _selectedAmenities.entries,
+        imageUrl: _imageUrl,
             .where((entry) => entry.value)
             .map((entry) => entry.key)
             .toList(), id: '',

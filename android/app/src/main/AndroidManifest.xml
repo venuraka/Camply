@@ -1,7 +1,6 @@
 <manifest xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"
         tools:ignore="WrongManifestParent" />
@@ -10,6 +9,7 @@
     <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
         tools:ignore="WrongManifestParent" />
 
+
     <application
         android:label="camply"
         android:name="${applicationName}"
@@ -17,9 +17,11 @@
 
 
 
+
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyB8la7aCaWeJMA8WBS2mzkq2rlVrrhXhnA" />
+
 
         <activity
             android:name=".MainActivity"

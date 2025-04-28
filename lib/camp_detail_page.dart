@@ -35,8 +35,7 @@ class _CampDetailPageState extends State<CampDetailPage>
   }
 
   Future<void> _loadWeather() async {
-    await Future.delayed(Duration(milliseconds: 100));
-
+    await Future.delayed(const Duration(milliseconds: 100));
     try {
       final weatherData = await getWeatherDataFromLocationString(widget.campSite.location);
       setState(() {
@@ -48,6 +47,7 @@ class _CampDetailPageState extends State<CampDetailPage>
       print('Weather fetch error: $e');
     }
   }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -59,10 +59,7 @@ class _CampDetailPageState extends State<CampDetailPage>
     return Scaffold(
       body: Column(
         children: [
-          // Header with image and camp info
           _buildHeader(),
-
-          // Tabs
           TabBar(
             controller: _tabController,
             labelColor: Colors.black,
@@ -75,8 +72,6 @@ class _CampDetailPageState extends State<CampDetailPage>
             indicatorColor: Colors.black,
             unselectedLabelColor: Colors.grey,
           ),
-
-          // Tab content
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -103,16 +98,14 @@ class _CampDetailPageState extends State<CampDetailPage>
   Widget _buildHeader() {
     return Stack(
       children: [
-
-        // Camp image or placeholder
+        // Larger camp image
         Container(
-          height: 250,
+          height: 450,
           width: double.infinity,
           color: Colors.grey.shade300,
           child: widget.campSite.imageUrl != null
               ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
-              : Image.asset('assets/images/default_camp.jpg',
-                  fit: BoxFit.cover),
+              : Image.asset('assets/images/default_camp.jpg', fit: BoxFit.cover),
         ),
 
         // Back button
@@ -140,8 +133,7 @@ class _CampDetailPageState extends State<CampDetailPage>
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(20)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.1),
@@ -184,7 +176,7 @@ class _CampDetailPageState extends State<CampDetailPage>
                 ),
                 const SizedBox(height: 12),
 
-                // Camp name and location
+                // Camp name
                 Text(
                   widget.campSite.name,
                   style: const TextStyle(
@@ -192,9 +184,17 @@ class _CampDetailPageState extends State<CampDetailPage>
                     fontWeight: FontWeight.bold,
                   ),
                 ),
+                const SizedBox(height: 4),
 
-
-                const SizedBox(height: 2),
+                // Camp location (added from senuri-2)
+                Text(
+                  widget.campSite.location,
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 12),
 
                 // Ratings and actions
                 Row(
@@ -254,31 +254,16 @@ class _CampDetailPageState extends State<CampDetailPage>
 
   String _getDayOfWeek(DateTime date) {
     final days = [
-      'Monday',
-      'Tuesday',
-      'Wednesday',
-      'Thursday',
-      'Friday',
-      'Saturday',
-      'Sunday'
+      'Monday', 'Tuesday', 'Wednesday', 'Thursday',
+      'Friday', 'Saturday', 'Sunday'
     ];
     return days[date.weekday - 1];
   }
 
   String _getFormattedDate(DateTime date) {
     final months = [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec'
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
