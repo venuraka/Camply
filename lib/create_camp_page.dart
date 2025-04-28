@@ -276,14 +276,15 @@ Future<void> _pickAndUploadImage() async {
 
       // Create a new CampSite object
       CampSite newCamp = CampSite(
+        id: id,
         name: _nameController.text,
         location: _locationController.text,
         details: _detailsController.text,
-        amenities: _selectedAmenities.entries,
         imageUrl: _imageUrl,
+        amenities: _selectedAmenities.entries
             .where((entry) => entry.value)
             .map((entry) => entry.key)
-            .toList(), id: '',
+            .toList(),
       );
 
       // Return the new camp to previous screen
