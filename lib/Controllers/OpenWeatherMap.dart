@@ -12,7 +12,7 @@ Future<Map<String, dynamic>> getWeatherDataFromLocationString(String locationStr
   final lat = double.parse(match.group(1)!);
   final lon = double.parse(match.group(2)!);
 
-  final apiKey = '4b9981418b0dda4fac1b397cf81b6b87';
+  final apiKey = '88965e3bb8cfd7e9df3349b0c954f181';
   final url =
       'https://api.openweathermap.org/data/2.5/weather?lat=$lat&lon=$lon&exclude=current&units=metric&appid=$apiKey';
 
