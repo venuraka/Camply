@@ -30,7 +30,7 @@ class CampMenuPage extends StatelessWidget {
                   amenities: List<String>.from(data['amenities'] ?? []),
                   nearbyPlaces: [],
                   imageUrl: data['imageUrl'],
-                  rating: 0.0,
+                  rating: 0.0, id: '',
                 );
               }).toList();
 
