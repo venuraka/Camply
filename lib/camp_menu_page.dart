@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'camp_detail_page.dart';
 import 'camp_model.dart';
+import 'create_camp_page.dart';
 
 class CampMenuPage extends StatelessWidget {
   const CampMenuPage({Key? key}) : super(key: key);
@@ -60,23 +61,23 @@ class CampMenuPage extends StatelessWidget {
                           top: Radius.circular(12),
                         ),
                         child:
-                        camp.imageUrl != null && camp.imageUrl!.isNotEmpty
-                            ? Image.network(
-                          camp.imageUrl!,
-                          width: double.infinity,
-                          height: 150,
-                          fit: BoxFit.cover,
-                        )
-                            : Container(
-                          width: double.infinity,
-                          height: 150,
-                          color: Colors.grey.shade300,
-                          child: const Icon(
-                            Icons.image,
-                            size: 50,
-                            color: Colors.grey,
-                          ),
-                        )
+                            camp.imageUrl != null && camp.imageUrl!.isNotEmpty
+                                ? Image.network(
+                                  camp.imageUrl!,
+                                  width: double.infinity,
+                                  height: 150,
+                                  fit: BoxFit.cover,
+                                )
+                                : Container(
+                                  width: double.infinity,
+                                  height: 150,
+                                  color: Colors.grey.shade300,
+                                  child: const Icon(
+                                    Icons.image,
+                                    size: 50,
+                                    color: Colors.grey,
+                                  ),
+                                ),
                       ),
                       const SizedBox(height: 8),
 
@@ -112,6 +113,16 @@ class CampMenuPage extends StatelessWidget {
             },
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => const CreateCampPage()),
+          );
+        },
+        backgroundColor: const Color(0xFF2ECC71),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
