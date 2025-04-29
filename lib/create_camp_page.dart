@@ -10,10 +10,12 @@ import 'Services/Database.dart';
 import 'camp_model.dart';
 import 'Controllers/locationretrieval.dart';
 import 'package:geolocator/geolocator.dart';
+import 'camp_menu_page.dart';
 
 const String cloudinaryUploadUrl =
     'https://api.cloudinary.com/v1_1/dzf4mceyk/image/upload';
 const String uploadPreset = 'campsite';
+
 class CreateCampPage extends StatefulWidget {
   const CreateCampPage({Key? key}) : super(key: key);
 
@@ -26,7 +28,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
   final _nameController = TextEditingController();
   final _locationController = TextEditingController();
   final _detailsController = TextEditingController();
-    String? _imageUrl;
+  String? _imageUrl;
 
   final Map<String, bool> _selectedAmenities = {
     'Washroom': false,
@@ -46,7 +48,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
     super.dispose();
   }
 
-Future<void> _pickAndUploadImage() async {
+  Future<void> _pickAndUploadImage() async {
     final picker = ImagePicker();
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
 
@@ -116,7 +118,7 @@ Future<void> _pickAndUploadImage() async {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Add Photo Container
-             GestureDetector(
+              GestureDetector(
                 onTap: _pickAndUploadImage,
                 child: Container(
                   height: 180,
@@ -153,8 +155,8 @@ Future<void> _pickAndUploadImage() async {
                           : null,
                 ),
               ),
-            
-               const SizedBox(height: 20),
+
+              const SizedBox(height: 20),
 
               // Name Field
               Text('Name', style: Theme.of(context).textTheme.titleMedium),
@@ -220,88 +222,98 @@ Future<void> _pickAndUploadImage() async {
               const SizedBox(height: 16),
 
               // Property Amenities
-              Text('Property Amenities',
-                  style: Theme.of(context).textTheme.titleMedium),
+              Text(
+                'Property Amenities',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
               const SizedBox(height: 8),
               Wrap(
                 spacing: 16,
                 runSpacing: 16,
-                children: _selectedAmenities.entries.map((entry) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                        value: entry.value,
-                        onChanged: (newValue) {
-                          setState(() {
-                            _selectedAmenities[entry.key] = newValue ?? false;
-                          });
-                        },
-                      ),
-                      Text(entry.key),
-                    ],
-                  );
-                }).toList(),
+                children:
+                    _selectedAmenities.entries.map((entry) {
+                      return Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Checkbox(
+                            value: entry.value,
+                            onChanged: (newValue) {
+                              setState(() {
+                                _selectedAmenities[entry.key] =
+                                    newValue ?? false;
+                              });
+                            },
+                          ),
+                          Text(entry.key),
+                        ],
+                      );
+                    }).toList(),
               ),
               const SizedBox(height: 30),
 
               // Submit Button
               ElevatedButton(
                 onPressed: () async {
-  if (_formKey.currentState!.validate()) {
-    try {
-      String id = randomAlphaNumeric(10);
-      Map<String, dynamic> addcampMap = {
-        'id': id,
-        'name': _nameController.text,
-        'location': _locationController.text,
-        'details': _detailsController.text,
-         'imageUrl': _imageUrl,
-        'amenities': _selectedAmenities.keys
-            .where((key) => _selectedAmenities[key] == true)
-            .toList(),
-      };
-      
-      await DatabaseMethods().addCamp(addcampMap, id);
+                  if (_formKey.currentState!.validate()) {
+                    try {
+                      String id = randomAlphaNumeric(10);
+                      Map<String, dynamic> addcampMap = {
+                        'id': id,
+                        'name': _nameController.text,
+                        'location': _locationController.text,
+                        'details': _detailsController.text,
+                        'imageUrl': _imageUrl,
+                        'amenities':
+                            _selectedAmenities.keys
+                                .where((key) => _selectedAmenities[key] == true)
+                                .toList(),
+                      };
 
-      Fluttertoast.showToast(
-        msg: "Camp created successfully",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        timeInSecForIosWeb: 1,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+                      await DatabaseMethods().addCamp(addcampMap, id);
 
-      // Create a new CampSite object
-      CampSite newCamp = CampSite(
-        name: _nameController.text,
-        location: _locationController.text,
-        details: _detailsController.text,
-        amenities: _selectedAmenities.entries
-            .where((entry) => entry.value)
-            .map((entry) => entry.key)
-            .toList(),
-        imageUrl: _imageUrl,
-        id: '',
-      );
+                      Fluttertoast.showToast(
+                        msg: "Camp created successfully",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.green,
+                        textColor: Colors.white,
+                        fontSize: 16.0,
+                      );
 
-      // Return the new camp to previous screen
-      Navigator.pop(context, newCamp);
+                      // Create a new CampSite object
+                      CampSite newCamp = CampSite(
+                        name: _nameController.text,
+                        location: _locationController.text,
+                        details: _detailsController.text,
+                        amenities:
+                            _selectedAmenities.entries
+                                .where((entry) => entry.value)
+                                .map((entry) => entry.key)
+                                .toList(),
+                        imageUrl: _imageUrl,
+                        id: '',
+                      );
 
-    } catch (e) {
-      print("Error creating camp: $e");
-      Fluttertoast.showToast(
-        msg: "Failed to create camp: ${e.toString()}",
-        toastLength: Toast.LENGTH_SHORT,
-        gravity: ToastGravity.CENTER,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-      );
-    }
-  }
-},
+                      // Return the new camp to previous screen
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const CampMenuPage(),
+                        ),
+                      );
+                    } catch (e) {
+                      print("Error creating camp: $e");
+                      Fluttertoast.showToast(
+                        msg: "Failed to create camp: ${e.toString()}",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        backgroundColor: Colors.red,
+                        textColor: Colors.white,
+                      );
+                    }
+                  }
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2ECC71),
                   padding: const EdgeInsets.symmetric(vertical: 15),
