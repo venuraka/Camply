@@ -60,23 +60,23 @@ class CampMenuPage extends StatelessWidget {
                           top: Radius.circular(12),
                         ),
                         child:
-                            camp.imageUrl != null && camp.imageUrl!.isNotEmpty
-                                ? Image.network(
-                                  camp.imageUrl!,
-                                  width: double.infinity,
-                                  height: 150,
-                                  fit: BoxFit.cover,
-                                )
-                                : Container(
-                                  width: double.infinity,
-                                  height: 150,
-                                  color: Colors.grey.shade300,
-                                  child: const Icon(
-                                    Icons.image,
-                                    size: 50,
-                                    color: Colors.grey,
-                                  ),
-                                ),
+                        camp.imageUrl != null && camp.imageUrl!.isNotEmpty
+                            ? Image.network(
+                          camp.imageUrl!,
+                          width: double.infinity,
+                          height: 150,
+                          fit: BoxFit.cover,
+                        )
+                            : Container(
+                          width: double.infinity,
+                          height: 150,
+                          color: Colors.grey.shade300,
+                          child: const Icon(
+                            Icons.image,
+                            size: 50,
+                            color: Colors.grey,
+                          ),
+                        )
                       ),
                       const SizedBox(height: 8),
 
