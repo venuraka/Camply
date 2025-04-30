@@ -76,7 +76,18 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("${widget.siteName} Channel")),
+      backgroundColor: Colors.grey[200],
+      appBar: AppBar(
+        backgroundColor: Colors.green,
+        title: Text(
+          "${widget.siteName} Channel",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
+      ),
       body: Column(
         children: [
           Row(
@@ -136,10 +147,15 @@ class _ChatScreenState extends State<ChatScreen> {
                               horizontal: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: isMe ? Colors.blue[200] : Colors.grey[300],
+                              color: isMe ? Colors.green : Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text(data['text']),
+                            child: Text(
+                              data['text'],
+                              style: TextStyle(
+                                color: isMe ? Colors.white : Colors.black,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -150,18 +166,37 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _controller,
-                    decoration: InputDecoration(hintText: 'Type a message...'),
-                    onSubmitted: (_) => sendMessage(),
+            padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.green[700], // Darker green for background
+                borderRadius: BorderRadius.circular(20),
+              ),
+              padding: EdgeInsets.symmetric(horizontal: 12),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _controller,
+                      style: TextStyle(color: Colors.white),
+                      cursorColor: Colors.white,
+                      decoration: InputDecoration(
+                        hintText: 'Type a message...',
+                        hintStyle: TextStyle(
+                          color: Colors.white70,
+                        ), // Hint with lighter white
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => sendMessage(),
+                    ),
                   ),
-                ),
-                IconButton(icon: Icon(Icons.send), onPressed: sendMessage),
-              ],
+                  IconButton(
+                    icon: Icon(Icons.send),
+                    color: Colors.white, // White send icon
+                    onPressed: sendMessage,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
