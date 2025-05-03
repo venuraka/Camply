@@ -3,7 +3,6 @@ import 'package:camply/pages/create_camp_site.dart';
 
 import 'package:camply/screens/camp_detail_page.dart';
 import 'package:camply/screens/camp_menu.dart';
-import 'package:camply/screens/camper_experience_page.dart';
 import 'package:camply/screens/create_camp_page.dart';
 // import 'package:camply/screens/camp_detail_page.dart';
 // import 'package:camply/screens/create_camp_page.dart';
@@ -72,10 +71,10 @@ void main() async {
         '/Login': (context) => LoginScreen(), // Ayeshi
 
         '/home': (context) => HomeScreen(), // Ravindu
-        '/camperExperience':
-            (context) => CamperProfileExperienceScreen(), // Hansi
+        // User Profile and Experience
         '/addPhoto': (context) => AddPhoto(), // Adithya
         '/userProfile': (context) => UserProfile(), // Adithya
+
         '/reviews': (context) => ReviewPage(), // Manodya
         '/user_review_Akka': (context) => UserReviewAkka(), // Manodya
         '/user_review': (context) => UserReview(), // Senuri
@@ -96,16 +95,6 @@ void main() async {
             (context) =>
                 ChatTestSiteDetails(siteName: 'site-name', siteId: '000000'),
         '/çhatTestSiteList': (context) => ChatTestCampList(),
-
-        //----------------------------------------------------
-        // '/Register': (context) => RegistrationScreen(),
-        // '/Login': (context) => LoginScreen(),
-        // '/Senuricampdetails': (context) => CampDetailPage(campSite: ,),
-        // '/CreateCampPage': (context) => CreateCampPage(),
-        // '/Detail': (context) => DetailTab(campSite: ,),
-        // '/Location': (context) => LocationTab(campSite: ,),
-        // '/Nearby': (context) => NearbyTab(campSite: ,),
-        // '/EditCourse': (context) => ReviewTab(campSite: ,),
       },
     ),
   );
