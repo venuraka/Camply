@@ -73,7 +73,7 @@ void main() async {
             (context) => CamperProfileExperienceScreen(), // Hansi
         '/addExperience': (context) => AddExperienceScreen(), // Hansi
         '/addPhoto': (context) => AddPhoto(), // Adithya
-        '/uesrProfile': (context) => userprofile(), // Adithya
+        '/uesrProfile': (context) => UserProfile(), // Adithya
         '/reviews': (context) => ReviewPage(), // Manodya
         '/user_review_Akka': (context) => UserReviewAkka(), // Manodya
         '/user_review': (context) => UserReview(), // Senuri
