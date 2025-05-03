@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'addphoto.dart';
 import 'experience.dart'; // Ensure this file exists or remove if not used
@@ -18,9 +19,15 @@ class _UserProfileState extends State<UserProfile>
   int followerCount = 110;
   bool isFollowing = false;
 
+  String? userId;
+  bool isLoading = true;
+
   @override
   void initState() {
     super.initState();
+
+    _fetchUserId();
+
     _tabController = TabController(length: 2, vsync: this);
     _tabController.addListener(() {
       setState(() {
@@ -35,12 +42,29 @@ class _UserProfileState extends State<UserProfile>
     super.dispose();
   }
 
+  Future<void> _fetchUserId() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userId = user.uid;
+        isLoading = false;
+      });
+    } else {
+      // Handle null user case if needed
+      setState(() => isLoading = false);
+    }
+  }
+
   // Increment likes count
   Future<void> _incrementLikes(String docId) async {
     try {
-      await FirebaseFirestore.instance.collection('photos').doc(docId).update({
-        'likes': FieldValue.increment(1),
-      });
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(userId)
+          .collection('user_posts')
+          .doc(docId)
+          .update({'likes': FieldValue.increment(1)});
     } catch (e) {
       _showSnackBar('Failed to update likes: $e');
     }
@@ -73,7 +97,9 @@ class _UserProfileState extends State<UserProfile>
                   if (commentController.text.isNotEmpty) {
                     try {
                       await FirebaseFirestore.instance
-                          .collection('photos')
+                          .collection('posts')
+                          .doc(userId)
+                          .collection('user_posts')
                           .doc(docId)
                           .update({'comments': FieldValue.increment(1)});
                       Navigator.pop(ctx);
@@ -129,11 +155,22 @@ class _UserProfileState extends State<UserProfile>
 
   @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (userId == null) {
+      return const Scaffold(body: Center(child: Text('User not logged in')));
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
         backgroundColor: Colors.green,
-        leading: const Icon(Icons.arrow_back, color: Colors.white),
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
         title: Padding(
           padding: const EdgeInsets.only(left: 80),
           child: const Text('CAMPER', style: TextStyle(color: Colors.white)),
@@ -265,7 +302,9 @@ class _UserProfileState extends State<UserProfile>
                     StreamBuilder<QuerySnapshot>(
                       stream:
                           FirebaseFirestore.instance
-                              .collection('photos')
+                              .collection('posts')
+                              .doc(userId)
+                              .collection('user_posts')
                               .orderBy('timestamp', descending: true)
                               .snapshots(),
                       builder: (ctx, snap) {
@@ -450,6 +489,8 @@ class _UserProfileState extends State<UserProfile>
                   stream:
                       FirebaseFirestore.instance
                           .collection('experiences')
+                          .doc(userId)
+                          .collection('user_experiences')
                           .orderBy('timestamp', descending: true)
                           .snapshots(),
                   builder: (ctx, snap) {

@@ -122,7 +122,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 username: "Yoshiko Mura",
                 location: "Yosemite Basecamp",
                 imageUrl:
-                    "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
+                    "https://img.freepik.com/premium-photo/portrait-smiling-friends-sitting-fire_1048944-7092263.jpg?ga=GA1.1.620892737.1745985582&semt=ais_hybrid&w=740",
                 profileUrl: "https://randomuser.me/api/portraits/women/45.jpg",
                 badgeColors: [
                   Colors.brown,
@@ -592,7 +592,7 @@ class BottomNavBar extends StatelessWidget {
         // Navigator.pushNamed(context, '/notifications');
         break;
       case 4:
-        Navigator.pushNamed(context, '/uesrProfile');
+        Navigator.pushNamed(context, '/userProfile');
         break;
     }
 

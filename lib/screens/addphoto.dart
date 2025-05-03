@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:geolocator/geolocator.dart';
@@ -22,6 +23,8 @@ class _AddPhotoState extends State<AddPhoto> {
   File? _image;
   final TextEditingController _locationController = TextEditingController();
   bool _isLoading = false;
+
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
 
   // Pick image from gallery
   Future<void> _pickImage() async {
@@ -120,14 +123,26 @@ class _AddPhotoState extends State<AddPhoto> {
       // Upload to Cloudinary
       String imageUrl = await uploadImageToCloudinary(imageBytes);
 
+      await FirebaseFirestore.instance
+          .collection('posts')
+          .doc(userId)
+          .collection('user_posts')
+          .add({
+            'imageUrl': imageUrl,
+            'location': _locationController.text,
+            'timestamp': FieldValue.serverTimestamp(),
+            'likes': 0,
+            'comments': 0,
+          });
+
       // Save to Firestore
-      await FirebaseFirestore.instance.collection('photos').add({
-        'imageUrl': imageUrl,
-        'location': _locationController.text,
-        'timestamp': FieldValue.serverTimestamp(),
-        'likes': 0,
-        'comments': 0,
-      });
+      // await FirebaseFirestore.instance.collection('photos').add({
+      //   'imageUrl': imageUrl,
+      //   'location': _locationController.text,
+      //   'timestamp': FieldValue.serverTimestamp(),
+      //   'likes': 0,
+      //   'comments': 0,
+      // });
 
       _showSnackBar('Photo saved successfully');
       Navigator.pop(context);

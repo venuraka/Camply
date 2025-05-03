@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -36,6 +37,8 @@ class _ExperienceTileState extends State<ExperienceTile>
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +65,8 @@ class _ExperienceTileState extends State<ExperienceTile>
     _controller.forward().then((_) => _controller.reverse());
     await FirebaseFirestore.instance
         .collection('experiences')
+        .doc(userId)
+        .collection('user_experiences')
         .doc(widget.docId)
         .update({'likes': likeCount});
   }
@@ -83,6 +88,8 @@ class _ExperienceTileState extends State<ExperienceTile>
                   if (cCtrl.text.trim().isNotEmpty) {
                     await FirebaseFirestore.instance
                         .collection('experiences')
+                        .doc(userId)
+                        .collection('user_experiences')
                         .doc(widget.docId)
                         .update({'comments': FieldValue.increment(1)});
                     setState(() => commentCount++);
@@ -185,6 +192,8 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   final _descCtrl = TextEditingController();
   bool _showTag = false;
 
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
   void _submit() async {
     final title = _titleCtrl.text.trim();
     final loc = _locCtrl.text.trim();
@@ -195,15 +204,19 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
       ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
       return;
     }
-    await FirebaseFirestore.instance.collection('experiences').add({
-      'title': title,
-      'location': loc,
-      'description': desc,
-      'likes': 0,
-      'comments': 0,
-      'timestamp':
-          FieldValue.serverTimestamp(), // Use serverTimestamp for consistency
-    });
+    await FirebaseFirestore.instance
+        .collection('experiences')
+        .doc(userId)
+        .collection('user_experiences')
+        .add({
+          'title': title,
+          'location': loc,
+          'description': desc,
+          'likes': 0,
+          'comments': 0,
+          'timestamp':
+              FieldValue.serverTimestamp(), // Use serverTimestamp for consistency
+        });
     Navigator.pop(context);
   }
 
@@ -282,10 +295,11 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
 
 // ── Experience List (Stream) ────────────────────────────────
 class ExperienceList extends StatelessWidget {
+  final String userId;
   final String Function(Timestamp?)?
   formatTimestamp; // Add formatTimestamp parameter
 
-  const ExperienceList({super.key, this.formatTimestamp});
+  ExperienceList({super.key, required this.userId, this.formatTimestamp});
 
   @override
   Widget build(BuildContext context) {
@@ -293,6 +307,8 @@ class ExperienceList extends StatelessWidget {
       stream:
           FirebaseFirestore.instance
               .collection('experiences')
+              .doc(userId)
+              .collection('user_experiences')
               .orderBy('timestamp', descending: true)
               .snapshots(),
       builder: (ctx, snap) {
@@ -328,17 +344,53 @@ class ExperienceList extends StatelessWidget {
 }
 
 // ── Experience Screen with FAB ──────────────────────────────
-class ExperienceScreen extends StatelessWidget {
+class ExperienceScreen extends StatefulWidget {
   const ExperienceScreen({super.key});
 
   @override
+  State<ExperienceScreen> createState() => _ExperienceScreenState();
+}
+
+class _ExperienceScreenState extends State<ExperienceScreen> {
+  String? userId;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchUserId();
+  }
+
+  Future<void> _fetchUserId() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      setState(() {
+        userId = user.uid;
+        isLoading = false;
+      });
+    } else {
+      // Handle null user case if needed
+      setState(() => isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    if (isLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    if (userId == null) {
+      return const Scaffold(body: Center(child: Text('User not logged in')));
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Experiences'),
         backgroundColor: Colors.green,
       ),
-      body: const ExperienceList(),
+      body: ExperienceList(userId: userId!),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
@@ -348,8 +400,8 @@ class ExperienceScreen extends StatelessWidget {
             ),
           );
         },
-        child: const Icon(Icons.add),
         backgroundColor: Colors.green,
+        child: const Icon(Icons.add),
       ),
     );
   }

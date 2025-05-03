@@ -1,10 +1,5 @@
 import 'package:camply/pages/camp_details_display.dart';
-import 'package:camply/pages/chat_screen.dart';
-import 'package:camply/pages/chat_test_camp_list.dart';
-import 'package:camply/pages/chat_test_site_details.dart';
 import 'package:camply/pages/create_camp_site.dart';
-import 'package:camply/screens/add_experience_screen.dart';
-import 'package:camply/screens/addphoto.dart';
 
 import 'package:camply/screens/camp_detail_page.dart';
 import 'package:camply/screens/camp_menu.dart';
@@ -22,15 +17,23 @@ import 'package:camply/screens/register.dart';
 import 'package:camply/screens/review_tab.dart';
 import 'package:camply/screens/reviews.dart';
 import 'package:camply/screens/user_review.dart';
-import 'package:camply/screens/userprofile.dart';
 
 // Lock Orientation
 import 'package:flutter/services.dart';
+
+// Chat
+import 'package:camply/pages/chat_screen.dart';
+import 'package:camply/pages/chat_test_camp_list.dart';
+import 'package:camply/pages/chat_test_site_details.dart';
 
 // Ayeshi Login
 import 'package:camply/services/auth_wrapper.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:camply/screens/login.dart';
+
+// Adithya Hansi Profile & Experience
+import 'package:camply/screens/userprofile.dart';
+import 'package:camply/screens/addphoto.dart';
 
 // Push notifications
 // import 'function/notification.dart';
@@ -71,9 +74,8 @@ void main() async {
         '/home': (context) => HomeScreen(), // Ravindu
         '/camperExperience':
             (context) => CamperProfileExperienceScreen(), // Hansi
-        '/addExperience': (context) => AddExperienceScreen(), // Hansi
         '/addPhoto': (context) => AddPhoto(), // Adithya
-        '/uesrProfile': (context) => UserProfile(), // Adithya
+        '/userProfile': (context) => UserProfile(), // Adithya
         '/reviews': (context) => ReviewPage(), // Manodya
         '/user_review_Akka': (context) => UserReviewAkka(), // Manodya
         '/user_review': (context) => UserReview(), // Senuri
