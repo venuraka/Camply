@@ -89,7 +89,7 @@ class _UserProfileState extends State<UserProfile>
           .doc(userId)
           .collection('user_posts')
           .doc(docId)
-          .update({'likes': FieldValue.increment(1)});
+          .update({'likeCount': FieldValue.increment(1)});
     } catch (e) {
       _showSnackBar('Failed to update likes: $e');
     }
@@ -360,8 +360,8 @@ class _UserProfileState extends State<UserProfile>
                             final imageUrl = data['imageUrl'] as String?;
                             final location =
                                 data['location'] ?? 'Unknown Location';
-                            final likes = data['likes'] ?? 0;
-                            final comments = data['comments'] ?? 0;
+                            final likes = data['likeCount'] ?? 0;
+                            final comments = data['commentCount'] ?? 0;
                             final timestamp = data['timestamp'] as Timestamp?;
                             final docId = docs[i].id;
 

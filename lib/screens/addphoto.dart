@@ -150,8 +150,8 @@ class _AddPhotoState extends State<AddPhoto> {
             'imageUrl': imageUrl,
             'location': _locationController.text,
             'timestamp': FieldValue.serverTimestamp(),
-            'likes': 0,
-            'comments': 0,
+            'likeCount': 0,
+            'commentCount': 0,
           });
 
       // Save to Firestore
@@ -257,7 +257,7 @@ class _AddPhotoState extends State<AddPhoto> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitData,
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
+                      backgroundColor: const Color(0xFF2ECC71),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),

@@ -28,8 +28,8 @@ class Post {
       profilePic:
           data['userProfilePic'] ??
           'https://img.freepik.com/premium-vector/character-avatar-isolated_729149-194801.jpg?ga=GA1.1.620892737.1745985582&semt=ais_hybrid&w=740',
-      likeCount: data['likes'] ?? 0,
-      commentCount: data['comments'] ?? 0,
+      likeCount: data['likeCount'] ?? 0,
+      commentCount: data['commentCount'] ?? 0,
     );
   }
 }

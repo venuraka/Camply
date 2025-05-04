@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
           "Camply",
           // Can load user name to check if needed
@@ -529,7 +529,7 @@ class _CommentPopupState extends State<CommentPopup> {
           ),
         ),
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFF2ECC71),
         toolbarHeight: 80, // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
