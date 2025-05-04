@@ -96,7 +96,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Registration successful!'),
-              backgroundColor: Colors.green,
+             backgroundColor: const Color(0xFF2ECC71),
             ),
           );
           Navigator.pop(context);

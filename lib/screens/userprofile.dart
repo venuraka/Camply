@@ -166,21 +166,21 @@ class _UserProfileState extends State<UserProfile>
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-        backgroundColor: Colors.green,
+       backgroundColor: const Color(0xFF2ECC71),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         title: Padding(
           padding: const EdgeInsets.only(left: 80),
-          child: const Text('CAMPER', style: TextStyle(color: Colors.white)),
+          child: const Text('Camply', style: TextStyle(color: Colors.white)),
         ),
         actions: const [],
       ),
       floatingActionButton:
           _selectedIndex == 1
               ? FloatingActionButton(
-                backgroundColor: Colors.green,
+               backgroundColor: const Color(0xFF2ECC71),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -470,7 +470,7 @@ class _UserProfileState extends State<UserProfile>
                       bottom: 16,
                       right: 16,
                       child: FloatingActionButton(
-                        backgroundColor: Colors.green,
+                       backgroundColor: const Color(0xFF2ECC71),
                         onPressed:
                             () => Navigator.push(
                               context,

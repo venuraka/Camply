@@ -63,6 +63,7 @@ class _CampDetailPageState extends State<CampDetailPage>
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
               SliverAppBar(
+                automaticallyImplyLeading: false,
                 expandedHeight: 450,
                 pinned: true,
                 flexibleSpace: FlexibleSpaceBar(

@@ -10,7 +10,22 @@ class CampMenuPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Camp Menu')),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFF2ECC71),
+        title: const Text(
+          "Camply",
+          // Can load user name to check if needed
+          // title: Text(
+          //   "Camper ${userData?['name'] ?? ''}",
+          style: TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
+            fontSize: 22,
+          ),
+        ),
+        centerTitle: true,
+        elevation: 0,
+      ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('campsites').snapshots(),
         builder: (context, snapshot) {

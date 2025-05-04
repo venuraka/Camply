@@ -2,6 +2,8 @@ import 'package:camply/pages/camp_details_display.dart';
 import 'package:flutter/material.dart';
 import 'package:camply/services/auth_service.dart';
 
+import '../Components/BottomNavBar.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -66,12 +68,12 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.green,
+         backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
-          "Camper",
+          "Camply",
           // Can load user name to check if needed
           // title: Text(
-          //   "Camper ${userData?['name'] ?? ''}",
+          //   "Camply ${userData?['name'] ?? ''}",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -486,7 +488,7 @@ class _CommentPopupState extends State<CommentPopup> {
           ),
         ),
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.green,
+         backgroundColor: const Color(0xFF2ECC71),
         toolbarHeight: 80, // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -569,77 +571,4 @@ class _Comment {
     this.showReplies = true,
     this.likeCount = 0,
   });
-}
-
-// ---------- Bottom Navigation ----------
-class BottomNavBar extends StatelessWidget {
-  final int selectedIndex;
-
-  const BottomNavBar({super.key, required this.selectedIndex});
-
-  void _onItemTapped(BuildContext context, int index) {
-    switch (index) {
-      case 0:
-        Navigator.pushNamed(context, '/home');
-        break;
-      case 1:
-        Navigator.pushNamed(context, '/CampMenuPage');
-        break;
-      case 2:
-        Navigator.pushNamed(context, '/addPhoto');
-        break;
-      case 3:
-        // Navigator.pushNamed(context, '/notifications');
-        break;
-      case 4:
-        Navigator.pushNamed(context, '/userProfile');
-        break;
-    }
-
-    // setState(() {
-    //   _selectedIndex = index;
-    // });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.green,
-      unselectedItemColor: Colors.white,
-      selectedItemColor: const Color.fromARGB(255, 5, 58, 7),
-      showSelectedLabels: false,
-      showUnselectedLabels: false,
-      currentIndex: selectedIndex,
-      onTap: (index) => _onItemTapped(context, index),
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-        BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.notifications),
-          label: "Notifications",
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.account_circle),
-          label: "Profile",
-        ),
-      ],
-    );
-    //   onTap: onTap,
-    //   items: const [
-    //     BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-    //     BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-    //     BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.notifications),
-    //       label: "Notifications",
-    //     ),
-    //     BottomNavigationBarItem(
-    //       icon: Icon(Icons.account_circle),
-    //       label: "Profile",
-    //     ),
-    //   ],
-    // );
-  }
 }
