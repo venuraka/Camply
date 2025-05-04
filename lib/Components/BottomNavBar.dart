@@ -17,7 +17,7 @@ class BottomNavBar extends StatelessWidget {
         Navigator.pushNamed(context, '/addPhoto');
         break;
       case 3:
-      // Navigator.pushNamed(context, '/notifications');
+        // Navigator.pushNamed(context, '/notifications');
         break;
       case 4:
         Navigator.pushNamed(context, '/userProfile');
@@ -38,10 +38,19 @@ class BottomNavBar extends StatelessWidget {
       onTap: (index) => _onItemTapped(context, index),
       items: const [
         BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.filter_hdr),
+          label: "CampSites",
+        ),
         BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
-        BottomNavigationBarItem(icon: Icon(Icons.notifications), label: "Notifications"),
-        BottomNavigationBarItem(icon: Icon(Icons.account_circle), label: "Profile"),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.notifications),
+          label: "Notifications",
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.account_circle),
+          label: "Profile",
+        ),
       ],
     );
   }
