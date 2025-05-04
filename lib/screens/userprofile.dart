@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'addphoto.dart';
 import 'experience.dart'; // Ensure this file exists or remove if not used
+import '../function/followSystemCount.dart';
 
 class UserProfile extends StatefulWidget {
   const UserProfile({super.key});
@@ -16,10 +17,13 @@ class _UserProfileState extends State<UserProfile>
     with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
-  int followerCount = 110;
+  // int followerCount = 110;
   bool isFollowing = false;
 
   String? userId;
+  String? userName;
+  int? followersCount;
+  int? followingCount;
   bool isLoading = true;
 
   @override
@@ -46,12 +50,28 @@ class _UserProfileState extends State<UserProfile>
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      setState(() {
-        userId = user.uid;
-        isLoading = false;
-      });
+      final uid = user.uid;
+      try {
+        final userDoc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+        final name = userDoc.data()?['name'] ?? 'Unknown';
+
+        final followers = await getFollowersCount(uid);
+        final following = await getFollowingCount(uid);
+
+        setState(() {
+          userId = uid;
+          userName = name;
+          followersCount = followers;
+          followingCount = following;
+          isLoading = false;
+        });
+      } catch (e) {
+        _showSnackBar('Failed to fetch user data: $e');
+        setState(() => isLoading = false);
+      }
     } else {
-      // Handle null user case if needed
       setState(() => isLoading = false);
     }
   }
@@ -137,14 +157,14 @@ class _UserProfileState extends State<UserProfile>
   }
 
   // Toggle follow state
-  void _toggleFollow() {
-    if (!isFollowing) {
-      setState(() {
-        isFollowing = true;
-        followerCount += 1;
-      });
-    }
-  }
+  // void _toggleFollow() {
+  //   if (!isFollowing) {
+  //     setState(() {
+  //       isFollowing = true;
+  //       followerCount += 1;
+  //     });
+  //   }
+  // }
 
   // Show snackbar for user feedback
   void _showSnackBar(String message) {
@@ -166,21 +186,21 @@ class _UserProfileState extends State<UserProfile>
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back, color: Colors.white),
         ),
         title: Padding(
           padding: const EdgeInsets.only(left: 80),
-          child: const Text('Camply', style: TextStyle(color: Colors.white)),
+          child: const Text('CAMPER', style: TextStyle(color: Colors.white)),
         ),
         actions: const [],
       ),
       floatingActionButton:
           _selectedIndex == 1
               ? FloatingActionButton(
-               backgroundColor: const Color(0xFF2ECC71),
+                backgroundColor: Colors.green,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -217,8 +237,8 @@ class _UserProfileState extends State<UserProfile>
                         padding: const EdgeInsets.only(left: 25, top: 10),
                         child: Padding(
                           padding: const EdgeInsets.only(top: 10),
-                          child: const Text(
-                            'Markensan Sepperd',
+                          child: Text(
+                            userName ?? 'Loading...',
                             style: TextStyle(
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
@@ -232,7 +252,8 @@ class _UserProfileState extends State<UserProfile>
                         child: Row(
                           children: [
                             Text(
-                              'Followers\n$followerCount',
+                              // 'Followers\n$followerCount',
+                              'Followers\n${followersCount ?? 0}',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
@@ -240,8 +261,8 @@ class _UserProfileState extends State<UserProfile>
                               ),
                             ),
                             const SizedBox(width: 20),
-                            const Text(
-                              'Following\n28',
+                            Text(
+                              'Following\n${followingCount ?? 0}',
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 12,
@@ -252,26 +273,27 @@ class _UserProfileState extends State<UserProfile>
                         ),
                       ),
                       const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 60),
-                        child: SizedBox(
-                          width: 110,
-                          height: 30,
-                          child: ElevatedButton(
-                            onPressed: _toggleFollow,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: const Color.fromARGB(
-                                255,
-                                96,
-                                203,
-                                99,
-                              ),
-                              foregroundColor: Colors.white,
-                            ),
-                            child: Text(isFollowing ? 'Following' : 'Follow'),
-                          ),
-                        ),
-                      ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(left: 60),
+                      //   child: SizedBox(
+                      //     width: 110,
+                      //     height: 30,
+                      //     child: ElevatedButton(
+                      //       // onPressed: _toggleFollow,
+                      //       onPressed: () {},
+                      //       style: ElevatedButton.styleFrom(
+                      //         backgroundColor: const Color.fromARGB(
+                      //           255,
+                      //           96,
+                      //           203,
+                      //           99,
+                      //         ),
+                      //         foregroundColor: Colors.white,
+                      //       ),
+                      //       child: Text(isFollowing ? 'Following' : 'Follow'),
+                      //     ),
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -470,7 +492,7 @@ class _UserProfileState extends State<UserProfile>
                       bottom: 16,
                       right: 16,
                       child: FloatingActionButton(
-                       backgroundColor: const Color(0xFF2ECC71),
+                        backgroundColor: Colors.green,
                         onPressed:
                             () => Navigator.push(
                               context,
