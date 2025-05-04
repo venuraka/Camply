@@ -21,8 +21,8 @@ class AuthWrapper extends StatelessWidget {
 
         // If the user is logged in
         if (snapshot.hasData) {
-          // return const HomeScreen();
-          return const ChatTestCampList();
+          return const HomeScreen();
+          // return const ChatTestCampList();
         }
         // If the user is not logged in
         else {

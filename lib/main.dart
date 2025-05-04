@@ -2,7 +2,8 @@ import 'package:camply/pages/camp_details_display.dart';
 import 'package:camply/pages/create_camp_site.dart';
 
 import 'package:camply/screens/camp_detail_page.dart';
-import 'package:camply/screens/camp_menu.dart';
+import 'package:camply/screens/camp_menu_page.dart';
+
 import 'package:camply/screens/create_camp_page.dart';
 // import 'package:camply/screens/camp_detail_page.dart';
 // import 'package:camply/screens/create_camp_page.dart';
@@ -80,13 +81,9 @@ void main() async {
         '/user_review': (context) => UserReview(), // Senuri
         '/campDetailsDisplay': (context) => CampDetailsDisplay(), // Brian
         '/createCampSite': (context) => CreateCampSite(), // Brian
-        '/Senuricampdetails': (context) => CampDetailPage(),
-        '/Senuricreatecamp': (context) => CreateCampPage(),
-        '/Detail': (context) => DetailTab(),
-        '/Location': (context) => LocationTab(),
-        '/Nearby': (context) => NearbyTab(),
-        '/EditCourse': (context) => ReviewTab(),
-        '/campMenu': (context) => CampMenu(),
+        '/CampMenuPage': (context) => CampMenuPage(), //Senuri,venuraka
+
+
 
         // Chat Testing
         '/chat':
