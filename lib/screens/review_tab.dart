@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
-import '../models/camp_model.dart';
+import 'camp_model.dart';
 
 class ReviewTab extends StatelessWidget {
-  // final CampSite campSite;
+  final CampSite campSite;
 
-  // const ReviewTab({Key? key, required this.campSite}) : super(key: key);
+  const ReviewTab({
+    Key? key,
+    required this.campSite,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,9 +26,11 @@ class ReviewTab extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Ratings section
-          ...ratings.entries.map(
-            (entry) => _buildRatingItem(context, entry.key, entry.value),
-          ),
+          ...ratings.entries.map((entry) => _buildRatingItem(
+                context,
+                entry.key,
+                entry.value,
+              )),
 
           const SizedBox(height: 24),
 
@@ -37,17 +42,17 @@ class ReviewTab extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2ECC71),
                 foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  vertical: 12,
-                  horizontal: 24,
-                ),
+                padding:
+                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),
               ),
               child: const Text(
                 'Write a Review',
-                style: TextStyle(fontSize: 16),
+                style: TextStyle(
+                  fontSize: 16,
+                ),
               ),
             ),
           ),
@@ -64,7 +69,10 @@ class ReviewTab extends StatelessWidget {
         children: [
           Text(
             title,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 8),
           Row(
