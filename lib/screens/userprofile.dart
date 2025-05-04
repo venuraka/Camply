@@ -22,6 +22,7 @@ class _UserProfileState extends State<UserProfile>
 
   String? userId;
   String? userName;
+  String? userProfilePic;
   int? followersCount;
   int? followingCount;
   bool isLoading = true;
@@ -56,6 +57,9 @@ class _UserProfileState extends State<UserProfile>
             await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
         final name = userDoc.data()?['name'] ?? 'Unknown';
+        final profilePic =
+            userDoc.data()?['profileImageUrl'] ??
+            'https://img.freepik.com/premium-vector/character-avatar-isolated_729149-194801.jpg?ga=GA1.1.620892737.1745985582&semt=ais_hybrid&w=740';
 
         final followers = await getFollowersCount(uid);
         final following = await getFollowingCount(uid);
@@ -63,6 +67,7 @@ class _UserProfileState extends State<UserProfile>
         setState(() {
           userId = uid;
           userName = name;
+          userProfilePic = profilePic;
           followersCount = followers;
           followingCount = following;
           isLoading = false;
@@ -223,9 +228,9 @@ class _UserProfileState extends State<UserProfile>
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 10, left: 10),
-                  child: const CircleAvatar(
+                  child: CircleAvatar(
                     radius: 60,
-                    backgroundImage: AssetImage('assets/images/proimg.jpg'),
+                    backgroundImage: NetworkImage("$userProfilePic"),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -373,14 +378,14 @@ class _UserProfileState extends State<UserProfile>
                                     contentPadding: const EdgeInsets.symmetric(
                                       horizontal: 12,
                                     ),
-                                    leading: const CircleAvatar(
+                                    leading: CircleAvatar(
                                       radius: 20,
-                                      backgroundImage: AssetImage(
-                                        'assets/images/proimg.jpg',
+                                      backgroundImage: NetworkImage(
+                                        "$userProfilePic",
                                       ),
                                     ),
-                                    title: const Text(
-                                      'Mark Sepperd',
+                                    title: Text(
+                                      userName ?? 'Loading...',
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                       ),
