@@ -11,11 +11,18 @@
         tools:ignore="WrongManifestParent" />
 <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"
         tools:ignore="WrongManifestParent" />
+
     <application
         android:label="camply"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
-        <!-- Changed screen orientation to portrait only -->
+        android:icon="@mipmap/ic_launcher"
+        android:enableOnBackInvokedCallback="true">
+
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyBoB5AqC_QbDkLEw0KXBO-0LxFFb5-Kslw" />
+
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
