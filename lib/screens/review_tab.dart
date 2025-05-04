@@ -1,3 +1,4 @@
+import 'package:camply/screens/user_review.dart';
 import 'package:flutter/material.dart';
 import '../models/camp_model.dart';
 
@@ -20,17 +21,17 @@ class ReviewTab extends StatelessWidget {
       'Water Access': 9.0,
     };
 
-    return Padding(
+    return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Ratings section
           ...ratings.entries.map((entry) => _buildRatingItem(
-                context,
-                entry.key,
-                entry.value,
-              )),
+            context,
+            entry.key,
+            entry.value,
+          )),
 
           const SizedBox(height: 24),
 
@@ -38,12 +39,16 @@ class ReviewTab extends StatelessWidget {
           Align(
             alignment: Alignment.center,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => UserReview()),
+                );
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF2ECC71),
                 foregroundColor: Colors.white,
-                padding:
-                    const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
+                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 24),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30),
                 ),

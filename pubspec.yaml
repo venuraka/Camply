@@ -48,7 +48,7 @@ dependencies:
   # Firebase basic dependencies
   cloud_firestore: ^5.6.6
   firebase_core: ^3.13.0
-
+  firebase_storage: ^12.4.5
 
   # Ayeshi Login
   firebase_auth: ^5.5.2
