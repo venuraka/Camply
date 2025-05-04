@@ -100,9 +100,3 @@ lib/l10n/**/.arb
 lib/l10n/l10n.yaml
 /android/app/.cxx/Debug
 /android/app/.cxx/Debug
-/macos
-/android/app
-*.properties
-*.java
-*.m
-*.java
