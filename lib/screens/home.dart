@@ -1,8 +1,9 @@
 import 'package:camply/pages/camp_details_display.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camply/services/auth_service.dart';
-
-import '../Components/BottomNavBar.dart';
+import 'package:camply/Components/BottomNavBar.dart';
+import 'package:camply/models/post_model.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -69,12 +70,12 @@ class _HomeScreenState extends State<HomeScreen> {
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white),
-        backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         title: const Text(
           "Camply",
           // Can load user name to check if needed
           // title: Text(
-          //   "Camply ${userData?['name'] ?? ''}",
+          //   "Camper ${userData?['name'] ?? ''}",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -87,59 +88,96 @@ class _HomeScreenState extends State<HomeScreen> {
           IconButton(icon: const Icon(Icons.logout), onPressed: _signOut),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CampDetailsDisplay()),
-                );
-              },
-              child: PostCard(
-                username: "Zack Night",
-                location: "Yosemite Basecamp",
-                imageUrl:
-                    "https://img.freepik.com/free-photo/silhouette-happy-man-with-holding-coffee-cup-stay-near-tent-around-mountains_1150-9145.jpg?ga=GA1.1.1735124578.1741663265&semt=ais_hybrid",
-                profileUrl: "https://randomuser.me/api/portraits/men/32.jpg",
-                badgeColors: [
-                  Colors.brown,
-                  Colors.orange,
-                  Colors.grey,
-                  Colors.green,
-                ],
-                likeCount: 10,
-                commentCount: 5,
-                shareCount: 99,
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+            FirebaseFirestore.instance
+                .collectionGroup('user_posts')
+                .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text("No posts found."));
+          }
+
+          final posts =
+              snapshot.data!.docs.where((doc) {
+                final data = doc.data() as Map<String, dynamic>;
+                return data['userId'] !=
+                    _authService.currentUser?.uid; // filter out own posts
+              }).toList();
+
+          if (posts.isEmpty) {
+            return const Center(
+              child: Text(
+                "No New Posts Uploaded Yet.",
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.grey,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-            ),
-            GestureDetector(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => CampDetailsDisplay()),
+            );
+          }
+
+          return ListView.builder(
+            itemCount: posts.length,
+            itemBuilder: (context, index) {
+              final data = posts[index].data() as Map<String, dynamic>;
+
+              try {
+                final post = Post.fromFirestore(data);
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => CampDetailsDisplay()),
+                    );
+                  },
+                  child: PostCard(
+                    username: post.username,
+                    location: post.location,
+                    imageUrl: post.imageUrl,
+                    profileId: post.profileId,
+                    profilePic: post.profilePic,
+                    badgeColors: [
+                      Colors.brown,
+                      Colors.orange,
+                      Colors.grey,
+                      Colors.green,
+                    ],
+                    likeCount: post.likeCount,
+                    commentCount: post.commentCount,
+                  ),
                 );
-              },
-              child: PostCard(
-                username: "Yoshiko Mura",
-                location: "Yosemite Basecamp",
-                imageUrl:
-                    "https://img.freepik.com/premium-photo/portrait-smiling-friends-sitting-fire_1048944-7092263.jpg?ga=GA1.1.620892737.1745985582&semt=ais_hybrid&w=740",
-                profileUrl: "https://randomuser.me/api/portraits/women/45.jpg",
-                badgeColors: [
-                  Colors.brown,
-                  Colors.orange,
-                  Colors.grey,
-                  Colors.green,
-                ],
-                likeCount: 20,
-                commentCount: 10,
-                shareCount: 12,
-              ),
-            ),
-          ],
-        ),
+              } catch (e) {
+                return Container(
+                  margin: const EdgeInsets.all(10),
+                  padding: const EdgeInsets.all(15),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade50,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(color: Colors.red.shade200),
+                  ),
+                  child: Row(
+                    children: const [
+                      Icon(Icons.error, color: Colors.red),
+                      SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          'Failed to load post.',
+                          style: TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              }
+            },
+          );
+        },
       ),
       bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
     );
@@ -151,22 +189,24 @@ class PostCard extends StatefulWidget {
   final String username;
   final String location;
   final String imageUrl;
-  final String profileUrl;
+  final String profileId;
+  final String profilePic;
   final List<Color> badgeColors;
   final int likeCount;
   final int commentCount;
-  final int shareCount;
+  // final int shareCount;
 
   const PostCard({
     super.key,
     required this.username,
     required this.location,
     required this.imageUrl,
-    required this.profileUrl,
+    required this.profileId,
+    required this.profilePic,
     required this.badgeColors,
     required this.likeCount,
     required this.commentCount,
-    required this.shareCount,
+    // required this.shareCount,
   });
 
   @override
@@ -220,7 +260,7 @@ class _PostCardState extends State<PostCard> {
         children: [
           ListTile(
             leading: CircleAvatar(
-              backgroundImage: NetworkImage(widget.profileUrl),
+              backgroundImage: NetworkImage(widget.profilePic),
             ),
             title: Text(
               widget.username,
@@ -356,7 +396,7 @@ class _CommentPopupState extends State<CommentPopup> {
       text: _commentController.text.trim(),
       timestamp: DateTime.now(),
       replies: [],
-      profileUrl: "https://randomuser.me/api/portraits/men/30.jpg",
+      profilePic: "https://randomuser.me/api/portraits/men/30.jpg",
       isVerified: true,
     );
 
@@ -388,7 +428,7 @@ class _CommentPopupState extends State<CommentPopup> {
             children: [
               CircleAvatar(
                 radius: 18,
-                backgroundImage: NetworkImage(comment.profileUrl),
+                backgroundImage: NetworkImage(comment.profilePic),
               ),
               const SizedBox(width: 10),
               Expanded(
@@ -489,7 +529,7 @@ class _CommentPopupState extends State<CommentPopup> {
           ),
         ),
         automaticallyImplyLeading: true,
-        backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         toolbarHeight: 80, // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -554,7 +594,7 @@ class _Comment {
   final String username;
   final String text;
   final DateTime timestamp;
-  final String profileUrl;
+  final String profilePic;
   final bool isVerified;
   List<_Comment> replies;
   bool isLiked;
@@ -565,7 +605,7 @@ class _Comment {
     required this.username,
     required this.text,
     required this.timestamp,
-    required this.profileUrl,
+    required this.profilePic,
     required this.isVerified,
     this.isLiked = false,
     this.replies = const [],

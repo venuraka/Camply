@@ -110,6 +110,22 @@ class _AddPhotoState extends State<AddPhoto> {
     });
 
     try {
+      final userDoc =
+          await FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .get();
+
+      final userData = userDoc.data();
+      if (userData == null ||
+          !userData.containsKey('name') ||
+          !userData.containsKey('profileImageUrl')) {
+        throw Exception("User profile information is incomplete.");
+      }
+
+      final username = userData['name'];
+      final profilePic = userData['profileImageUrl'];
+
       // Compress image to reduce upload time
       List<int>? compressedBytes = await FlutterImageCompress.compressWithFile(
         _image!.path,
@@ -128,6 +144,9 @@ class _AddPhotoState extends State<AddPhoto> {
           .doc(userId)
           .collection('user_posts')
           .add({
+            'userId': userId,
+            'userName': username,
+            'userProfilePic': profilePic,
             'imageUrl': imageUrl,
             'location': _locationController.text,
             'timestamp': FieldValue.serverTimestamp(),
@@ -173,7 +192,7 @@ class _AddPhotoState extends State<AddPhoto> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Insert Photo"),
-         backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: const Color(0xFF2ECC71),
         foregroundColor: Colors.white,
       ),
       body: Stack(
@@ -238,7 +257,7 @@ class _AddPhotoState extends State<AddPhoto> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitData,
                     style: ElevatedButton.styleFrom(
-                       backgroundColor: const Color(0xFF2ECC71),
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
