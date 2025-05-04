@@ -18,7 +18,7 @@
         android:icon="@mipmap/ic_launcher"
         android:enableOnBackInvokedCallback="true">
 
-
+<!--Api key for googlemaps-venuraka-->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBoB5AqC_QbDkLEw0KXBO-0LxFFb5-Kslw" />
