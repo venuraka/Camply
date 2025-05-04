@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../models/camp_model.dart';
 
-
 class LocationTab extends StatefulWidget {
   final CampSite campSite;
 
@@ -21,6 +20,7 @@ class _LocationTabState extends State<LocationTab> {
   GoogleMapController? mapController;
   LatLng _center = const LatLng(37.4221, -122.0841); // Default location
   bool _isLoading = true;
+  Set<Marker> _markers = {};
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -42,13 +42,22 @@ class _LocationTabState extends State<LocationTab> {
         if (match != null) {
           final latitude = double.parse(match.group(1)!);
           final longitude = double.parse(match.group(2)!);
+          final newCenter = LatLng(latitude, longitude);
 
           if (mounted) {
             setState(() {
-              _center = LatLng(latitude, longitude);
+              _center = newCenter;
+              _markers = {
+                Marker(
+                  markerId: const MarkerId('campLocation'),
+                  position: newCenter,
+                  infoWindow: InfoWindow(title: widget.campSite.name),
+                ),
+              };
               _isLoading = false;
             });
-            mapController?.animateCamera(CameraUpdate.newLatLng(_center));
+
+            mapController?.animateCamera(CameraUpdate.newLatLng(newCenter));
           }
         } else {
           print('Could not parse location string');
@@ -94,6 +103,7 @@ class _LocationTabState extends State<LocationTab> {
                   ),
                   myLocationEnabled: true,
                   myLocationButtonEnabled: true,
+                  markers: _markers,
                 ),
                 if (_isLoading)
                   const Center(
@@ -154,11 +164,11 @@ class _LocationTabState extends State<LocationTab> {
                             final url =
                                 'https://www.google.com/maps/search/?api=1&query=${_center.latitude},${_center.longitude}';
                             if (await canLaunchUrl(Uri.parse(url))) {
-                            await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                              await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
                             } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Could not launch Google Maps')),
-                            );
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text('Could not launch Google Maps')),
+                              );
                             }
                           },
                           icon: const Icon(Icons.directions),
