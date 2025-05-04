@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import '../models/camp_model.dart';
 import 'camp_detail_page.dart';
-import 'camp_model.dart';
 import 'create_camp_page.dart';
 
 class CampMenuPage extends StatelessWidget {

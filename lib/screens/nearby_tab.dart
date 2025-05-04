@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:url_launcher/url_launcher.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'camp_model.dart';
+import '../models/camp_model.dart';
+
 
 class NearbyTab extends StatefulWidget {
   final CampSite campSite;

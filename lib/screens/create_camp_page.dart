@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:random_string/random_string.dart';
-import 'Services/Database.dart';
-import 'camp_model.dart';
-import 'Controllers/locationretrieval.dart';
+import '../Controllers/locationretrieval.dart';
+import '../models/camp_model.dart';
+import '../services/Database.dart';
 import 'package:geolocator/geolocator.dart';
 import 'camp_menu_page.dart';
 

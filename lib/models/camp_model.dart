@@ -1,29 +1,54 @@
 class CampSite {
+  final String id;
   final String name;
   final String location;
-  final String details;
-  final List<String> amenities;
-  final List<String> nearbyPlaces;
   final String? imageUrl;
-  final double rating;
+  final String? details;
+  final List<String>? amenities;
+  final Map<String, String>? nearbyPlaces;
 
   CampSite({
+    required this.id,
     required this.name,
     required this.location,
-    required this.details,
-    required this.amenities,
-    required this.nearbyPlaces,
     this.imageUrl,
-    this.rating = 0.0,
+    this.amenities,
+    this.details,
+    this.nearbyPlaces,
   });
 
-  static List<String> getDefaultNearbyPlaces() {
-    return [
-      'Hospital',
-      'Police Station',
-      'Fire Department',
-      'Pharmacy',
-      'Restaurant',
-    ];
+  factory CampSite.fromMap(Map<String, dynamic> map, String id) {
+    return CampSite(
+      id: id,
+      name: map['name'] ?? '',
+      location: map['location'] ?? '',
+      imageUrl: map['imageUrl'],
+      details: map['details'],
+      amenities: List<String>.from(map['amenities'] ?? []),
+      nearbyPlaces: map['nearbyPlaces'] != null
+          ? Map<String, String>.from(map['nearbyPlaces'])
+          : null,
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'location': location,
+      'imageUrl': imageUrl,
+      'amenities': amenities,
+      'details': details,
+      'nearbyPlaces': nearbyPlaces,
+    };
+  }
+
+  static Map<String, String> getDefaultNearbyPlaces() {
+    return {
+      'Hospital': '2 km',
+      'Fire Department': '5 km',
+      'Police': '3 km',
+      'Pharmacy': '1 km',
+      'Restaurant': '500 m',
+    };
   }
 }
