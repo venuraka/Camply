@@ -3,7 +3,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
 
 class UserReview extends StatefulWidget {
   const UserReview({super.key});
@@ -58,7 +57,7 @@ class UserReviewState extends State<UserReview> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        backgroundColor: const Color(0xFF2ECC71),
         title: Text("Add your Review", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -130,7 +129,7 @@ class UserReviewState extends State<UserReview> {
               child: ElevatedButton(
                 onPressed: _submitReview,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.green,
+                  backgroundColor: const Color(0xFF2ECC71),
                   padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(25)),
                 ),
@@ -153,7 +152,7 @@ class UserReviewState extends State<UserReview> {
           min: 0,
           max: 10,
           divisions: 10,
-          activeColor: Colors.green,
+          activeColor: const Color(0xFF2ECC71),
           inactiveColor: Colors.grey[300],
           onChanged: onChanged,
         ),
