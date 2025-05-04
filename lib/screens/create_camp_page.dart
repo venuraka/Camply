@@ -275,7 +275,7 @@ class _CreateCampPageState extends State<CreateCampPage> {
                         toastLength: Toast.LENGTH_SHORT,
                         gravity: ToastGravity.CENTER,
                         timeInSecForIosWeb: 1,
-                        backgroundColor: Colors.green,
+                       backgroundColor: const Color(0xFF2ECC71),
                         textColor: Colors.white,
                         fontSize: 16.0,
                       );

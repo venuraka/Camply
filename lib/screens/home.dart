@@ -66,9 +66,9 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.green,
+       backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
-          "Camper",
+          "Camply",
           // Can load user name to check if needed
           // title: Text(
           //   "Camper ${userData?['name'] ?? ''}",
@@ -486,7 +486,7 @@ class _CommentPopupState extends State<CommentPopup> {
           ),
         ),
         automaticallyImplyLeading: true,
-        backgroundColor: Colors.green,
+       backgroundColor: const Color(0xFF2ECC71),
         toolbarHeight: 80, // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -605,7 +605,7 @@ class BottomNavBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomNavigationBar(
       type: BottomNavigationBarType.fixed,
-      backgroundColor: Colors.green,
+     backgroundColor: const Color(0xFF2ECC71),
       unselectedItemColor: Colors.white,
       selectedItemColor: const Color.fromARGB(255, 5, 58, 7),
       showSelectedLabels: false,
