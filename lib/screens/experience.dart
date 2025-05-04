@@ -231,7 +231,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -388,7 +388,7 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Experiences'),
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
       ),
       body: ExperienceList(userId: userId!),
       floatingActionButton: FloatingActionButton(
@@ -400,7 +400,7 @@ class _ExperienceScreenState extends State<ExperienceScreen> {
             ),
           );
         },
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         child: const Icon(Icons.add),
       ),
     );

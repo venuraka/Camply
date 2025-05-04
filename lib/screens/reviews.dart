@@ -16,7 +16,7 @@ class ReviewPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         title: Text("Campsite Details", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -114,7 +114,7 @@ class ReviewPage extends StatelessWidget {
         ElevatedButton(
           onPressed: () {},
           style: ElevatedButton.styleFrom(
-           backgroundColor: const Color(0xFF2ECC71),
+            backgroundColor: Colors.green,
             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           ),
           child: Text("Follow", style: TextStyle(color: Colors.white)),
@@ -193,7 +193,7 @@ class ReviewPage extends StatelessWidget {
         //   Navigator.pop(context);
         // },
         style: ElevatedButton.styleFrom(
-         backgroundColor: const Color(0xFF2ECC71),
+          backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
         ),

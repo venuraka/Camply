@@ -50,7 +50,7 @@ class UserReviewState extends State<UserReview> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         title: Text("User Review Section", style: TextStyle(color: Colors.white)),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
@@ -166,7 +166,7 @@ class UserReviewState extends State<UserReview> {
                 alignment: Alignment.centerRight, 
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                   backgroundColor: const Color(0xFF2ECC71),
+                    backgroundColor: Colors.green,
                     padding: EdgeInsets.symmetric(horizontal: 40, vertical: 12),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(25),

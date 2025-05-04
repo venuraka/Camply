@@ -173,7 +173,7 @@ class _AddPhotoState extends State<AddPhoto> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Insert Photo"),
-       backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: Colors.green,
         foregroundColor: Colors.white,
       ),
       body: Stack(
@@ -238,7 +238,7 @@ class _AddPhotoState extends State<AddPhoto> {
                   ElevatedButton(
                     onPressed: _isLoading ? null : _submitData,
                     style: ElevatedButton.styleFrom(
-                     backgroundColor: const Color(0xFF2ECC71),
+                      backgroundColor: Colors.green,
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
