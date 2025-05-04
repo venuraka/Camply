@@ -68,7 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-         backgroundColor: const Color(0xFF2ECC71),
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
           "Camply",
           // Can load user name to check if needed
@@ -488,7 +489,7 @@ class _CommentPopupState extends State<CommentPopup> {
           ),
         ),
         automaticallyImplyLeading: true,
-         backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: const Color(0xFF2ECC71),
         toolbarHeight: 80, // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
