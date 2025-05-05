@@ -1,9 +1,11 @@
-import 'package:camply/pages/camp_details_display.dart';
+import 'package:camply/services/post_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:camply/services/auth_service.dart';
 import 'package:camply/Components/BottomNavBar.dart';
 import 'package:camply/models/post_model.dart';
+
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -86,6 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         elevation: 0,
         actions: [
           IconButton(icon: const Icon(Icons.logout), onPressed: _signOut),
+          // IconButton(icon: const Icon(Icons.search), onPressed: _signOut),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -102,14 +105,21 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: Text("No posts found."));
           }
 
-          final posts =
+          // final posts =
+          //     snapshot.data!.docs.where((doc) {
+          //       final data = doc.data() as Map<String, dynamic>;
+          //       return data['userId'] !=
+          //           _authService.currentUser?.uid; // filter out own posts
+          //     }).toList();
+          final docs =
               snapshot.data!.docs.where((doc) {
                 final data = doc.data() as Map<String, dynamic>;
                 return data['userId'] !=
                     _authService.currentUser?.uid; // filter out own posts
               }).toList();
 
-          if (posts.isEmpty) {
+          // if (posts.isEmpty) {
+          if (docs.isEmpty) {
             return const Center(
               child: Text(
                 "No New Posts Uploaded Yet.",
@@ -123,20 +133,25 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return ListView.builder(
-            itemCount: posts.length,
+            // itemCount: posts.length,
+            // itemBuilder: (context, index) {
+            //   final data = posts[index].data() as Map<String, dynamic>;
+            itemCount: docs.length,
             itemBuilder: (context, index) {
-              final data = posts[index].data() as Map<String, dynamic>;
+              final doc = docs[index];
 
               try {
-                final post = Post.fromFirestore(data);
+                // final post = Post.fromFirestore(data);
+                final post = Post.fromFirestore(doc);
                 return GestureDetector(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => CampDetailsDisplay()),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(builder: (_) => CampDetailsDisplay()),
+                    // );
                   },
                   child: PostCard(
+                    postId: post.postId,
                     username: post.username,
                     location: post.location,
                     imageUrl: post.imageUrl,
@@ -186,6 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // ---------- PostCard Widget ----------
 class PostCard extends StatefulWidget {
+  final String postId;
   final String username;
   final String location;
   final String imageUrl;
@@ -198,6 +214,7 @@ class PostCard extends StatefulWidget {
 
   const PostCard({
     super.key,
+    required this.postId,
     required this.username,
     required this.location,
     required this.imageUrl,
@@ -217,18 +234,80 @@ class _PostCardState extends State<PostCard> {
   bool isLiked = false;
   bool isBookmarked = false;
   int currentLikeCount = 0;
+  int currentCommentCount = 0;
+
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
     currentLikeCount = widget.likeCount;
+    currentCommentCount = widget.commentCount;
+    _checkIfLiked();
+    _startAutoRefresh();
   }
 
-  void toggleLike() {
+  void _checkIfLiked() async {
+    final liked = await PostService.isPostLiked(
+      postOwnerId: widget.profileId,
+      postId: widget.postId,
+    );
+
+    if (!mounted) return; // Prevent setState after dispose
+
+    setState(() {
+      isLiked = liked;
+    });
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
+      await _refreshLikeAndCommentCounts();
+    });
+  }
+
+  Future<void> _refreshLikeAndCommentCounts() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('posts')
+              .doc(widget.profileId)
+              .collection('user_posts')
+              .doc(widget.postId)
+              .get();
+
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data()!;
+      final newLikes = data['likeCount'] ?? 0;
+      final newComments = data['commentCount'] ?? 0;
+
+      if (!mounted) return;
+      setState(() {
+        currentLikeCount = newLikes;
+        currentCommentCount = newComments;
+      });
+    } catch (e) {
+      print("Failed to refresh counts: $e");
+    }
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel(); // Stop timer when widget is removed
+    super.dispose();
+  }
+
+  void toggleLike() async {
     setState(() {
       isLiked = !isLiked;
-      currentLikeCount = isLiked ? currentLikeCount + 1 : currentLikeCount - 1;
+      currentLikeCount += isLiked ? 1 : -1;
     });
+
+    await PostService.postsToggleLike(
+      postOwnerId: widget.profileId,
+      postId: widget.postId,
+    );
   }
 
   void toggleBookmark() {

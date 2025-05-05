@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Post {
+  final String postId;
   final String username;
   final String location;
   final String imageUrl;
@@ -8,6 +11,7 @@ class Post {
   final int commentCount;
 
   Post({
+    required this.postId,
     required this.username,
     required this.location,
     required this.imageUrl,
@@ -17,8 +21,10 @@ class Post {
     required this.commentCount,
   });
 
-  factory Post.fromFirestore(Map<String, dynamic> data) {
+  factory Post.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
     return Post(
+      postId: doc.id,
       username: data['userName'] ?? 'User',
       location: data['location'] ?? '',
       imageUrl:
