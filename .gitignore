@@ -1,98 +1,102 @@
-# Flutter/Dart specific
+# Flutter Specific
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
-.packages
-.pub/
+.metadata
 build/
-ios/Flutter/.last_build_id
-.dart_tool/
-.flutter-plugins
-.flutter-plugins-dependencies
-.packages
-.pub-cache/
-.pub/
-/build/
-flutter_*.png
-linked_*.ds
-unlinked.ds
-unlinked_spec.ds
 
-# Android specific
-*/android/*/gradle-wrapper.jar
-**/android/.gradle
-**/android/captures/
-**/android/gradlew
-**/android/gradlew.bat
-**/android/local.properties
-*/android/*/GeneratedPluginRegistrant.java
-**/android/key.properties
-*.jks
+# Android Specific
+android/.gradle/
+android/.idea/caches/
+android/.idea/modules.xml
+android/.idea/workspace.xml
+android/local.properties
+android/key.jks
 
-# iOS specific
-*/ios//.mode1v3
-*/ios//.mode2v3
-*/ios//.moved-aside
-*/ios//.pbxuser
-*/ios//.perspectivev3
-*/ios/*/*sync/
-*/ios/*/.sconsign.dblite
-*/ios//.tags
-*/ios/*/.vagrant/
-*/ios/*/DerivedData/
-*/ios/*/Icon?
-*/ios/*/Pods/
-*/ios/*/.symlinks/
-*/ios/*/profile
-*/ios/*/xcuserdata
-**/ios/.generated/
-**/ios/Flutter/App.framework
-**/ios/Flutter/ephemeral/
-**/ios/Flutter/Flutter.framework
-**/ios/Flutter/Generated.xcconfig
-**/ios/Flutter/app.flx
-**/ios/Flutter/app.zip
-**/ios/Flutter/flutter_assets/
-**/ios/ServiceDefinitions.json
-*/ios/Runner/GeneratedPluginRegistrant.
+# iOS Specific
+ios/Flutter/App.framework/
+ios/Flutter/Flutter.framework/
+ios/Podfile.lock
+ios/Pods/
+ios/.symlinks/
+ios/Frameworks/
+ios/DerivedData/
 
-# Web related
-**/web/favicon.png
-**/web/icons/
-**/web/splash/
+# General Ignore
+.DS_Store
+.env
+**/.DS_Store
+**/Thumbs.db
+**/*.swp
+**/*.swo
+**/*.log
 
-# macOS specific
-**/macos/Flutter/GeneratedPluginRegistrant.swift
-**/macos/Flutter/ephemeral/
-*/macos/*/.DS_Store
+# Packages
+**/packages/*/build/
+**/packages/*/.dart_tool/
 
-# Windows specific
-**/windows/flutter/generated_plugin_registrant.cc
-**/windows/flutter/generated_plugin_registrant.h
-**/windows/flutter/ephemeral/
+# Generated files
+**/lib/generated/**
 
-# Linux specific
-**/linux/flutter/generated_plugin_registrant.cc
-**/linux/flutter/generated_plugin_registrant.h
-**/linux/flutter/ephemeral/
+# Other Generated Files (e.g., Freezed, JSON Serializable)
+**/lib/**/*.g.dart
+**/lib/**/*.freezed.dart
+**/lib/**/*.chopper.dart
+**/lib/**/*.mocks.dart
 
-# Coverage
-coverage/
+# Dependency Package Configuration Files (for some package managers)
+pubspec.lock
+**/pubspec.lock
 
-# Symbols
-app.*.symbols
+# Firebase generated files
+lib/firebase_options.dart
 
-# Exceptions to the above rules
-!*/ios/*/default.mode1v3
-!*/ios/*/default.mode2v3
-!*/ios/*/default.pbxuser
-!*/ios/*/default.perspectivev3
-!/packages/flutter_tools/test/data/dart_dependencies_test/**/.packages
-
-# IDE specific files
+# IDE Specific
 .idea/
-.vscode/
 *.iml
 *.iws
+
+# VS Code Specific (if using VS Code)
+.vscode/
+
+# IntelliJ Specific (if using IntelliJ IDEA)
 *.ipr
-.DS_Store
+*.iws
+*.iml
+out/
+
+# Android Studio/IntelliJ Live Templates
+templates/
+
+# Gradle specific
+*.gradle
+*.keystore
+
+# MacOS Specific
+.AppleDouble
+.LSOverride
+
+# Windows Specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Miscellaneous
+# Ignore the crashlytics app build information.
+crashlytics.properties
+
+# Ignore the Google Services configuration file (keep sensitive credentials out of the repo)
+android/app/google-services.json
+ios/Runner/GoogleService-Info.plist
+
+# Credentials file (keep sensitive credentials out of the repo)
+credentials.json
+
+# Automatically generated assets
+assets/i18n/**/*g.dart
+
+# Automatically generated l10n files (if using Flutter's localization)
+lib/l10n/**/.arb
+lib/l10n/l10n.yaml
+/android/app/.cxx/Debug
+/android/app/.cxx/Debug
