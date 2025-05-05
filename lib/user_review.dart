@@ -3,6 +3,7 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/foundation.dart';
 
 class UserReview extends StatefulWidget {
   const UserReview({super.key});
@@ -78,19 +79,38 @@ class UserReviewState extends State<UserReview> {
                   border: Border.all(color: Colors.black26),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: _selectedImage == null
-                    ? Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(Icons.add_photo_alternate, size: 50, color: Colors.black54),
-                          SizedBox(height: 5),
-                          Text("Add Photo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                        ],
-                      )
-                    : ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.file(_selectedImage!, width: double.infinity, height: 150, fit: BoxFit.cover),
-                      ),
+                // child: _selectedImage == null
+                //     ? Column(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Icon(Icons.add_photo_alternate, size: 50, color: Colors.black54),
+                //           SizedBox(height: 5),
+                //           Text("Add Photo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                //         ],
+                //       )
+                //     : ClipRRect(
+                //         borderRadius: BorderRadius.circular(12),
+                //         child: Image.file(_selectedImage!, width: double.infinity, height: 150, fit: BoxFit.cover),
+                //       ),
+                child: (_selectedImage == null || !_selectedImage!.existsSync())
+    ? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.add_photo_alternate, size: 50, color: Colors.black54),
+          SizedBox(height: 5),
+          Text("Add Photo", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        ],
+      )
+    : ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Image.file(
+          _selectedImage!,
+          width: double.infinity,
+          height: 150,
+          fit: BoxFit.cover,
+        ),
+      ),
+
               ),
             ),
             SizedBox(height: 20),

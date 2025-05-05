@@ -4,28 +4,33 @@ import 'package:percent_indicator/linear_percent_indicator.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'user_review.dart';
 
-class ReviewPage extends StatelessWidget {
+class ReviewPage extends StatefulWidget {
   const ReviewPage({super.key});
+
+  @override
+  State<ReviewPage> createState() => _ReviewPageState();
+}
+
+class _ReviewPageState extends State<ReviewPage> with TickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 4, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.green,
-        title: Text("Campsite Details", style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [_buildImageSection(), _buildDetailsSection(context)],
-        ),
-      ),
       floatingActionButton: SizedBox(
-        height: 40, // 👈 Reduced height
+        height: 40,
         child: FloatingActionButton.extended(
           onPressed: () {
             Navigator.push(
@@ -35,25 +40,51 @@ class ReviewPage extends StatelessWidget {
           },
           backgroundColor: Colors.green,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(
-              20,
-            ), // You can tweak radius here
+            borderRadius: BorderRadius.circular(20),
           ),
           icon: Icon(Icons.rate_review, color: Colors.white, size: 18),
-          label: Text(
-            "Write a Review",
-            style: TextStyle(color: Colors.white, fontSize: 12),
-          ),
+          label: Text("Write a Review", style: TextStyle(fontSize: 12)),
+        ),
+      ),
+      body: DefaultTabController(
+        length: 4,
+        child: Column(
+          children: [
+            _buildHeaderImage(),
+            _buildInfoCard(),
+            TabBar(
+              controller: _tabController,
+              labelColor: Colors.black,
+              indicatorColor: Colors.green,
+              tabs: const [
+                Tab(text: "Details"),
+                Tab(text: "Location"),
+                Tab(text: "Near By"),
+                Tab(text: "Review"),
+              ],
+            ),
+            Expanded(
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  _buildDetailsTab(),
+                  _buildLocationTab(),
+                  _buildNearbyTab(),
+                  _buildReviewTab(),
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildImageSection() {
+  Widget _buildHeaderImage() {
     return Stack(
       children: [
         Container(
-          height: 300,
+          height: 230,
           decoration: BoxDecoration(
             image: DecorationImage(
               image: AssetImage('images/campsite.jpg'),
@@ -61,7 +92,100 @@ class ReviewPage extends StatelessWidget {
             ),
           ),
         ),
+        SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: CircleAvatar(
+              backgroundColor: Colors.white,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.black),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget _buildInfoCard() {
+    return Container(
+      padding: EdgeInsets.all(16),
+      color: Colors.white,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text("Tuesday", style: TextStyle(fontSize: 14)),
+          Text("Apr 29, 2025", style: TextStyle(fontWeight: FontWeight.bold)),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text("Whispering Pines", style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text("31.94°C - Few clouds", style: TextStyle(fontSize: 12)),
+                  Icon(Icons.cloud, size: 16, color: Colors.orange),
+                ],
+              )
+            ],
+          ),
+          SizedBox(height: 4),
+          Text("Latitude: 7.0709718, Longitude: 80.0177035", style: TextStyle(fontSize: 12, color: Colors.grey)),
+          SizedBox(height: 10),
+          Row(
+            children: [
+              Row(
+                children: List.generate(4, (_) => Icon(Icons.star, color: Colors.green, size: 18))
+                ..add(Icon(Icons.star_half, color: Colors.green, size: 18)),
+              ),
+              SizedBox(width: 8),
+              Text("7.7", style: TextStyle(fontWeight: FontWeight.bold)),
+              Spacer(),
+              ElevatedButton(
+                onPressed: () {},
+                style: ElevatedButton.styleFrom(backgroundColor: Colors.green, shape: StadiumBorder()),
+                child: Text("Follow"),
+              ),
+              SizedBox(width: 10),
+              Icon(Icons.share, color: Colors.green),
+            ],
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailsTab() {
+    return Center(child: Text("details"));
+  }
+
+  Widget _buildLocationTab() {
+    return Center(child: Text("Location"));
+  }
+
+  Widget _buildNearbyTab() {
+    return Center(child: Text("Nearby"));
+  }
+
+  Widget _buildReviewTab() {
+    return SingleChildScrollView(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        children: [
+          _buildAspectRatings(),
+          SizedBox(height: 16),
+          _buildFirebaseReviews(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAmenityChip(IconData icon, String label) {
+    return Chip(
+      avatar: Icon(icon, size: 16),
+      label: Text(label),
+      backgroundColor: Colors.grey[200],
     );
   }
 
@@ -72,41 +196,26 @@ class ReviewPage extends StatelessWidget {
         if (!snapshot.hasData) return CircularProgressIndicator();
 
         final docs = snapshot.data!.docs;
-
-        List<double> accessibility = [];
-        List<double> waterAccess = [];
-        List<double> network = [];
-        List<double> cleanliness = [];
-        List<double> wildlife = [];
+        List<double> accessibility = [], waterAccess = [], network = [], cleanliness = [], wildlife = [];
 
         for (var doc in docs) {
           final data = doc.data() as Map<String, dynamic>;
-
-          if (data['accessibility'] != null)
-            accessibility.add(data['accessibility'].toDouble());
-          if (data['waterAccess'] != null)
-            waterAccess.add(data['waterAccess'].toDouble());
+          if (data['accessibility'] != null) accessibility.add(data['accessibility'].toDouble());
+          if (data['waterAccess'] != null) waterAccess.add(data['waterAccess'].toDouble());
           if (data['network'] != null) network.add(data['network'].toDouble());
-          if (data['cleanliness'] != null)
-            cleanliness.add(data['cleanliness'].toDouble());
-          if (data['wildlife'] != null)
-            wildlife.add(data['wildlife'].toDouble());
+          if (data['cleanliness'] != null) cleanliness.add(data['cleanliness'].toDouble());
+          if (data['wildlife'] != null) wildlife.add(data['wildlife'].toDouble());
         }
 
-        double calcAverage(List<double> values) {
-          if (values.isEmpty) return 0;
-          return values.reduce((a, b) => a + b) / values.length;
-        }
+        double calcAvg(List<double> vals) => vals.isEmpty ? 0 : vals.reduce((a, b) => a + b) / vals.length;
 
         return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildSingleAspect("Accessibility", calcAverage(accessibility)),
-            _buildSingleAspect("Cleanliness", calcAverage(cleanliness)),
-            _buildSingleAspect("Network Coverage", calcAverage(network)),
-            _buildSingleAspect("Wildlife Presence", calcAverage(wildlife)),
-            _buildSingleAspect("Water Access", calcAverage(waterAccess)),
-            SizedBox(height: 20),
+            _buildSingleAspect("Accessibility", calcAvg(accessibility)),
+            _buildSingleAspect("Cleanliness", calcAvg(cleanliness)),
+            _buildSingleAspect("Network Coverage", calcAvg(network)),
+            _buildSingleAspect("Wildlife Presence", calcAvg(wildlife)),
+            _buildSingleAspect("Water Access", calcAvg(waterAccess)),
           ],
         );
       },
@@ -127,7 +236,6 @@ class ReviewPage extends StatelessWidget {
               backgroundColor: Colors.grey.shade300,
               progressColor: Colors.green,
               barRadius: Radius.circular(10),
-              padding: EdgeInsets.symmetric(horizontal: 8.0),
             ),
           ),
           SizedBox(width: 6),
@@ -137,146 +245,11 @@ class ReviewPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Yosemite Basecamp",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 5),
-        Text(
-          "Miriswatta-Gampaha",
-          style: TextStyle(fontSize: 14, color: Colors.grey),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildReviewRow(BuildContext context) {
-    return Row(
-      children: [
-        Row(
-          children: List.generate(
-            4,
-            (index) => Icon(Icons.star, color: Colors.green, size: 20),
-          )..add(Icon(Icons.star_half, color: Colors.green, size: 20)),
-        ),
-        SizedBox(width: 10),
-        Text(
-          "7.7",
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        Spacer(),
-        ElevatedButton(
-          onPressed: () {},
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Colors.green,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          child: Text("Follow", style: TextStyle(color: Colors.white)),
-        ),
-        SizedBox(width: 10),
-        //_buildCircularIconButton(Icons.share, () {}),
-      ],
-    );
-  }
-
-  Widget _buildTabs() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      children: [
-        Text(
-          "Details",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "Location",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "Near By",
-          style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          "Reviews",
-          style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.bold,
-            color: Colors.green,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildDetailsSection(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          _buildHeader(),
-          SizedBox(height: 10),
-          _buildReviewRow(context),
-          SizedBox(height: 15),
-          _buildTabs(),
-           SizedBox(height: 8),
-          Divider(
-  color: Colors.black,
-  thickness: 1,
-  height: 0,
-),
-          SizedBox(height: 20),
-          _buildAspectRatings(), 
-          _buildTheme(),
-          SizedBox(height: 10),
-          _buildFirebaseReviews(), 
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRatingBar(String title, double value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "$title: ${value.toStringAsFixed(1)}",
-          style: TextStyle(fontSize: 14),
-        ),
-        LinearPercentIndicator(
-          lineHeight: 8.0,
-          percent: (value / 10).clamp(0.0, 1.0), // assuming max rating is 10
-          backgroundColor: Colors.grey.shade300,
-          progressColor: Colors.green,
-          barRadius: Radius.circular(10),
-        ),
-        SizedBox(height: 10),
-      ],
-    );
-  }
-
-  Widget _buildTheme() {
-    return Row(
-      children: [
-        Text(
-          "User Reviews",
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-        ),
-      ],
-    );
-  }
-
   Widget _buildFirebaseReviews() {
     return StreamBuilder(
       stream: FirebaseFirestore.instance.collection('reviews').snapshots(),
       builder: (context, snapshot) {
-        if (!snapshot.hasData)
-          return Center(child: CircularProgressIndicator());
+        if (!snapshot.hasData) return Center(child: CircularProgressIndicator());
 
         var docs = snapshot.data!.docs;
 
@@ -291,108 +264,63 @@ class ReviewPage extends StatelessWidget {
             DateTime reviewDate = data['timestamp'].toDate();
 
             final profilePhotoUrl = data['profilePhotoUrl'];
-            final imageProvider =
-                (profilePhotoUrl != null && profilePhotoUrl.isNotEmpty)
-                    ? NetworkImage(profilePhotoUrl)
-                    : AssetImage('images/profile.jpg') as ImageProvider;
+            final imageProvider = (profilePhotoUrl != null && profilePhotoUrl.isNotEmpty)
+                ? NetworkImage(profilePhotoUrl)
+                : AssetImage('images/profile.jpg') as ImageProvider;
 
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => ReviewDetailPage(reviewId: reviewId),
-                  ),
-                );
-              },
-              child: Card(
-                elevation: 2,
-                margin: EdgeInsets.symmetric(vertical: 8),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
+            return FutureBuilder<QuerySnapshot>(
+              future: FirebaseFirestore.instance
+                  .collection('reviews')
+                  .doc(reviewId)
+                  .collection('replies')
+                  .get(),
+              builder: (context, replySnapshot) {
+                int replyCount = replySnapshot.hasData ? replySnapshot.data!.docs.length : 0;
+
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ReviewDetailPage(reviewId: reviewId)),
+                    );
+                  },
+                  child: Card(
+                    elevation: 2,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CircleAvatar(
-                            radius: 18,
-                            backgroundImage: imageProvider,
+                          Row(
+                            children: [
+                              CircleAvatar(radius: 18, backgroundImage: imageProvider),
+                              SizedBox(width: 10),
+                              Text(data['username'] ?? "Anonymous", style: TextStyle(fontWeight: FontWeight.bold)),
+                            ],
                           ),
-                          SizedBox(width: 10),
-                          Text(
-                            data['username'] ?? "Anonymous",
-                            style: TextStyle(fontWeight: FontWeight.bold),
+                          SizedBox(height: 10),
+                          Text(data['comment'] ?? "No comment", maxLines: 3, overflow: TextOverflow.ellipsis),
+                          SizedBox(height: 12),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text("$replyCount Replies", style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                              Text("Posted on ${reviewDate.day}/${reviewDate.month}/${reviewDate.year}",
+                                  style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                            ],
                           ),
                         ],
                       ),
-                      SizedBox(height: 10),
-                      Text(
-                        data['comment'] ?? "No comment",
-                        maxLines: 3,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(fontSize: 16),
-                      ),
-                      SizedBox(height: 12),
-                      Align(
-                        alignment: Alignment.bottomRight,
-                        child: Text(
-                          "Posted on: ${reviewDate.toLocal().toString().split(' ')[0]}",
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.grey[600],
-                          ),
-                        ),
-                      ),
-                    ],
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
             );
           },
         );
       },
     );
   }
-
-  // Widget _buildWriteReviewButton(BuildContext context) {
-  //   return Align(
-  //     alignment: Alignment.centerRight,
-  //     child: ElevatedButton(
-  //       onPressed: () {
-  //         Navigator.push(
-  //           context,
-  //           MaterialPageRoute(builder: (context) => const UserReview()),
-  //         );
-  //       },
-  //       style: ElevatedButton.styleFrom(
-  //         backgroundColor: Colors.green,
-  //         shape: RoundedRectangleBorder(
-  //           borderRadius: BorderRadius.circular(20),
-  //         ),
-  //         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  //       ),
-  //       child: Text(
-  //         "Write a Review",
-  //         style: TextStyle(color: Colors.white, fontSize: 14),
-  //       ),
-  //     ),
-  //   );
-  // }
-
-  // Widget _buildCircularIconButton(IconData icon, VoidCallback onPressed) {
-  //   return Container(
-  //     width: 35,
-  //     height: 35,
-  //     decoration: BoxDecoration(color: Colors.green, shape: BoxShape.circle),
-  //     child: IconButton(
-  //       icon: Icon(icon, color: Colors.white, size: 20),
-  //       onPressed: onPressed,
-  //       padding: EdgeInsets.all(8),
-  //     ),
-  //   );
-  // }
 }
