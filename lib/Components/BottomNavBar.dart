@@ -42,6 +42,7 @@ class BottomNavBar extends StatelessWidget {
           icon: Icon(Icons.filter_hdr),
           label: "CampSites",
         ),
+        // BottomNavigationBarItem(icon: Icon(Icons.bookmark), label: "Saved"),
         BottomNavigationBarItem(icon: Icon(Icons.add_box), label: "Add"),
         BottomNavigationBarItem(
           icon: Icon(Icons.notifications),

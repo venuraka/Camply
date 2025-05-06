@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:camply/services/post_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,17 @@ class _UserProfileState extends State<UserProfile>
   // int followerCount = 110;
   bool isFollowing = false;
 
+  bool isLiked = false;
+  // int currentLikeCount = 0;
+
   String? userId;
   String? userName;
   String? userProfilePic;
   int? followersCount;
   int? followingCount;
   bool isLoading = true;
+
+  Map<String, bool> likedPosts = {};
 
   @override
   void initState() {
@@ -81,18 +87,26 @@ class _UserProfileState extends State<UserProfile>
     }
   }
 
-  // Increment likes count
-  Future<void> _incrementLikes(String docId) async {
-    try {
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(userId)
-          .collection('user_posts')
-          .doc(docId)
-          .update({'likeCount': FieldValue.increment(1)});
-    } catch (e) {
-      _showSnackBar('Failed to update likes: $e');
-    }
+  void _checkIfLiked(String ownerId, String postId) async {
+    final liked = await PostService.isPostLiked(
+      postOwnerId: ownerId,
+      postId: postId,
+    );
+
+    if (!mounted) return;
+
+    setState(() {
+      likedPosts[postId] = liked;
+    });
+  }
+
+  void toggleLike(String ownerId, String postId) async {
+    setState(() {
+      isLiked = !isLiked;
+      // currentLikeCount += isLiked ? 1 : -1;
+    });
+
+    await PostService.postsToggleLike(postOwnerId: ownerId, postId: postId);
   }
 
   // Add comment and increment comments count
@@ -363,131 +377,160 @@ class _UserProfileState extends State<UserProfile>
                             final likes = data['likeCount'] ?? 0;
                             final comments = data['commentCount'] ?? 0;
                             final timestamp = data['timestamp'] as Timestamp?;
+                            final postOwnerId =
+                                data['userId'] ?? 'Unknown User';
                             final docId = docs[i].id;
 
-                            return Container(
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                border: Border.all(color: Colors.greenAccent),
-                                borderRadius: BorderRadius.circular(12),
+                            return FutureBuilder<bool>(
+                              future: PostService.isPostLiked(
+                                postOwnerId: postOwnerId,
+                                postId: docId,
                               ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  ListTile(
-                                    contentPadding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
+                              builder: (context, snapshot) {
+                                final isLiked = snapshot.data ?? false;
+
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.all(
+                                      color: Colors.greenAccent,
                                     ),
-                                    leading: CircleAvatar(
-                                      radius: 20,
-                                      backgroundImage: NetworkImage(
-                                        "$userProfilePic",
-                                      ),
-                                    ),
-                                    title: Text(
-                                      userName ?? 'Loading...',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    subtitle: Text(location),
+                                    borderRadius: BorderRadius.circular(12),
                                   ),
-                                  ClipRRect(
-                                    borderRadius: BorderRadius.circular(8),
-                                    child:
-                                        imageUrl != null
-                                            ? CachedNetworkImage(
-                                              imageUrl: imageUrl,
-                                              height: 250,
-                                              width: double.infinity,
-                                              fit: BoxFit.cover,
-                                              placeholder:
-                                                  (
-                                                    context,
-                                                    url,
-                                                  ) => const Center(
-                                                    child:
-                                                        CircularProgressIndicator(),
-                                                  ),
-                                              errorWidget:
-                                                  (
-                                                    context,
-                                                    url,
-                                                    error,
-                                                  ) => const Center(
-                                                    child: Text(
-                                                      'Failed to load image',
-                                                    ),
-                                                  ),
-                                            )
-                                            : const Center(
-                                              child: Text('No image available'),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      ListTile(
+                                        contentPadding:
+                                            const EdgeInsets.symmetric(
+                                              horizontal: 12,
                                             ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Row(
+                                        leading: CircleAvatar(
+                                          radius: 20,
+                                          backgroundImage: NetworkImage(
+                                            "$userProfilePic",
+                                          ),
+                                        ),
+                                        title: Text(
+                                          userName ?? 'Loading...',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        subtitle: Text(location),
+                                      ),
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child:
+                                            imageUrl != null
+                                                ? CachedNetworkImage(
+                                                  imageUrl: imageUrl,
+                                                  height: 250,
+                                                  width: double.infinity,
+                                                  fit: BoxFit.cover,
+                                                  placeholder:
+                                                      (
+                                                        context,
+                                                        url,
+                                                      ) => const Center(
+                                                        child:
+                                                            CircularProgressIndicator(),
+                                                      ),
+                                                  errorWidget:
+                                                      (
+                                                        context,
+                                                        url,
+                                                        error,
+                                                      ) => const Center(
+                                                        child: Text(
+                                                          'Failed to load image',
+                                                        ),
+                                                      ),
+                                                )
+                                                : const Center(
+                                                  child: Text(
+                                                    'No image available',
+                                                  ),
+                                                ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 10,
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
                                           children: [
-                                            GestureDetector(
-                                              onTap:
-                                                  () => _incrementLikes(docId),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.favorite_border,
-                                                    color: Colors.green,
+                                            Row(
+                                              children: [
+                                                GestureDetector(
+                                                  onTap:
+                                                      () => toggleLike(
+                                                        userId!,
+                                                        docId,
+                                                      ),
+                                                  child: Row(
+                                                    children: [
+                                                      Icon(
+                                                        isLiked
+                                                            ? Icons.favorite
+                                                            : Icons
+                                                                .favorite_border,
+                                                        color:
+                                                            isLiked
+                                                                ? Colors.red
+                                                                : Colors.green,
+                                                      ),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        '$likes',
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    '$likes',
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                    ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                GestureDetector(
+                                                  onTap:
+                                                      () => _addComment(docId),
+                                                  child: Row(
+                                                    children: [
+                                                      const Icon(
+                                                        Icons
+                                                            .chat_bubble_outline,
+                                                        color: Colors.green,
+                                                      ),
+                                                      const SizedBox(width: 4),
+                                                      Text(
+                                                        '$comments',
+                                                        style: const TextStyle(
+                                                          color: Colors.black,
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
-                                            const SizedBox(width: 12),
-                                            GestureDetector(
-                                              onTap: () => _addComment(docId),
-                                              child: Row(
-                                                children: [
-                                                  const Icon(
-                                                    Icons.chat_bubble_outline,
-                                                    color: Colors.green,
-                                                  ),
-                                                  const SizedBox(width: 4),
-                                                  Text(
-                                                    '$comments',
-                                                    style: const TextStyle(
-                                                      color: Colors.black,
-                                                    ),
-                                                  ),
-                                                ],
+                                            Text(
+                                              _formatTimestamp(timestamp),
+                                              style: const TextStyle(
+                                                color: Colors.black,
+                                                fontSize: 12,
+                                                fontStyle: FontStyle.italic,
                                               ),
                                             ),
                                           ],
                                         ),
-                                        Text(
-                                          _formatTimestamp(timestamp),
-                                          style: const TextStyle(
-                                            color: Colors.black,
-                                            fontSize: 12,
-                                            fontStyle: FontStyle.italic,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
-                                ],
-                              ),
+                                );
+                              },
                             );
                           },
                         );
