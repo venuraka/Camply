@@ -5,7 +5,7 @@ class PostService {
   static final _firestore = FirebaseFirestore.instance;
   static final _auth = FirebaseAuth.instance;
 
-  // Likes
+  // Post Likes
   static Future<void> postsToggleLike({
     required String postOwnerId,
     required String postId,
@@ -100,7 +100,7 @@ class PostService {
   }
 
   // Get list of usernames who liked
-  //   static Future<List<String>> getLikeUsernames({
+  //   static Future<List<String>> getPostLikeUsernames({
   //     required String postOwnerId,
   //     required String photoId,
   //   }) async {
@@ -109,6 +109,120 @@ class PostService {
   //             .collection('posts')
   //             .doc(postOwnerId)
   //             .collection('user_posts')
+  //             .doc(photoId)
+  //             .collection('likes')
+  //             .doc('summary')
+  //             .get();
+
+  //     if (!likesDoc.exists) return [];
+
+  //     return List<String>.from(likesDoc.data()!['userNames'] ?? []);
+  //   }
+
+  // Experience Likes
+  static Future<void> experiencesToggleLike({
+    required String postOwnerId,
+    required String postId,
+  }) async {
+    final currentUserId = _auth.currentUser!.uid;
+    final userDoc =
+        await _firestore.collection('users').doc(currentUserId).get();
+    final currentUserName = userDoc.data()?['name'] ?? 'User';
+
+    final likesDocRef = _firestore
+        .collection('experiences')
+        .doc(postOwnerId)
+        .collection('user_experiences')
+        .doc(postId)
+        .collection('likes')
+        .doc('summary');
+
+    final likesDoc = await likesDocRef.get();
+
+    if (likesDoc.exists) {
+      final data = likesDoc.data();
+      List userIds = [];
+      // List userNames = [];
+
+      if (data != null) {
+        userIds = data['userIds'] ?? [];
+        // userNames = data['userNames'] ?? [];
+      }
+
+      if (userIds.contains(currentUserId)) {
+        // Unlike
+        await likesDocRef.update({
+          'userIds': FieldValue.arrayRemove([currentUserId]),
+          'userNames': FieldValue.arrayRemove([currentUserName]),
+        });
+        await _firestore
+            .collection('experiences')
+            .doc(postOwnerId)
+            .collection('user_experiences')
+            .doc(postId)
+            .update({'likeCount': FieldValue.increment(-1)});
+      } else {
+        // Like
+        await likesDocRef.update({
+          'userIds': FieldValue.arrayUnion([currentUserId]),
+          'userNames': FieldValue.arrayUnion([currentUserName]),
+        });
+        await _firestore
+            .collection('experiences')
+            .doc(postOwnerId)
+            .collection('user_experiences')
+            .doc(postId)
+            .update({'likeCount': FieldValue.increment(1)});
+      }
+    } else {
+      // First like - create the summary document
+      await likesDocRef.set({
+        'userIds': [currentUserId],
+        'userNames': [currentUserName],
+      });
+      await _firestore
+          .collection('experiences')
+          .doc(postOwnerId)
+          .collection('user_experiences')
+          .doc(postId)
+          .update({'likeCount': FieldValue.increment(1)});
+    }
+  }
+
+  // Check if the current user liked the post
+  static Future<bool> isExperienceLiked({
+    required String postOwnerId,
+    required String postId,
+  }) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    final DocumentSnapshot<Map<String, dynamic>> likesDoc =
+        await _firestore
+            .collection('experiences')
+            .doc(postOwnerId)
+            .collection('user_experiences')
+            .doc(postId)
+            .collection('likes')
+            .doc('summary')
+            .get();
+
+    if (!likesDoc.exists) return false;
+
+    final List<dynamic> userIds = likesDoc.data()?['userIds'] ?? [];
+
+    return userIds.contains(currentUserId);
+  }
+
+  // Get list of usernames who liked
+  //   static Future<List<String>> getExperienceLikeUsernames({
+  //     required String postOwnerId,
+  //     required String photoId,
+  //   }) async {
+  //     final likesDoc =
+  //         await _firestore
+  //             .collection('experiences')
+  //             .doc(postOwnerId)
+  //             .collection('user_experiences')
   //             .doc(photoId)
   //             .collection('likes')
   //             .doc('summary')
@@ -151,7 +265,7 @@ class PostService {
   }
 
   // Get comments for a post
-  static Future<List<Map<String, dynamic>>> getComments({
+  static Future<List<Map<String, dynamic>>> getPostComments({
     required String postOwnerId,
     required String photoId,
   }) async {

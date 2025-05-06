@@ -583,10 +583,12 @@ class _UserProfileState extends State<UserProfile>
                         return ExperienceTile(
                           docId: docs[i].id,
                           title: data['title'] ?? '',
+                          experienceOwnerId: data['userId'] ?? '',
+                          // experienceOwnerName: data['userName'] ?? '',
                           description: data['description'] ?? '',
                           location: data['location'] ?? '',
-                          likes: data['likes'] ?? 0,
-                          comments: data['comments'] ?? 0,
+                          likeCount: data['likeCount'] ?? 0,
+                          commentCount: data['commentCount'] ?? 0,
                           timestamp: timestamp,
                           formatTimestamp: _formatTimestamp,
                         );

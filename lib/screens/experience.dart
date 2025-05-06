@@ -1,14 +1,19 @@
+import 'dart:async';
+
+import 'package:camply/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ExperienceTile extends StatefulWidget {
   final String docId;
+  final String experienceOwnerId;
+  // final String experienceOwnerName;
   final String title;
   final String description;
   final String location;
-  final int likes;
-  final int comments;
+  final int likeCount;
+  final int commentCount;
   final Timestamp? timestamp; // Add timestamp parameter
   final String Function(Timestamp?)?
   formatTimestamp; // Add formatting function parameter
@@ -16,11 +21,12 @@ class ExperienceTile extends StatefulWidget {
   const ExperienceTile({
     super.key,
     required this.docId,
+    required this.experienceOwnerId,
     required this.title,
     required this.description,
     required this.location,
-    required this.likes,
-    required this.comments,
+    required this.likeCount,
+    required this.commentCount,
     this.timestamp, // Make timestamp optional
     this.formatTimestamp, // Make formatTimestamp optional
   });
@@ -31,19 +37,23 @@ class ExperienceTile extends StatefulWidget {
 
 class _ExperienceTileState extends State<ExperienceTile>
     with SingleTickerProviderStateMixin {
-  bool isLiked = false;
-  late int likeCount;
-  late int commentCount;
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
 
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  bool isLiked = false;
+  int currentLikeCount = 0;
+  int currentCommentCount = 0;
+
+  Timer? _refreshTimer;
 
   @override
   void initState() {
     super.initState();
-    likeCount = widget.likes;
-    commentCount = widget.comments;
+    currentLikeCount = widget.likeCount;
+    currentCommentCount = widget.commentCount;
+    _checkIfLiked();
+    _startAutoRefresh();
+
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 150),
@@ -53,23 +63,112 @@ class _ExperienceTileState extends State<ExperienceTile>
 
   @override
   void dispose() {
+    _refreshTimer?.cancel(); // Stop timer when widget is removed
     _controller.dispose();
     super.dispose();
   }
 
-  void _toggleLike() async {
+  void _checkIfLiked() async {
+    final liked = await PostService.isExperienceLiked(
+      postOwnerId: widget.experienceOwnerId,
+      postId: widget.docId,
+    );
+
+    if (!mounted) return; // Prevent setState after dispose
+
+    setState(() {
+      isLiked = liked;
+    });
+  }
+
+  void _startAutoRefresh() {
+    _refreshTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
+      await _refreshLikeAndCommentCounts();
+    });
+  }
+
+  Future<void> _refreshLikeAndCommentCounts() async {
+    try {
+      final snapshot =
+          await FirebaseFirestore.instance
+              .collection('experiences')
+              .doc(widget.experienceOwnerId)
+              .collection('user_experiences')
+              .doc(widget.docId)
+              .get();
+
+      if (!snapshot.exists) return;
+
+      final data = snapshot.data()!;
+      final newLikes = data['likeCount'] ?? 0;
+      final newComments = data['commentCount'] ?? 0;
+
+      if (!mounted) return;
+      setState(() {
+        currentLikeCount = newLikes;
+        currentCommentCount = newComments;
+      });
+    } catch (e) {
+      print("Failed to refresh counts: $e");
+    }
+  }
+
+  void toggleLike() async {
     setState(() {
       isLiked = !isLiked;
-      likeCount += isLiked ? 1 : -1;
+      currentLikeCount += isLiked ? 1 : -1;
     });
-    _controller.forward().then((_) => _controller.reverse());
-    await FirebaseFirestore.instance
-        .collection('experiences')
-        .doc(userId)
-        .collection('user_experiences')
-        .doc(widget.docId)
-        .update({'likes': likeCount});
+
+    await PostService.experiencesToggleLike(
+      postOwnerId: widget.experienceOwnerId,
+      postId: widget.docId,
+    );
+
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 150),
+    );
+    _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller);
   }
+  // bool isLiked = false;
+  // late int likeCount;
+  // late int commentCount;
+  // late AnimationController _controller;
+  // late Animation<double> _scaleAnimation;
+
+  // final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   likeCount = widget.likes;
+  //   commentCount = widget.comments;
+  //   _controller = AnimationController(
+  //     vsync: this,
+  //     duration: const Duration(milliseconds: 150),
+  //   );
+  //   _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller);
+  // }
+
+  // @override
+  // void dispose() {
+  //   _controller.dispose();
+  //   super.dispose();
+  // }
+
+  // void _toggleLike() async {
+  //   setState(() {
+  //     isLiked = !isLiked;
+  //     likeCount += isLiked ? 1 : -1;
+  //   });
+  //   _controller.forward().then((_) => _controller.reverse());
+  //   await FirebaseFirestore.instance
+  //       .collection('experiences')
+  //       .doc(userId)
+  //       .collection('user_experiences')
+  //       .doc(widget.docId)
+  //       .update({'likes': likeCount});
+  // }
 
   void _addComment() {
     final cCtrl = TextEditingController();
@@ -88,11 +187,11 @@ class _ExperienceTileState extends State<ExperienceTile>
                   if (cCtrl.text.trim().isNotEmpty) {
                     await FirebaseFirestore.instance
                         .collection('experiences')
-                        .doc(userId)
+                        .doc(widget.experienceOwnerId)
                         .collection('user_experiences')
                         .doc(widget.docId)
                         .update({'comments': FieldValue.increment(1)});
-                    setState(() => commentCount++);
+                    setState(() => currentCommentCount++);
                   }
                   Navigator.pop(context);
                 },
@@ -137,7 +236,7 @@ class _ExperienceTileState extends State<ExperienceTile>
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 GestureDetector(
-                  onTap: _toggleLike,
+                  onTap: toggleLike,
                   child: ScaleTransition(
                     scale: _scaleAnimation,
                     child: Icon(
@@ -147,7 +246,7 @@ class _ExperienceTileState extends State<ExperienceTile>
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text('$likeCount'),
+                Text('$currentLikeCount'),
                 const SizedBox(width: 16),
                 GestureDetector(
                   onTap: _addComment,
@@ -157,7 +256,7 @@ class _ExperienceTileState extends State<ExperienceTile>
                   ),
                 ),
                 const SizedBox(width: 6),
-                Text('$commentCount'),
+                Text('$currentCommentCount'),
                 if (widget.timestamp != null &&
                     widget.formatTimestamp != null) ...[
                   const SizedBox(width: 8),
@@ -192,7 +291,36 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   final _descCtrl = TextEditingController();
   bool _showTag = false;
 
-  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  String? userId;
+  String? userName;
+  bool isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _fetchUserId();
+  }
+
+  Future<void> _fetchUserId() async {
+    final user = FirebaseAuth.instance.currentUser;
+
+    if (user != null) {
+      final uid = user.uid;
+      try {
+        setState(() {
+          userId = uid;
+          // userName = name;
+          isLoading = false;
+        });
+      } catch (e) {
+        _showSnackBar('Failed to fetch user data: $e');
+        setState(() => isLoading = false);
+      }
+    } else {
+      setState(() => isLoading = false);
+    }
+  }
 
   void _submit() async {
     final title = _titleCtrl.text.trim();
@@ -209,15 +337,23 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
         .doc(userId)
         .collection('user_experiences')
         .add({
+          'userId': userId,
+          // 'userName': userName,
           'title': title,
           'location': loc,
           'description': desc,
-          'likes': 0,
-          'comments': 0,
+          'likeCount': 0,
+          'commentCount': 0,
           'timestamp':
               FieldValue.serverTimestamp(), // Use serverTimestamp for consistency
         });
     Navigator.pop(context);
+  }
+
+  void _showSnackBar(String message) {
+    ScaffoldMessenger.of(
+      context,
+    ).showSnackBar(SnackBar(content: Text(message)));
   }
 
   @override
@@ -231,7 +367,7 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
             style: TextStyle(color: Colors.white),
           ),
         ),
-         backgroundColor: const Color(0xFF2ECC71),
+        backgroundColor: const Color(0xFF2ECC71),
       ),
       body: Padding(
         padding: const EdgeInsets.all(20),
@@ -288,120 +424,6 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-// ── Experience List (Stream) ────────────────────────────────
-class ExperienceList extends StatelessWidget {
-  final String userId;
-  final String Function(Timestamp?)?
-  formatTimestamp; // Add formatTimestamp parameter
-
-  ExperienceList({super.key, required this.userId, this.formatTimestamp});
-
-  @override
-  Widget build(BuildContext context) {
-    return StreamBuilder<QuerySnapshot>(
-      stream:
-          FirebaseFirestore.instance
-              .collection('experiences')
-              .doc(userId)
-              .collection('user_experiences')
-              .orderBy('timestamp', descending: true)
-              .snapshots(),
-      builder: (ctx, snap) {
-        if (snap.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
-        }
-        if (snap.hasError) {
-          return Center(child: Text('Error: ${snap.error}'));
-        }
-        final docs = snap.data?.docs ?? [];
-        if (docs.isEmpty) {
-          return const Center(child: Text('No experiences yet.'));
-        }
-        return ListView.builder(
-          itemCount: docs.length,
-          itemBuilder: (ctx, i) {
-            final d = docs[i];
-            return ExperienceTile(
-              docId: d.id,
-              title: d['title'],
-              description: d['description'],
-              location: d['location'] ?? '',
-              likes: d['likes'],
-              comments: d['comments'],
-              timestamp: d['timestamp'] as Timestamp?, // Pass timestamp
-              formatTimestamp: formatTimestamp, // Pass formatTimestamp function
-            );
-          },
-        );
-      },
-    );
-  }
-}
-
-// ── Experience Screen with FAB ──────────────────────────────
-class ExperienceScreen extends StatefulWidget {
-  const ExperienceScreen({super.key});
-
-  @override
-  State<ExperienceScreen> createState() => _ExperienceScreenState();
-}
-
-class _ExperienceScreenState extends State<ExperienceScreen> {
-  String? userId;
-  bool isLoading = true;
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchUserId();
-  }
-
-  Future<void> _fetchUserId() async {
-    final user = FirebaseAuth.instance.currentUser;
-
-    if (user != null) {
-      setState(() {
-        userId = user.uid;
-        isLoading = false;
-      });
-    } else {
-      // Handle null user case if needed
-      setState(() => isLoading = false);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    if (isLoading) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    if (userId == null) {
-      return const Scaffold(body: Center(child: Text('User not logged in')));
-    }
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Experiences'),
-         backgroundColor: const Color(0xFF2ECC71),
-      ),
-      body: ExperienceList(userId: userId!),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => const AddExperienceScreen(),
-            ),
-          );
-        },
-         backgroundColor: const Color(0xFF2ECC71),
-        child: const Icon(Icons.add),
       ),
     );
   }
