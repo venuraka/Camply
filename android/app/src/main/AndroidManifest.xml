@@ -23,6 +23,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="AIzaSyBoB5AqC_QbDkLEw0KXBO-0LxFFb5-Kslw" />
 
+        <!-- Screen Orientation Portrait Lock -->
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
