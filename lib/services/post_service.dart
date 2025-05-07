@@ -296,6 +296,8 @@ class PostService {
     required String postOwnerId,
     required String componentId,
   }) async {
+    final currentUserId = _auth.currentUser!.uid;
+
     final commentsSnapshot =
         await _firestore
             .collection(component)
@@ -306,6 +308,61 @@ class PostService {
             .orderBy('timestamp', descending: true)
             .get();
 
-    return commentsSnapshot.docs.map((doc) => doc.data()).toList();
+    final List<Map<String, dynamic>> commentsWithLikes = [];
+
+    for (var doc in commentsSnapshot.docs) {
+      final data = doc.data();
+
+      // Check if liked by current user
+      final userIds = data['userIds'] ?? [];
+      final isLiked = userIds.contains(currentUserId);
+
+      data['isLiked'] = isLiked;
+      commentsWithLikes.add(data);
+    }
+
+    return commentsWithLikes;
+  }
+
+  static Future<void> commentToggleLike({
+    required String postOwnerId,
+    required String component,
+    required String componentId,
+    required String commentId,
+  }) async {
+    final currentUserId = _auth.currentUser!.uid;
+
+    final likesDocRef = _firestore
+        .collection(component)
+        .doc(postOwnerId)
+        .collection('user_$component')
+        .doc(componentId)
+        .collection('comments')
+        .doc(commentId);
+
+    final likesDoc = await likesDocRef.get();
+
+    if (likesDoc.exists) {
+      final data = likesDoc.data();
+      List userIds = [];
+
+      if (data != null) {
+        userIds = data['userIds'] ?? [];
+      }
+
+      if (userIds.contains(currentUserId)) {
+        // Unlike
+        await likesDocRef.update({
+          'userIds': FieldValue.arrayRemove([currentUserId]),
+        });
+        await likesDocRef.update({'likeCount': FieldValue.increment(-1)});
+      } else {
+        // Like
+        await likesDocRef.update({
+          'userIds': FieldValue.arrayUnion([currentUserId]),
+        });
+        await likesDocRef.update({'likeCount': FieldValue.increment(1)});
+      }
+    }
   }
 }

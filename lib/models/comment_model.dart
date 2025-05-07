@@ -53,6 +53,7 @@ class Comment {
       replyToUserId: data['replyToUserId'],
       replyToUserName: data['replyToUserName'],
       likeCount: data['likeCount'] ?? 0,
+      isLiked: data['isLiked'] ?? false,
     );
   }
 }

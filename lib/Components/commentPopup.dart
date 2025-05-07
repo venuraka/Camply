@@ -136,6 +136,12 @@ class _CommentPopupState extends State<CommentPopup> {
                             color: comment.isLiked ? Colors.red : Colors.grey,
                           ),
                           onPressed: () {
+                            PostService.commentToggleLike(
+                              component: "posts",
+                              postOwnerId: widget.postOwnerId,
+                              componentId: widget.componentId,
+                              commentId: comment.commentId,
+                            );
                             setState(() {
                               comment.isLiked = !comment.isLiked;
                               if (comment.isLiked) {
