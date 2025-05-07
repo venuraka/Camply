@@ -2,8 +2,17 @@
 import 'package:flutter/material.dart';
 import 'package:camply/models/comment_model.dart';
 
+import '../services/post_service.dart';
+
 class CommentPopup extends StatefulWidget {
-  const CommentPopup({super.key});
+  final String postOwnerId;
+  final String componentId;
+
+  const CommentPopup({
+    super.key,
+    required this.postOwnerId,
+    required this.componentId,
+  });
 
   @override
   State<CommentPopup> createState() => _CommentPopupState();
@@ -12,33 +21,71 @@ class CommentPopup extends StatefulWidget {
 class _CommentPopupState extends State<CommentPopup> {
   final TextEditingController _commentController = TextEditingController();
   final List<Comment> _comments = [];
+  List<dynamic> replies = [];
+
   Comment? _replyTo;
 
-  void _addComment() {
-    if (_commentController.text.trim().isEmpty) return;
+  @override
+  void initState() {
+    super.initState();
+    _loadComments();
+  }
 
-    final newComment = Comment(
-      username: "User",
-      text: _commentController.text.trim(),
-      timestamp: DateTime.now(),
-      replies: [],
-      profilePic: "https://randomuser.me/api/portraits/men/30.jpg",
-      isVerified: true,
+  void _loadComments() async {
+    final fetched = await PostService.getComments(
+      component: 'posts',
+      postOwnerId: widget.postOwnerId,
+      componentId: widget.componentId,
     );
 
-    setState(() {
-      if (_replyTo != null) {
-        _replyTo!.replies.insert(0, newComment);
-        _replyTo = null;
+    final List<Comment> temp =
+        fetched.map((data) => Comment.fromMap(data)).toList();
+
+    // Organize replies under their parent comment
+    final Map<String, Comment> commentMap = {};
+    final List<Comment> topLevel = [];
+
+    for (var comment in temp) {
+      commentMap[comment.commentId] = comment;
+    }
+
+    for (var comment in temp) {
+      if (comment.isReplied && comment.replyToCommentId != null) {
+        final parent = commentMap[comment.replyToCommentId!];
+        parent?.replies.insert(0, comment);
       } else {
-        _comments.insert(0, newComment);
+        topLevel.add(comment);
       }
-      _commentController.clear();
+    }
+
+    setState(() {
+      _comments.clear();
+      _comments.addAll(topLevel);
     });
+  }
+
+  void _addComment() async {
+    if (_commentController.text.trim().isEmpty) return;
+
+    await PostService.addComment(
+      component: 'posts',
+      postOwnerId: widget.postOwnerId,
+      componentId: widget.componentId,
+      isReplied: _replyTo != null,
+      commentText: _commentController.text.trim(),
+      replyToCommentId: _replyTo?.commentId,
+      replyToUserId: _replyTo?.senderId,
+      replyToUserName: _replyTo?.senderName,
+    );
+
+    _commentController.clear();
+    _replyTo = null;
+    _loadComments(); // Refresh comments
   }
 
   String _formatTimeDifference(DateTime timestamp) {
     final difference = DateTime.now().difference(timestamp);
+    if (difference.inSeconds < 60) return '${difference.inSeconds}s';
     if (difference.inMinutes < 60) return '${difference.inMinutes}m';
     if (difference.inHours < 24) return '${difference.inHours}h';
     return '${difference.inDays}d';
@@ -64,7 +111,7 @@ class _CommentPopupState extends State<CommentPopup> {
                     Row(
                       children: [
                         Text(
-                          comment.username,
+                          comment.senderName,
                           style: const TextStyle(fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(width: 6),
@@ -156,7 +203,8 @@ class _CommentPopupState extends State<CommentPopup> {
         ),
         automaticallyImplyLeading: true,
         backgroundColor: const Color(0xFF2ECC71),
-        toolbarHeight: 80, // Change the height here
+        toolbarHeight: 80,
+        // Change the height here
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           color: Colors.white, // Change the back arrow color here
@@ -193,7 +241,7 @@ class _CommentPopupState extends State<CommentPopup> {
                       hintText:
                           _replyTo == null
                               ? "Add a comment..."
-                              : "Replying to ${_replyTo!.username}",
+                              : "Replying to ${_replyTo!.senderName}",
                       border: const OutlineInputBorder(),
                       contentPadding: const EdgeInsets.symmetric(
                         horizontal: 12,

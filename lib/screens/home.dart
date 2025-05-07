@@ -6,7 +6,6 @@ import 'package:camply/services/auth_service.dart';
 import 'package:camply/Components/BottomNavBar.dart';
 import 'package:camply/Components/commentPopup.dart';
 import 'package:camply/models/post_model.dart';
-import 'package:camply/models/comment_model.dart';
 
 import 'dart:async';
 
@@ -108,12 +107,6 @@ class _HomeScreenState extends State<HomeScreen> {
             return const Center(child: Text("No posts found."));
           }
 
-          // final posts =
-          //     snapshot.data!.docs.where((doc) {
-          //       final data = doc.data() as Map<String, dynamic>;
-          //       return data['userId'] !=
-          //           _authService.currentUser?.uid; // filter out own posts
-          //     }).toList();
           final docs =
               snapshot.data!.docs.where((doc) {
                 final data = doc.data() as Map<String, dynamic>;
@@ -136,15 +129,11 @@ class _HomeScreenState extends State<HomeScreen> {
           }
 
           return ListView.builder(
-            // itemCount: posts.length,
-            // itemBuilder: (context, index) {
-            //   final data = posts[index].data() as Map<String, dynamic>;
             itemCount: docs.length,
             itemBuilder: (context, index) {
               final doc = docs[index];
 
               try {
-                // final post = Post.fromFirestore(data);
                 final post = Post.fromFirestore(doc);
                 return GestureDetector(
                   onTap: () {
@@ -213,6 +202,7 @@ class PostCard extends StatefulWidget {
   final List<Color> badgeColors;
   final int likeCount;
   final int commentCount;
+
   // final int shareCount;
 
   const PostCard({
@@ -327,7 +317,10 @@ class _PostCardState extends State<PostCard> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (BuildContext context) {
-        return const CommentPopup();
+        return CommentPopup(
+          postOwnerId: widget.profileId,
+          componentId: widget.postId,
+        );
       },
     );
   }
@@ -442,9 +435,10 @@ class _PostCardState extends State<PostCard> {
                   child: Icon(
                     isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
                     color:
-                        isBookmarked
-                            ? const Color.fromARGB(255, 218, 200, 3)
-                            : Colors.green,
+                        // isBookmarked
+                        //     ? const Color.fromARGB(255, 218, 200, 3)
+                        //     : Colors.green,color:
+                        Colors.green,
                     size: 28,
                   ),
                 ),

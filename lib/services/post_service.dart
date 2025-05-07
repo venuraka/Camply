@@ -234,47 +234,74 @@ class PostService {
   //   }
 
   // Comments
-  static Future<void> addPostComment({
+  static Future<void> addComment({
+    required String component,
     required String postOwnerId,
-    required String photoId,
+    required String componentId,
+    required bool isReplied,
     required String commentText,
-    required String username,
+    String? replyToCommentId,
+    String? replyToUserId,
+    String? replyToUserName,
   }) async {
     final currentUserId = _auth.currentUser!.uid;
+    final userDoc =
+        await _firestore.collection('users').doc(currentUserId).get();
+    final currentUserName = userDoc.data()?['name'] ?? 'User';
+    final profilePic = userDoc.data()?['profileImageUrl'] ?? '';
 
-    final commentRef = _firestore
-        .collection('posts')
-        .doc(postOwnerId)
-        .collection('user_posts')
-        .doc(photoId)
-        .collection('comments');
+    final commentRef =
+        _firestore
+            .collection(component)
+            .doc(postOwnerId)
+            .collection('user_$component')
+            .doc(componentId)
+            .collection('comments')
+            .doc();
 
-    await commentRef.add({
-      'userId': currentUserId,
-      'username': username,
-      'comment': commentText,
+    final commentId = commentRef.id;
+
+    final commentData = {
+      'commentId': commentId,
+      'componentId': componentId,
+      'ownerId': postOwnerId,
+      'senderId': currentUserId,
+      'senderName': currentUserName,
+      'commentText': commentText,
+      'profilePic': profilePic,
+      'isReplied': isReplied,
+      'likeCount': 0,
       'timestamp': FieldValue.serverTimestamp(),
-    });
+    };
+
+    if (isReplied) {
+      commentData.addAll({
+        'replyToCommentId': replyToCommentId,
+        'replyToUserId': replyToUserId,
+        'replyToUserName': replyToUserName,
+      });
+    }
+    await commentRef.set(commentData);
 
     await _firestore
-        .collection('posts')
+        .collection(component)
         .doc(postOwnerId)
-        .collection('user_posts')
-        .doc(photoId)
+        .collection('user_$component')
+        .doc(componentId)
         .update({'commentCount': FieldValue.increment(1)});
   }
 
-  // Get comments for a post
-  static Future<List<Map<String, dynamic>>> getPostComments({
+  static Future<List<Map<String, dynamic>>> getComments({
+    required String component,
     required String postOwnerId,
-    required String photoId,
+    required String componentId,
   }) async {
     final commentsSnapshot =
         await _firestore
-            .collection('posts')
+            .collection(component)
             .doc(postOwnerId)
-            .collection('user_posts')
-            .doc(photoId)
+            .collection('user_$component')
+            .doc(componentId)
             .collection('comments')
             .orderBy('timestamp', descending: true)
             .get();
