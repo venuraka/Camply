@@ -320,6 +320,7 @@ class _PostCardState extends State<PostCard> {
         return CommentPopup(
           postOwnerId: widget.profileId,
           componentId: widget.postId,
+          component: "posts",
         );
       },
     );

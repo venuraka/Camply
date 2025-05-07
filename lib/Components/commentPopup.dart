@@ -7,11 +7,13 @@ import '../services/post_service.dart';
 class CommentPopup extends StatefulWidget {
   final String postOwnerId;
   final String componentId;
+  final String component;
 
   const CommentPopup({
     super.key,
     required this.postOwnerId,
     required this.componentId,
+    required this.component,
   });
 
   @override
@@ -33,7 +35,7 @@ class _CommentPopupState extends State<CommentPopup> {
 
   void _loadComments() async {
     final fetched = await PostService.getComments(
-      component: 'posts',
+      component: widget.component,
       postOwnerId: widget.postOwnerId,
       componentId: widget.componentId,
     );
@@ -68,7 +70,7 @@ class _CommentPopupState extends State<CommentPopup> {
     if (_commentController.text.trim().isEmpty) return;
 
     await PostService.addComment(
-      component: 'posts',
+      component: widget.component,
       postOwnerId: widget.postOwnerId,
       componentId: widget.componentId,
       isReplied: _replyTo != null,
@@ -137,7 +139,7 @@ class _CommentPopupState extends State<CommentPopup> {
                           ),
                           onPressed: () {
                             PostService.commentToggleLike(
-                              component: "posts",
+                              component: widget.component,
                               postOwnerId: widget.postOwnerId,
                               componentId: widget.componentId,
                               commentId: comment.commentId,
@@ -236,31 +238,37 @@ class _CommentPopupState extends State<CommentPopup> {
                     ),
           ),
           const Divider(),
-          Container(
-            margin: const EdgeInsets.only(bottom: 16.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: _commentController,
-                    decoration: InputDecoration(
-                      hintText:
-                          _replyTo == null
-                              ? "Add a comment..."
-                              : "Replying to ${_replyTo!.senderName}",
-                      border: const OutlineInputBorder(),
-                      contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 12,
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 5.0,
+            ),
+            child: Container(
+              margin: const EdgeInsets.only(bottom: 16.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _commentController,
+                      decoration: InputDecoration(
+                        hintText:
+                            _replyTo == null
+                                ? "Add a comment..."
+                                : "Replying to ${_replyTo!.senderName}",
+                        border: const OutlineInputBorder(),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                        ),
                       ),
+                      onSubmitted: (_) => _addComment(),
                     ),
-                    onSubmitted: (_) => _addComment(),
                   ),
-                ),
-                IconButton(
-                  icon: const Icon(Icons.send, color: Colors.green),
-                  onPressed: _addComment,
-                ),
-              ],
+                  IconButton(
+                    icon: const Icon(Icons.send, color: Colors.green),
+                    onPressed: _addComment,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
