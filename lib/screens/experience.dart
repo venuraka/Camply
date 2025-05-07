@@ -5,9 +5,12 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../Components/commentPopup.dart';
+
 class ExperienceTile extends StatefulWidget {
   final String docId;
   final String experienceOwnerId;
+
   // final String experienceOwnerName;
   final String title;
   final String description;
@@ -130,78 +133,26 @@ class _ExperienceTileState extends State<ExperienceTile>
     );
     _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller);
   }
-  // bool isLiked = false;
-  // late int likeCount;
-  // late int commentCount;
-  // late AnimationController _controller;
-  // late Animation<double> _scaleAnimation;
 
-  // final String userId = FirebaseAuth.instance.currentUser!.uid;
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   likeCount = widget.likes;
-  //   commentCount = widget.comments;
-  //   _controller = AnimationController(
-  //     vsync: this,
-  //     duration: const Duration(milliseconds: 150),
-  //   );
-  //   _scaleAnimation = Tween<double>(begin: 1.0, end: 1.2).animate(_controller);
-  // }
-
-  // @override
-  // void dispose() {
-  //   _controller.dispose();
-  //   super.dispose();
-  // }
-
-  // void _toggleLike() async {
-  //   setState(() {
-  //     isLiked = !isLiked;
-  //     likeCount += isLiked ? 1 : -1;
-  //   });
-  //   _controller.forward().then((_) => _controller.reverse());
-  //   await FirebaseFirestore.instance
-  //       .collection('experiences')
-  //       .doc(userId)
-  //       .collection('user_experiences')
-  //       .doc(widget.docId)
-  //       .update({'likes': likeCount});
-  // }
-
-  void _addComment() {
-    final cCtrl = TextEditingController();
-    showDialog(
+  void showCommentPopup(
+    BuildContext context,
+    String postOwnerId,
+    String componentId,
+    String component,
+  ) {
+    showModalBottomSheet(
       context: context,
-      builder:
-          (_) => AlertDialog(
-            title: const Text('Add Comment'),
-            content: TextField(
-              controller: cCtrl,
-              decoration: const InputDecoration(hintText: 'Enter comment...'),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () async {
-                  if (cCtrl.text.trim().isNotEmpty) {
-                    await FirebaseFirestore.instance
-                        .collection('experiences')
-                        .doc(widget.experienceOwnerId)
-                        .collection('user_experiences')
-                        .doc(widget.docId)
-                        .update({'comments': FieldValue.increment(1)});
-                    setState(() => currentCommentCount++);
-                  }
-                  Navigator.pop(context);
-                },
-                child: const Text(
-                  'Submit',
-                  style: TextStyle(color: Colors.green),
-                ),
-              ),
-            ],
-          ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return CommentPopup(
+          postOwnerId: postOwnerId,
+          componentId: componentId,
+          component: component,
+        );
+      },
     );
   }
 
@@ -249,7 +200,13 @@ class _ExperienceTileState extends State<ExperienceTile>
                 Text('$currentLikeCount'),
                 const SizedBox(width: 16),
                 GestureDetector(
-                  onTap: _addComment,
+                  onTap:
+                      () => showCommentPopup(
+                        context,
+                        widget.experienceOwnerId,
+                        widget.docId,
+                        "experiences",
+                      ),
                   child: const Icon(
                     Icons.chat_bubble_outline,
                     color: Colors.green,
@@ -281,6 +238,7 @@ class _ExperienceTileState extends State<ExperienceTile>
 // ── AddExperienceScreen ─────────────────────────────────────
 class AddExperienceScreen extends StatefulWidget {
   const AddExperienceScreen({super.key});
+
   @override
   State<AddExperienceScreen> createState() => _AddExperienceScreenState();
 }

@@ -3,6 +3,7 @@ import 'package:camply/services/post_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import '../Components/commentPopup.dart';
 import 'addphoto.dart';
 import 'experience.dart'; // Ensure this file exists or remove if not used
 import '../function/followSystemCount.dart';
@@ -18,10 +19,12 @@ class _UserProfileState extends State<UserProfile>
     with TickerProviderStateMixin {
   late TabController _tabController;
   int _selectedIndex = 0;
+
   // int followerCount = 110;
   bool isFollowing = false;
 
   bool isLiked = false;
+
   // int currentLikeCount = 0;
 
   String? userId;
@@ -109,51 +112,25 @@ class _UserProfileState extends State<UserProfile>
     await PostService.postsToggleLike(postOwnerId: ownerId, postId: postId);
   }
 
-  // Add comment and increment comments count
-  Future<void> _addComment(String docId) async {
-    final TextEditingController commentController = TextEditingController();
-
-    showDialog(
+  void showCommentPopup(
+    BuildContext context,
+    String postOwnerId,
+    String componentId,
+    String component,
+  ) {
+    showModalBottomSheet(
       context: context,
-      builder:
-          (ctx) => AlertDialog(
-            title: const Text('Add Comment'),
-            content: TextField(
-              controller: commentController,
-              decoration: const InputDecoration(
-                labelText: 'Enter your comment',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 3,
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                onPressed: () async {
-                  if (commentController.text.isNotEmpty) {
-                    try {
-                      await FirebaseFirestore.instance
-                          .collection('posts')
-                          .doc(userId)
-                          .collection('user_posts')
-                          .doc(docId)
-                          .update({'comments': FieldValue.increment(1)});
-                      Navigator.pop(ctx);
-                      _showSnackBar('Comment added successfully');
-                    } catch (e) {
-                      _showSnackBar('Failed to add comment: $e');
-                    }
-                  } else {
-                    _showSnackBar('Please enter a comment');
-                  }
-                },
-                child: const Text('Save'),
-              ),
-            ],
-          ),
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return CommentPopup(
+          postOwnerId: postOwnerId,
+          componentId: componentId,
+          component: component,
+        );
+      },
     );
   }
 
@@ -496,7 +473,12 @@ class _UserProfileState extends State<UserProfile>
                                                 const SizedBox(width: 12),
                                                 GestureDetector(
                                                   onTap:
-                                                      () => _addComment(docId),
+                                                      () => showCommentPopup(
+                                                        context,
+                                                        postOwnerId,
+                                                        docId,
+                                                        "posts",
+                                                      ),
                                                   child: Row(
                                                     children: [
                                                       const Icon(
