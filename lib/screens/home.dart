@@ -1,3 +1,4 @@
+import 'package:camply/screens/view_user_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -77,9 +78,6 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
           "Camply",
-          // Can load user name to check if needed
-          // title: Text(
-          //   "Camper ${userData?['name'] ?? ''}",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
@@ -89,8 +87,7 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: true,
         elevation: 0,
         actions: [
-          IconButton(icon: const Icon(Icons.logout), onPressed: _signOut),
-          // IconButton(icon: const Icon(Icons.search), onPressed: _signOut),
+          IconButton(icon: const Icon(Icons.search), onPressed: _signOut),
         ],
       ),
       body: StreamBuilder<QuerySnapshot>(
@@ -137,10 +134,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 final post = Post.fromFirestore(doc);
                 return GestureDetector(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(builder: (_) => CampDetailsDisplay()),
-                    // );
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder:
+                            (_) => ViewUserPage(
+                              userId: post.profileId,
+                              userName: post.username,
+                              userProfilePic: post.profilePic,
+                            ),
+                      ),
+                    );
                   },
                   child: PostCard(
                     postId: post.postId,
@@ -435,11 +439,7 @@ class _PostCardState extends State<PostCard> {
                   onTap: toggleBookmark,
                   child: Icon(
                     isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
-                    color:
-                        // isBookmarked
-                        //     ? const Color.fromARGB(255, 218, 200, 3)
-                        //     : Colors.green,color:
-                        Colors.green,
+                    color: Colors.green,
                     size: 28,
                   ),
                 ),

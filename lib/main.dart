@@ -1,20 +1,12 @@
 import 'package:camply/pages/camp_details_display.dart';
 import 'package:camply/pages/create_camp_site.dart';
 
-import 'package:camply/screens/camp_detail_page.dart';
 import 'package:camply/screens/camp_menu_page.dart';
 
-import 'package:camply/screens/create_camp_page.dart';
-// import 'package:camply/screens/camp_detail_page.dart';
-// import 'package:camply/screens/create_camp_page.dart';
 import 'package:camply/pages/user_review.dart';
-import 'package:camply/screens/detail_tab.dart';
 import 'package:camply/screens/home.dart';
-import 'package:camply/screens/location_tab.dart';
 
-import 'package:camply/screens/nearby_tab.dart';
 import 'package:camply/screens/register.dart';
-import 'package:camply/screens/review_tab.dart';
 import 'package:camply/screens/reviews.dart';
 import 'package:camply/screens/user_review.dart';
 
@@ -23,8 +15,6 @@ import 'package:flutter/services.dart';
 
 // Chat
 import 'package:camply/pages/chat_screen.dart';
-import 'package:camply/pages/chat_test_camp_list.dart';
-import 'package:camply/pages/chat_test_site_details.dart';
 
 // Ayeshi Login
 import 'package:camply/services/auth_wrapper.dart';
@@ -82,16 +72,9 @@ void main() async {
         '/campDetailsDisplay': (context) => CampDetailsDisplay(), // Brian
         '/createCampSite': (context) => CreateCampSite(), // Brian
         '/CampMenuPage': (context) => CampMenuPage(), //Senuri,venuraka
-
-
-
         // Chat Testing
         '/chat':
             (context) => ChatScreen(siteName: 'site-name', siteId: '000000'),
-        '/çhatTestSiteDetail':
-            (context) =>
-                ChatTestSiteDetails(siteName: 'site-name', siteId: '000000'),
-        '/çhatTestSiteList': (context) => ChatTestCampList(),
       },
     ),
   );

@@ -1,4 +1,3 @@
-import 'package:camply/pages/chat_test_camp_list.dart';
 import 'package:camply/screens/home.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -22,7 +21,6 @@ class AuthWrapper extends StatelessWidget {
         // If the user is logged in
         if (snapshot.hasData) {
           return const HomeScreen();
-          // return const ChatTestCampList();
         }
         // If the user is not logged in
         else {

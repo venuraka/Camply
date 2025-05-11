@@ -78,7 +78,8 @@ class _ChatScreenState extends State<ChatScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        backgroundColor: Colors.green,
+        iconTheme: IconThemeData(color: Colors.white),
+        backgroundColor: Color(0xFF2ECC71),
         title: Text(
           "${widget.siteName} Channel",
           style: TextStyle(
@@ -90,19 +91,6 @@ class _ChatScreenState extends State<ChatScreen> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // IconButton(
-              //   onPressed: () {
-              //     Navigator.pushNamed(context, "/çhatTestSiteList");
-              //   },
-              //   icon: Icon(Icons.arrow_back),
-              //   color: Colors.black,
-              // ),
-            ],
-          ),
           Expanded(
             child: StreamBuilder<QuerySnapshot>(
               stream: messages.orderBy('timestamp').snapshots(),
@@ -147,7 +135,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               horizontal: 8,
                             ),
                             decoration: BoxDecoration(
-                              color: isMe ? Colors.green : Colors.white,
+                              color: isMe ? Color(0xFF2ECC71) : Colors.white,
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: Text(
@@ -169,7 +157,8 @@ class _ChatScreenState extends State<ChatScreen> {
             padding: EdgeInsets.symmetric(horizontal: 15.0, vertical: 8),
             child: Container(
               decoration: BoxDecoration(
-                color: Colors.green[700], // Darker green for background
+                // color: Colors.green[700], // Darker green for background
+                color: Colors.green, // Darker green for background
                 borderRadius: BorderRadius.circular(20),
               ),
               padding: EdgeInsets.symmetric(horizontal: 12),

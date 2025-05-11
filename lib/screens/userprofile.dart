@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:camply/screens/edit_profile.dart';
+import 'package:camply/services/auth_wrapper.dart';
 import 'package:camply/services/post_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Components/commentPopup.dart';
+import '../services/auth_service.dart';
 import 'addphoto.dart';
 import 'experience.dart'; // Ensure this file exists or remove if not used
 import '../function/followSystemCount.dart';
@@ -36,6 +39,9 @@ class _UserProfileState extends State<UserProfile>
 
   Map<String, bool> likedPosts = {};
 
+  // Ayeshi Login Signout Functionality
+  final AuthService _authService = AuthService();
+
   @override
   void initState() {
     super.initState();
@@ -54,6 +60,22 @@ class _UserProfileState extends State<UserProfile>
   void dispose() {
     _tabController.dispose();
     super.dispose();
+  }
+
+  Future<void> _signOut() async {
+    try {
+      await _authService.signOut();
+      // Navigation will be handled by the AuthWrapper
+      Navigator.push(context, MaterialPageRoute(builder: (_) => AuthWrapper()));
+    } catch (e) {
+      print('Error signing out: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error signing out: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   Future<void> _fetchUserId() async {
@@ -152,16 +174,6 @@ class _UserProfileState extends State<UserProfile>
     }
   }
 
-  // Toggle follow state
-  // void _toggleFollow() {
-  //   if (!isFollowing) {
-  //     setState(() {
-  //       isFollowing = true;
-  //       followerCount += 1;
-  //     });
-  //   }
-  // }
-
   // Show snackbar for user feedback
   void _showSnackBar(String message) {
     ScaffoldMessenger.of(
@@ -182,6 +194,7 @@ class _UserProfileState extends State<UserProfile>
     return Scaffold(
       backgroundColor: Colors.grey[300],
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF2ECC71),
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -189,9 +202,31 @@ class _UserProfileState extends State<UserProfile>
         ),
         title: Padding(
           padding: const EdgeInsets.only(left: 80),
-          child: const Text('Camply', style: TextStyle(color: Colors.white)),
+          child: const Text(
+            'Camply',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
         ),
-        actions: const [],
+        actions: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => EditProfile()),
+                  );
+                },
+                icon: Icon(Icons.edit),
+              ),
+              IconButton(onPressed: _signOut, icon: Icon(Icons.logout)),
+            ],
+          ),
+        ],
       ),
       floatingActionButton:
           _selectedIndex == 1

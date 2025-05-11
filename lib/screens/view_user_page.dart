@@ -181,7 +181,14 @@ class _ViewUserPageState extends State<ViewUserPage>
         ),
         title: Padding(
           padding: const EdgeInsets.only(left: 80),
-          child: const Text('Camply', style: TextStyle(color: Colors.white)),
+          child: const Text(
+            'Camply',
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              fontSize: 22,
+            ),
+          ),
         ),
         actions: const [],
       ),

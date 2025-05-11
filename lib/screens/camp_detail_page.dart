@@ -1,3 +1,6 @@
+import 'package:camply/pages/chat_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import '../Components/WeatherInfo.dart';
 import '../Controllers/OpenWeatherMap.dart';
@@ -10,10 +13,7 @@ import 'review_tab.dart';
 class CampDetailPage extends StatefulWidget {
   final CampSite campSite;
 
-  const CampDetailPage({
-    Key? key,
-    required this.campSite,
-  }) : super(key: key);
+  const CampDetailPage({Key? key, required this.campSite}) : super(key: key);
 
   @override
   State<CampDetailPage> createState() => _CampDetailPageState();
@@ -26,18 +26,68 @@ class _CampDetailPageState extends State<CampDetailPage>
   double? temperature;
   String? description;
   String? icon;
+  bool isFollowing = false;
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
+    checkFollowingStatus();
     _tabController = TabController(length: 4, vsync: this);
     _loadWeather();
+  }
+
+  Future<void> checkFollowingStatus() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid);
+    final snapshot = await userDoc.get();
+    final List<dynamic> followingSites =
+        snapshot.data()?['followingSites'] ?? [];
+
+    setState(() {
+      isFollowing = followingSites.contains(widget.campSite.id);
+      isLoading = false;
+    });
+  }
+
+  Future<void> toggleFollow() async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) return;
+
+    final userDoc = FirebaseFirestore.instance
+        .collection('users')
+        .doc(user.uid);
+    final snapshot = await userDoc.get();
+    final List<dynamic> followingSites =
+        snapshot.data()?['followingSites'] ?? [];
+
+    if (followingSites.contains(widget.campSite.id)) {
+      await userDoc.update({
+        'followingSites': FieldValue.arrayRemove([widget.campSite.id]),
+      });
+      setState(() {
+        isFollowing = false;
+      });
+    } else {
+      await userDoc.update({
+        'followingSites': FieldValue.arrayUnion([widget.campSite.id]),
+      });
+      setState(() {
+        isFollowing = true;
+      });
+    }
   }
 
   Future<void> _loadWeather() async {
     await Future.delayed(const Duration(milliseconds: 100));
     try {
-      final weatherData = await getWeatherDataFromLocationString(widget.campSite.location);
+      final weatherData = await getWeatherDataFromLocationString(
+        widget.campSite.location,
+      );
       setState(() {
         temperature = weatherData['main']['temp'];
         description = weatherData['weather'][0]['description'];
@@ -71,8 +121,14 @@ class _CampDetailPageState extends State<CampDetailPage>
                     fit: StackFit.expand,
                     children: [
                       widget.campSite.imageUrl != null
-                          ? Image.network(widget.campSite.imageUrl!, fit: BoxFit.cover)
-                          : Image.asset('assets/images/default_camp.jpg', fit: BoxFit.cover),
+                          ? Image.network(
+                            widget.campSite.imageUrl!,
+                            fit: BoxFit.cover,
+                          )
+                          : Image.asset(
+                            'assets/images/default_camp.jpg',
+                            fit: BoxFit.cover,
+                          ),
                       Positioned(
                         top: 40,
                         left: 16,
@@ -125,7 +181,29 @@ class _CampDetailPageState extends State<CampDetailPage>
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: () {
-            // Show chat functionality
+            if (isFollowing) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder:
+                      (_) => ChatScreen(
+                        siteName: widget.campSite.name,
+                        siteId: widget.campSite.id,
+                      ),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    'You need to follow the campsite to access chat.',
+                  ),
+                  duration: Duration(seconds: 3),
+                  behavior: SnackBarBehavior.floating,
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
           },
           backgroundColor: const Color(0xFF2ECC71),
           child: const Icon(Icons.chat),
@@ -175,18 +253,12 @@ class _CampDetailPageState extends State<CampDetailPage>
           // Camp name and location
           Text(
             widget.campSite.name,
-            style: const TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
+            style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 4),
           Text(
             widget.campSite.location,
-            style: TextStyle(
-              fontSize: 16,
-              color: Colors.grey.shade600,
-            ),
+            style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
           ),
           const SizedBox(height: 12),
 
@@ -198,9 +270,10 @@ class _CampDetailPageState extends State<CampDetailPage>
               Row(
                 children: List.generate(
                   5,
-                      (index) => Icon(
+                  (index) => Icon(
                     Icons.star,
-                    color: index < 4 ? Colors.greenAccent : Colors.grey.shade300,
+                    color:
+                        index < 4 ? Colors.greenAccent : Colors.grey.shade300,
                     size: 20,
                   ),
                 ),
@@ -209,14 +282,21 @@ class _CampDetailPageState extends State<CampDetailPage>
               const Text('7.7'),
               const Spacer(),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: toggleFollow,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: const Color(0xFF2ECC71),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
-                child: const Text('Follow', style: TextStyle(color: Colors.white)),
+                // child: Text(
+                //   'Follow',
+                //   style: TextStyle(color: Colors.white),
+                // ),
+                child: Text(
+                  isFollowing ? "Following" : "Follow",
+                  style: TextStyle(color: Colors.white),
+                ),
               ),
               const SizedBox(width: 8),
               Container(
@@ -233,18 +313,34 @@ class _CampDetailPageState extends State<CampDetailPage>
       ),
     );
   }
+
   String _getDayOfWeek(DateTime date) {
     final days = [
-      'Monday', 'Tuesday', 'Wednesday', 'Thursday',
-      'Friday', 'Saturday', 'Sunday'
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
     ];
     return days[date.weekday - 1];
   }
 
   String _getFormattedDate(DateTime date) {
     final months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+      'Jan',
+      'Feb',
+      'Mar',
+      'Apr',
+      'May',
+      'Jun',
+      'Jul',
+      'Aug',
+      'Sep',
+      'Oct',
+      'Nov',
+      'Dec',
     ];
     return '${months[date.month - 1]} ${date.day}, ${date.year}';
   }
