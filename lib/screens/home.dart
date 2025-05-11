@@ -111,7 +111,6 @@ class _HomeScreenState extends State<HomeScreen> {
                     _authService.currentUser?.uid; // filter out own posts
               }).toList();
 
-          // if (posts.isEmpty) {
           if (docs.isEmpty) {
             return const Center(
               child: Text(
@@ -240,8 +239,19 @@ class _PostCardState extends State<PostCard> {
     super.initState();
     currentLikeCount = widget.likeCount;
     currentCommentCount = widget.commentCount;
-    _checkIfLiked();
+    _loadPostData();
     _startAutoRefresh();
+  }
+
+  @override
+  void dispose() {
+    _refreshTimer?.cancel(); // Stop timer when widget is removed
+    super.dispose();
+  }
+
+  void _loadPostData() {
+    _checkIfLiked();
+    _checkBookmarkStatus();
   }
 
   void _checkIfLiked() async {
@@ -289,12 +299,6 @@ class _PostCardState extends State<PostCard> {
     }
   }
 
-  @override
-  void dispose() {
-    _refreshTimer?.cancel(); // Stop timer when widget is removed
-    super.dispose();
-  }
-
   void toggleLike() async {
     setState(() {
       isLiked = !isLiked;
@@ -307,7 +311,15 @@ class _PostCardState extends State<PostCard> {
     );
   }
 
-  void toggleBookmark() {
+  Future<void> _checkBookmarkStatus() async {
+    final bookmarked = await PostService.isPostBookmarked(widget.postId);
+    setState(() {
+      isBookmarked = bookmarked;
+    });
+  }
+
+  Future<void> _toggleBookmark() async {
+    await PostService.toggleBookmark(postId: widget.postId);
     setState(() {
       isBookmarked = !isBookmarked;
     });
@@ -436,7 +448,7 @@ class _PostCardState extends State<PostCard> {
                 //   ),
                 // ),
                 GestureDetector(
-                  onTap: toggleBookmark,
+                  onTap: _toggleBookmark,
                   child: Icon(
                     isBookmarked ? Icons.bookmark : Icons.bookmark_outline,
                     color: Colors.green,

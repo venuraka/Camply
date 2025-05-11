@@ -365,4 +365,38 @@ class PostService {
       }
     }
   }
+
+  // Bookmarks
+
+  static Future<void> toggleBookmark({required String postId}) async {
+    final currentUserId = _auth.currentUser!.uid;
+    final userRef = _firestore.collection('users').doc(currentUserId);
+
+    final userDoc = await userRef.get();
+    final data = userDoc.data();
+    List bookmarks = [];
+
+    if (data != null && data.containsKey('bookmarks')) {
+      bookmarks = data['bookmarks'] ?? [];
+    }
+
+    if (bookmarks.contains(postId)) {
+      await userRef.update({
+        'bookmarks': FieldValue.arrayRemove([postId]),
+      });
+    } else {
+      await userRef.update({
+        'bookmarks': FieldValue.arrayUnion([postId]),
+      });
+    }
+  }
+
+  static Future<bool> isPostBookmarked(String postId) async {
+    final currentUserId = _auth.currentUser!.uid;
+    final userDoc =
+        await _firestore.collection('users').doc(currentUserId).get();
+
+    final bookmarks = userDoc.data()?['bookmarks'] ?? [];
+    return bookmarks.contains(postId);
+  }
 }
