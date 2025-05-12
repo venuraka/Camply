@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:camply/services/post_service.dart';
-import 'package:camply/services/auth_service.dart';
 import 'package:camply/Components/BottomNavBar.dart';
 import 'package:camply/Components/commentPopup.dart';
 import 'package:camply/models/post_model.dart';
@@ -20,38 +19,9 @@ class BookmarksScreen extends StatefulWidget {
 class _BookmarksScreenState extends State<BookmarksScreen> {
   int _selectedIndex = 2;
 
-  // Ayeshi Login Signout Functionality
-  final AuthService _authService = AuthService();
-  Map<String, dynamic>? userData;
-  bool _isLoading = true;
-
   @override
   void initState() {
     super.initState();
-    _loadUserData();
-  }
-
-  Future<void> _loadUserData() async {
-    setState(() {
-      _isLoading = true;
-    });
-
-    try {
-      if (_authService.currentUser != null) {
-        final data = await _authService.getUserData(
-          _authService.currentUser!.uid,
-        );
-        setState(() {
-          userData = data;
-        });
-      }
-    } catch (e) {
-      print('Error loading user data: $e');
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
-    }
   }
 
   @override
@@ -72,105 +42,6 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         centerTitle: true,
         elevation: 0,
       ),
-      // body: StreamBuilder<QuerySnapshot>(
-      //   stream:
-      //       FirebaseFirestore.instance
-      //           .collectionGroup('user_posts')
-      //           .snapshots(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.waiting) {
-      //       return const Center(child: CircularProgressIndicator());
-      //     }
-
-      //     if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-      //       return const Center(child: Text("No posts found."));
-      //     }
-
-      //     final docs =
-      //         snapshot.data!.docs.where((doc) {
-      //           final data = doc.data() as Map<String, dynamic>;
-      //           return data['userId'] !=
-      //               _authService.currentUser?.uid; // filter out own posts
-      //         }).toList();
-
-      //     if (docs.isEmpty) {
-      //       return const Center(
-      //         child: Text(
-      //           "No New Posts Uploaded Yet.",
-      //           style: TextStyle(
-      //             fontSize: 25,
-      //             color: Colors.grey,
-      //             fontWeight: FontWeight.bold,
-      //           ),
-      //         ),
-      //       );
-      //     }
-
-      //     return ListView.builder(
-      //       itemCount: docs.length,
-      //       itemBuilder: (context, index) {
-      //         final doc = docs[index];
-
-      //         try {
-      //           final post = Post.fromFirestore(doc);
-      //           return GestureDetector(
-      //             onTap: () {
-      //               Navigator.push(
-      //                 context,
-      //                 MaterialPageRoute(
-      //                   builder:
-      //                       (_) => ViewUserPage(
-      //                         userId: post.profileId,
-      //                         userName: post.username,
-      //                         userProfilePic: post.profilePic,
-      //                       ),
-      //                 ),
-      //               );
-      //             },
-      //             child: PostCard(
-      //               postId: post.postId,
-      //               username: post.username,
-      //               location: post.location,
-      //               imageUrl: post.imageUrl,
-      //               profileId: post.profileId,
-      //               profilePic: post.profilePic,
-      //               badgeColors: [
-      //                 Colors.brown,
-      //                 Colors.orange,
-      //                 Colors.grey,
-      //                 Colors.green,
-      //               ],
-      //               likeCount: post.likeCount,
-      //               commentCount: post.commentCount,
-      //             ),
-      //           );
-      //         } catch (e) {
-      //           return Container(
-      //             margin: const EdgeInsets.all(10),
-      //             padding: const EdgeInsets.all(15),
-      //             decoration: BoxDecoration(
-      //               color: Colors.red.shade50,
-      //               borderRadius: BorderRadius.circular(10),
-      //               border: Border.all(color: Colors.red.shade200),
-      //             ),
-      //             child: Row(
-      //               children: const [
-      //                 Icon(Icons.error, color: Colors.red),
-      //                 SizedBox(width: 10),
-      //                 Expanded(
-      //                   child: Text(
-      //                     'Failed to load post.',
-      //                     style: TextStyle(color: Colors.red),
-      //                   ),
-      //                 ),
-      //               ],
-      //             ),
-      //           );
-      //         }
-      //       },
-      //     );
-      //   },
-      // ),
       body: FutureBuilder<List<Post>>(
         future: PostService.fetchBookmarkedPosts(),
         builder: (context, snapshot) {
