@@ -61,4 +61,36 @@ class FollowServices {
       });
     }
   }
+
+  static Future<List<String>> getFollowingUserIds() async {
+    try {
+      final snapshot =
+          await _firestore
+              .collection('users')
+              .doc(currentUserId)
+              .collection('following')
+              .get();
+
+      return snapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      print('Error getting following user IDs: $e');
+      return [];
+    }
+  }
+
+  static Future<List<String>> getFollowerUserIds() async {
+    try {
+      final snapshot =
+          await _firestore
+              .collection('users')
+              .doc(currentUserId)
+              .collection('followers')
+              .get();
+
+      return snapshot.docs.map((doc) => doc.id).toList();
+    } catch (e) {
+      print('Error getting follower user IDs: $e');
+      return [];
+    }
+  }
 }

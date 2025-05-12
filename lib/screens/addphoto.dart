@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:camply/services/notification_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -139,29 +140,30 @@ class _AddPhotoState extends State<AddPhoto> {
       // Upload to Cloudinary
       String imageUrl = await uploadImageToCloudinary(imageBytes);
 
-      await FirebaseFirestore.instance
-          .collection('posts')
-          .doc(userId)
-          .collection('user_posts')
-          .add({
-            'userId': userId,
-            'userName': username,
-            'userProfilePic': profilePic,
-            'imageUrl': imageUrl,
-            'location': _locationController.text,
-            'timestamp': FieldValue.serverTimestamp(),
-            'likeCount': 0,
-            'commentCount': 0,
-          });
+      final newPostRef =
+          FirebaseFirestore.instance
+              .collection('posts')
+              .doc(userId)
+              .collection('user_posts')
+              .doc();
 
-      // Save to Firestore
-      // await FirebaseFirestore.instance.collection('photos').add({
-      //   'imageUrl': imageUrl,
-      //   'location': _locationController.text,
-      //   'timestamp': FieldValue.serverTimestamp(),
-      //   'likes': 0,
-      //   'comments': 0,
-      // });
+      await newPostRef.set({
+        'userId': userId,
+        'userName': username,
+        'userProfilePic': profilePic,
+        'imageUrl': imageUrl,
+        'location': _locationController.text,
+        'timestamp': FieldValue.serverTimestamp(),
+        'likeCount': 0,
+        'commentCount': 0,
+      });
+
+      await NotificationService.sendNewPostNotificationToFollowers(
+        postId: newPostRef.id, // You will need to get this from Firestore
+        postOwnerId: userId,
+        postOwnerName: username,
+        postOwnerPic: profilePic,
+      );
 
       _showSnackBar('Photo saved successfully');
       Navigator.pop(context);

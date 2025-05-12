@@ -6,6 +6,7 @@ import 'package:camply/screens/camp_menu_page.dart';
 
 import 'package:camply/pages/user_review.dart';
 import 'package:camply/screens/home.dart';
+import 'package:camply/screens/notifications_screen.dart';
 
 import 'package:camply/screens/register.dart';
 import 'package:camply/screens/reviews.dart';
@@ -78,6 +79,8 @@ void main() async {
             (context) => ChatScreen(siteName: 'site-name', siteId: '000000'),
 
         '/bookmarks': (context) => BookmarksScreen(),
+
+        '/notifications': (context) => NotificationsScreen(),
       },
     ),
   );
