@@ -150,7 +150,7 @@ class _ViewUserPageState extends State<ViewUserPage>
 
     setState(() {
       isFollowing = !isFollowing;
-      followingCount += isFollowing ? 1 : -1;
+      followersCount += isFollowing ? 1 : -1;
     });
   }
 
