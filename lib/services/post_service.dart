@@ -368,25 +368,39 @@ class PostService {
 
   // Bookmarks
 
-  static Future<void> toggleBookmark({required String postId}) async {
+  static Future<void> toggleBookmark({
+    required String postId,
+    required String ownerId,
+  }) async {
     final currentUserId = _auth.currentUser!.uid;
     final userRef = _firestore.collection('users').doc(currentUserId);
 
     final userDoc = await userRef.get();
     final data = userDoc.data();
-    List bookmarks = [];
+
+    final Map<String, dynamic> bookmarkEntry = {
+      'postId': postId,
+      'ownerId': ownerId,
+    };
+
+    List<dynamic> bookmarks = [];
 
     if (data != null && data.containsKey('bookmarks')) {
-      bookmarks = data['bookmarks'] ?? [];
+      bookmarks = List.from(data['bookmarks']);
     }
 
-    if (bookmarks.contains(postId)) {
+    final alreadyBookmarked = bookmarks.any(
+      (item) =>
+          item is Map && item['postId'] == postId && item['ownerId'] == ownerId,
+    );
+
+    if (alreadyBookmarked) {
       await userRef.update({
-        'bookmarks': FieldValue.arrayRemove([postId]),
+        'bookmarks': FieldValue.arrayRemove([bookmarkEntry]),
       });
     } else {
       await userRef.update({
-        'bookmarks': FieldValue.arrayUnion([postId]),
+        'bookmarks': FieldValue.arrayUnion([bookmarkEntry]),
       });
     }
   }
@@ -397,6 +411,7 @@ class PostService {
         await _firestore.collection('users').doc(currentUserId).get();
 
     final bookmarks = userDoc.data()?['bookmarks'] ?? [];
-    return bookmarks.contains(postId);
+
+    return bookmarks.any((item) => item is Map && item['postId'] == postId);
   }
 }

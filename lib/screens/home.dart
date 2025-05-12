@@ -319,7 +319,10 @@ class _PostCardState extends State<PostCard> {
   }
 
   Future<void> _toggleBookmark() async {
-    await PostService.toggleBookmark(postId: widget.postId);
+    await PostService.toggleBookmark(
+      postId: widget.postId,
+      ownerId: widget.profileId,
+    );
     setState(() {
       isBookmarked = !isBookmarked;
     });
