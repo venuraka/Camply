@@ -1,5 +1,6 @@
 import 'package:camply/screens/login.dart';
 import 'package:camply/services/auth_service.dart';
+import 'package:camply/services/notification_service.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -70,6 +71,12 @@ class _ChatScreenState extends State<ChatScreen> {
         'name': userName ?? 'Anonymous',
       });
       _controller.clear();
+
+      await NotificationService.sendNewMessageNotification(
+        siteId: widget.siteId,
+        siteName: widget.siteName,
+        userId: user.uid,
+      );
     }
   }
 

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:camply/services/notification_service.dart';
 import 'package:camply/services/post_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -249,28 +250,44 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
   final _descCtrl = TextEditingController();
   bool _showTag = false;
 
-  String? userId;
-  String? userName;
+  String userId = "";
+  String userName = "";
+  String userProfilePic = "";
   bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
 
-    _fetchUserId();
+    _fetchUserData();
   }
 
-  Future<void> _fetchUserId() async {
+  Future<void> _fetchUserData() async {
     final user = FirebaseAuth.instance.currentUser;
 
     if (user != null) {
       final uid = user.uid;
       try {
-        setState(() {
-          userId = uid;
-          // userName = name;
-          isLoading = false;
-        });
+        final userDoc =
+            await FirebaseFirestore.instance.collection('users').doc(uid).get();
+
+        if (userDoc.exists) {
+          final data = userDoc.data()!;
+          final name = data['name'] ?? 'User';
+          final profilePic =
+              data['profileImageUrl'] ??
+              'https://img.freepik.com/premium-vector/character-avatar-isolated_729149-194801.jpg?ga=GA1.1.620892737.1745985582&semt=ais_hybrid&w=740';
+
+          setState(() {
+            userId = uid;
+            userName = name;
+            userProfilePic = profilePic;
+            isLoading = false;
+          });
+        } else {
+          _showSnackBar('User document not found.');
+          setState(() => isLoading = false);
+        }
       } catch (e) {
         _showSnackBar('Failed to fetch user data: $e');
         setState(() => isLoading = false);
@@ -290,21 +307,31 @@ class _AddExperienceScreenState extends State<AddExperienceScreen> {
       ).showSnackBar(const SnackBar(content: Text('Please fill all fields')));
       return;
     }
-    await FirebaseFirestore.instance
-        .collection('experiences')
-        .doc(userId)
-        .collection('user_experiences')
-        .add({
-          'userId': userId,
-          // 'userName': userName,
-          'title': title,
-          'location': loc,
-          'description': desc,
-          'likeCount': 0,
-          'commentCount': 0,
-          'timestamp':
-              FieldValue.serverTimestamp(), // Use serverTimestamp for consistency
-        });
+
+    final newExperienceRef =
+        FirebaseFirestore.instance
+            .collection('experiences')
+            .doc(userId)
+            .collection('user_experiences')
+            .doc();
+
+    await newExperienceRef.set({
+      'userId': userId,
+      'title': title,
+      'location': loc,
+      'description': desc,
+      'likeCount': 0,
+      'commentCount': 0,
+      'timestamp':
+          FieldValue.serverTimestamp(), // Use serverTimestamp for consistency
+    });
+
+    await NotificationService.sendNewExperienceNotificationToFollowers(
+      experienceId: newExperienceRef.id,
+      experienceOwnerId: userId,
+      experienceOwnerName: userName,
+      experienceOwnerPic: userProfilePic,
+    );
     Navigator.pop(context);
   }
 
