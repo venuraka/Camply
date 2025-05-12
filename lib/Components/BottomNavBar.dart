@@ -14,7 +14,7 @@ class BottomNavBar extends StatelessWidget {
         Navigator.pushNamed(context, '/CampMenuPage');
         break;
       case 2:
-        Navigator.pushNamed(context, '/addPhoto');
+        Navigator.pushNamed(context, '/bookmarks');
         break;
       case 3:
         // Navigator.pushNamed(context, '/notifications');
