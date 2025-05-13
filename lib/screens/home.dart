@@ -24,124 +24,225 @@ class _HomeScreenState extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   bool _isLoading = true;
 
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+  List<Map<String, dynamic>> _searchResults = [];
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchTextChanged(String query) async {
+    if (query.isEmpty) {
+      setState(() {
+        _searchResults.clear();
+      });
+      return;
+    }
+
+    final snapshot = await FirebaseFirestore.instance.collection('users').get();
+
+    final results =
+        snapshot.docs.map((doc) => doc.data()).where((user) {
+          final name = (user['name'] ?? '').toString().toLowerCase();
+          return name.contains(query.toLowerCase());
+        }).toList();
+
+    setState(() {
+      _searchResults = results;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
+    Widget _buildSearchResults() {
+      if (_searchResults.isEmpty) {
+        return const Center(child: Text("No users found."));
+      }
+
+      return ListView.builder(
+        itemCount: _searchResults.length,
+        itemBuilder: (context, index) {
+          final user = _searchResults[index];
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              leading: CircleAvatar(
+                radius: 30.0,
+                backgroundImage: NetworkImage(user['profileImageUrl'] ?? ''),
+              ),
+              title: Text(
+                user['name'] ?? 'No Name',
+                style: TextStyle(fontSize: 17.0),
+              ),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder:
+                        (_) => ViewUserPage(
+                          userId: user['uid'],
+                          userName: user['name'],
+                          userProfilePic: user['profileImageUrl'],
+                        ),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.grey[200],
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF2ECC71),
-        title: const Text(
-          "Camply",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
+        title:
+            _isSearching
+                ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Search users...',
+                    hintStyle: TextStyle(color: Colors.white70),
+                    border: InputBorder.none,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: _onSearchTextChanged,
+                )
+                : const Text(
+                  "Camply",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
         centerTitle: true,
         elevation: 0,
-        actions: [IconButton(icon: const Icon(Icons.search), onPressed: () {})],
+        actions: [
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                if (_isSearching) {
+                  _searchController.clear();
+                  _searchResults.clear();
+                }
+                _isSearching = !_isSearching;
+              });
+            },
+          ),
+        ],
       ),
-      body: StreamBuilder<QuerySnapshot>(
-        stream:
-            FirebaseFirestore.instance
-                .collectionGroup('user_posts')
-                .snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+      body:
+          _isSearching
+              ? _buildSearchResults()
+              : StreamBuilder<QuerySnapshot>(
+                stream:
+                    FirebaseFirestore.instance
+                        .collectionGroup('user_posts')
+                        .snapshots(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
 
-          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
-            return const Center(child: Text("No posts found."));
-          }
+                  if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+                    return const Center(child: Text("No posts found."));
+                  }
 
-          final docs =
-              snapshot.data!.docs.where((doc) {
-                final data = doc.data() as Map<String, dynamic>;
-                return data['userId'] !=
-                    _authService.currentUser?.uid; // filter out own posts
-              }).toList();
+                  final docs =
+                      snapshot.data!.docs.where((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
+                        return data['userId'] !=
+                            _authService
+                                .currentUser
+                                ?.uid; // filter out own posts
+                      }).toList();
 
-          if (docs.isEmpty) {
-            return const Center(
-              child: Text(
-                "No New Posts Uploaded Yet.",
-                style: TextStyle(
-                  fontSize: 25,
-                  color: Colors.grey,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            );
-          }
-
-          return ListView.builder(
-            itemCount: docs.length,
-            itemBuilder: (context, index) {
-              final doc = docs[index];
-
-              try {
-                final post = Post.fromFirestore(doc);
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder:
-                            (_) => ViewUserPage(
-                              userId: post.profileId,
-                              userName: post.username,
-                              userProfilePic: post.profilePic,
-                            ),
-                      ),
-                    );
-                  },
-                  child: PostCard(
-                    postId: post.postId,
-                    username: post.username,
-                    location: post.location,
-                    imageUrl: post.imageUrl,
-                    profileId: post.profileId,
-                    profilePic: post.profilePic,
-                    badgeColors: [
-                      Colors.brown,
-                      Colors.orange,
-                      Colors.grey,
-                      Colors.green,
-                    ],
-                    likeCount: post.likeCount,
-                    commentCount: post.commentCount,
-                  ),
-                );
-              } catch (e) {
-                return Container(
-                  margin: const EdgeInsets.all(10),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    color: Colors.red.shade50,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(color: Colors.red.shade200),
-                  ),
-                  child: Row(
-                    children: const [
-                      Icon(Icons.error, color: Colors.red),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: Text(
-                          'Failed to load post.',
-                          style: TextStyle(color: Colors.red),
+                  if (docs.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        "No New Posts Uploaded Yet.",
+                        style: TextStyle(
+                          fontSize: 25,
+                          color: Colors.grey,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
-                  ),
-                );
-              }
-            },
-          );
-        },
-      ),
+                    );
+                  }
+
+                  return ListView.builder(
+                    itemCount: docs.length,
+                    itemBuilder: (context, index) {
+                      final doc = docs[index];
+
+                      try {
+                        final post = Post.fromFirestore(doc);
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder:
+                                    (_) => ViewUserPage(
+                                      userId: post.profileId,
+                                      userName: post.username,
+                                      userProfilePic: post.profilePic,
+                                    ),
+                              ),
+                            );
+                          },
+                          child: PostCard(
+                            postId: post.postId,
+                            username: post.username,
+                            location: post.location,
+                            imageUrl: post.imageUrl,
+                            profileId: post.profileId,
+                            profilePic: post.profilePic,
+                            badgeColors: [
+                              Colors.brown,
+                              Colors.orange,
+                              Colors.grey,
+                              Colors.green,
+                            ],
+                            likeCount: post.likeCount,
+                            commentCount: post.commentCount,
+                          ),
+                        );
+                      } catch (e) {
+                        return Container(
+                          margin: const EdgeInsets.all(10),
+                          padding: const EdgeInsets.all(15),
+                          decoration: BoxDecoration(
+                            color: Colors.red.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(color: Colors.red.shade200),
+                          ),
+                          child: Row(
+                            children: const [
+                              Icon(Icons.error, color: Colors.red),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: Text(
+                                  'Failed to load post.',
+                                  style: TextStyle(color: Colors.red),
+                                ),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                  );
+                },
+              ),
       bottomNavigationBar: BottomNavBar(selectedIndex: _selectedIndex),
     );
   }
