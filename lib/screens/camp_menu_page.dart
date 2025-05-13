@@ -4,28 +4,85 @@ import '../models/camp_model.dart';
 import 'camp_detail_page.dart';
 import 'create_camp_page.dart';
 
-class CampMenuPage extends StatelessWidget {
+class CampMenuPage extends StatefulWidget {
   const CampMenuPage({Key? key}) : super(key: key);
+
+  @override
+  State<CampMenuPage> createState() => _CampMenuPageState();
+}
+
+class _CampMenuPageState extends State<CampMenuPage> {
+  bool _isSearching = false;
+  final TextEditingController _searchController = TextEditingController();
+
+  List<CampSite> _allCampsites = [];
+  List<CampSite> _filteredCampsites = [];
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _onSearchTextChanged(String query) {
+    final filtered =
+        _allCampsites.where((camp) {
+          final name = camp.name.toLowerCase();
+          // final location = camp.location.toLowerCase();
+          final q = query.toLowerCase();
+
+          // return name.contains(q) || location.contains(q);
+          return name.contains(q);
+        }).toList();
+
+    setState(() {
+      _filteredCampsites = filtered;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF2ECC71),
-        title: const Text(
-          "Camply",
-          // Can load user name to check if needed
-          // title: Text(
-          //   "Camper ${userData?['name'] ?? ''}",
-          style: TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
-            fontSize: 22,
-          ),
-        ),
+        title:
+            _isSearching
+                ? TextField(
+                  controller: _searchController,
+                  autofocus: true,
+                  decoration: const InputDecoration(
+                    hintText: 'Search camps...',
+                    hintStyle: TextStyle(color: Colors.white70),
+                    border: InputBorder.none,
+                  ),
+                  style: const TextStyle(color: Colors.white),
+                  onChanged: _onSearchTextChanged,
+                )
+                : const Text(
+                  "Camply",
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 22,
+                  ),
+                ),
         centerTitle: true,
         elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(_isSearching ? Icons.close : Icons.search),
+            onPressed: () {
+              setState(() {
+                if (_isSearching) {
+                  _searchController.clear();
+                  _filteredCampsites = _allCampsites;
+                }
+                _isSearching = !_isSearching;
+              });
+            },
+          ),
+        ],
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('campsites').snapshots(),
@@ -50,10 +107,18 @@ class CampMenuPage extends StatelessWidget {
                 );
               }).toList();
 
+          if (_allCampsites.isEmpty) {
+            _allCampsites = campsites;
+            _filteredCampsites = campsites;
+          }
+
           return ListView.builder(
-            itemCount: campsites.length,
+            // itemCount: campsites.length,
+            // itemBuilder: (context, index) {
+            //   final camp = campsites[index];
+            itemCount: _filteredCampsites.length,
             itemBuilder: (context, index) {
-              final camp = campsites[index];
+              final camp = _filteredCampsites[index];
               return Card(
                 margin: const EdgeInsets.all(8),
                 shape: RoundedRectangleBorder(
