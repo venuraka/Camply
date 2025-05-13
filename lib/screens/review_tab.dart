@@ -365,6 +365,9 @@ class ReviewTab extends StatelessWidget {
           itemCount: comments.length,
           itemBuilder: (context, index) {
             var data = comments[index].data() as Map<String, dynamic>;
+            final imageUrl = data['imageUrl'] ?? '';
+            final status = data['status'] ?? 'Unknown';
+
             return Card(
               margin: const EdgeInsets.only(bottom: 12),
               shape: RoundedRectangleBorder(
@@ -381,8 +384,46 @@ class ReviewTab extends StatelessWidget {
                       style: const TextStyle(fontSize: 16),
                     ),
                     const SizedBox(height: 6),
+
                     Text(
-                      "- ${data['user'] ?? 'Anonymous'}",
+                      "Camp Site Status: $status",
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+
+                    if (imageUrl != null && imageUrl.toString().isNotEmpty)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          imageUrl,
+                          height: 200,
+                          width: double.infinity,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (context, child, progress) {
+                            if (progress == null) return child;
+                            return Center(
+                              child: CircularProgressIndicator(
+                                value:
+                                    progress.expectedTotalBytes != null
+                                        ? progress.cumulativeBytesLoaded /
+                                            (progress.expectedTotalBytes ?? 1)
+                                        : null,
+                              ),
+                            );
+                          },
+                          errorBuilder:
+                              (context, error, stackTrace) =>
+                                  const Text('Image not present'),
+                        ),
+                      ),
+
+                    const SizedBox(height: 6),
+
+                    Text(
+                      "- ${data['userName'] ?? 'Anonymous'}",
                       style: const TextStyle(fontSize: 14, color: Colors.grey),
                     ),
                   ],
