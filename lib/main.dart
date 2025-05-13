@@ -1,15 +1,11 @@
-import 'package:camply/pages/camp_details_display.dart';
-import 'package:camply/pages/create_camp_site.dart';
 import 'package:camply/screens/bookmarks_screen.dart';
 
 import 'package:camply/screens/camp_menu_page.dart';
 
-import 'package:camply/pages/user_review.dart';
 import 'package:camply/screens/home.dart';
 import 'package:camply/screens/notifications_screen.dart';
 
 import 'package:camply/screens/register.dart';
-import 'package:camply/screens/reviews.dart';
 import 'package:camply/screens/user_review.dart';
 
 // Lock Orientation
@@ -68,11 +64,7 @@ void main() async {
         '/addPhoto': (context) => AddPhoto(), // Adithya
         '/userProfile': (context) => UserProfile(), // Adithya
 
-        '/reviews': (context) => ReviewPage(), // Manodya
-        '/user_review_Akka': (context) => UserReviewAkka(), // Manodya
         '/user_review': (context) => UserReview(), // Senuri
-        '/campDetailsDisplay': (context) => CampDetailsDisplay(), // Brian
-        '/createCampSite': (context) => CreateCampSite(), // Brian
         '/CampMenuPage': (context) => CampMenuPage(), //Senuri,venuraka
         // Chat Testing
         '/chat':
