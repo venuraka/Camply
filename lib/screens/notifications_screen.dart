@@ -46,7 +46,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
-          "Camply",
+          "Notifications",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,

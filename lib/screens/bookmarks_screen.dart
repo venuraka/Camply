@@ -32,7 +32,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
         iconTheme: IconThemeData(color: Colors.white),
         backgroundColor: const Color(0xFF2ECC71),
         title: const Text(
-          "Camply",
+          "Bookmarks",
           style: TextStyle(
             color: Colors.white,
             fontWeight: FontWeight.bold,
