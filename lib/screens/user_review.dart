@@ -100,36 +100,57 @@ class UserReviewState extends State<UserReview> {
 
       final username = userData['name'];
 
-      // Compress image to reduce upload time
-      List<int>? compressedBytes = await FlutterImageCompress.compressWithFile(
-        _image!.path,
-        minWidth: 800,
-        minHeight: 800,
-        quality: 85,
-      );
+      if (_image != null) {
+        // Compress image to reduce upload time
+        List<int>? compressedBytes =
+            await FlutterImageCompress.compressWithFile(
+              _image!.path,
+              minWidth: 800,
+              minHeight: 800,
+              quality: 85,
+            );
 
-      List<int> imageBytes = compressedBytes ?? await _image!.readAsBytes();
+        List<int> imageBytes = compressedBytes ?? await _image!.readAsBytes();
 
-      // Upload to Cloudinary
-      String imageUrl = await uploadImageToCloudinary(imageBytes);
+        // Upload to Cloudinary
+        String imageUrl = await uploadImageToCloudinary(imageBytes);
 
-      final newReviewRef =
-          FirebaseFirestore.instance.collection('reviews').doc();
+        final newReviewRef =
+            FirebaseFirestore.instance.collection('reviews').doc();
 
-      await newReviewRef.set({
-        'id': newReviewRef.id,
-        'userId': userId,
-        'userName': username,
-        'imageUrl': imageUrl,
-        'accessibility': accessibility,
-        'cleanliness': cleanliness,
-        'networkCoverage': networkCoverage,
-        'wildlifePresence': wildlifePresence,
-        'waterAccess': waterAccess,
-        'status': selectedStatus,
-        'comment': commentController.text,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+        await newReviewRef.set({
+          'id': newReviewRef.id,
+          'userId': userId,
+          'userName': username,
+          'imageUrl': imageUrl ?? null,
+          'accessibility': accessibility,
+          'cleanliness': cleanliness,
+          'networkCoverage': networkCoverage,
+          'wildlifePresence': wildlifePresence,
+          'waterAccess': waterAccess,
+          'status': selectedStatus,
+          'comment': commentController.text,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      } else {
+        final newReviewRef =
+            FirebaseFirestore.instance.collection('reviews').doc();
+
+        await newReviewRef.set({
+          'id': newReviewRef.id,
+          'userId': userId,
+          'userName': username,
+          'imageUrl': null,
+          'accessibility': accessibility,
+          'cleanliness': cleanliness,
+          'networkCoverage': networkCoverage,
+          'wildlifePresence': wildlifePresence,
+          'waterAccess': waterAccess,
+          'status': selectedStatus,
+          'comment': commentController.text,
+          'timestamp': FieldValue.serverTimestamp(),
+        });
+      }
 
       _showSnackBar('Review added successfully');
       Navigator.pop(context);
