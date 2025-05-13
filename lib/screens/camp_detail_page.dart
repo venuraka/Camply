@@ -1,4 +1,5 @@
 import 'package:camply/pages/chat_screen.dart';
+import 'package:camply/screens/rating_component.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -98,6 +99,82 @@ class _CampDetailPageState extends State<CampDetailPage>
     }
   }
 
+  Future<Map<String, double>> fetchAndCalculateAverages() async {
+    CollectionReference reviews = FirebaseFirestore.instance.collection(
+      'reviews',
+    );
+
+    try {
+      QuerySnapshot snapshot = await reviews.get();
+      final comments = snapshot.docs;
+
+      List<Map<String, dynamic>> values =
+          comments.map((doc) => doc.data() as Map<String, dynamic>).toList();
+
+      return calculateAverage(values);
+    } catch (e) {
+      print('Error fetching reviews: $e');
+      return {
+        'networkAverage': 0,
+        'wildlifeAverage': 0,
+        'waterAverage': 0,
+        'accessibilityAverage': 0,
+        'cleanlinessAverage': 0,
+      };
+    }
+  }
+
+  Map<String, double> calculateAverage(List<Map<String, dynamic>> values) {
+    double networkTotal = 0;
+    double wildlifeTotal = 0;
+    double waterTotal = 0;
+    double accessibilityTotal = 0;
+    double cleanlinessTotal = 0;
+
+    int count = values.length;
+    if (count == 0) {
+      return {
+        'networkAverage': 0,
+        'wildlifeAverage': 0,
+        'waterAverage': 0,
+        'accessibilityAverage': 0,
+        'cleanlinessAverage': 0,
+      };
+    }
+
+    for (var value in values) {
+      networkTotal += (value['networkCoverage'] ?? 0).toDouble();
+      wildlifeTotal += (value['wildlifePresence'] ?? 0).toDouble();
+      waterTotal += (value['waterAccess'] ?? 0).toDouble();
+      accessibilityTotal += (value['accessibility'] ?? 0).toDouble();
+      cleanlinessTotal += (value['cleanliness'] ?? 0).toDouble();
+    }
+
+    double networkAverage = (networkTotal / 2) / count;
+    double wildlifeAverage = (wildlifeTotal / 2) / count;
+    double waterAverage = (waterTotal / 2) / count;
+    double accessibilityAverage = (accessibilityTotal / 2) / count;
+    double cleanlinessAverage = (cleanlinessTotal / 2) / count;
+
+    double totalAverage =
+        networkAverage +
+        wildlifeAverage +
+        waterAverage +
+        accessibilityAverage +
+        cleanlinessAverage;
+
+    double overalAverage = totalAverage / 5;
+
+    return {
+      'networkAverage': networkAverage,
+      'wildlifeAverage': wildlifeAverage,
+      'waterAverage': waterAverage,
+      'accessibilityAverage': accessibilityAverage,
+      'cleanlinessAverage': cleanlinessAverage,
+      'overallAverage': overalAverage,
+    };
+  }
+
   @override
   void dispose() {
     _tabController.dispose();
@@ -148,7 +225,22 @@ class _CampDetailPageState extends State<CampDetailPage>
                 ),
                 bottom: PreferredSize(
                   preferredSize: const Size.fromHeight(210),
-                  child: _buildCampInfoCard(),
+                  child: FutureBuilder<Map<String, double>>(
+                    future: fetchAndCalculateAverages(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(child: CircularProgressIndicator());
+                      }
+                      if (snapshot.hasError) {
+                        return const Center(
+                          child: Text('Error loading reviews.'),
+                        );
+                      }
+
+                      final averages = snapshot.data!;
+                      return _buildCampInfoCard(context, averages);
+                    },
+                  ),
                 ),
               ),
             ];
@@ -212,7 +304,12 @@ class _CampDetailPageState extends State<CampDetailPage>
     );
   }
 
-  Widget _buildCampInfoCard() {
+  Widget _buildCampInfoCard(
+    BuildContext context,
+    Map<String, double> averages,
+  ) {
+    final overallRating = averages['overallAverage'] ?? 0.0;
+
     return Container(
       padding: const EdgeInsets.all(16),
       width: double.infinity,
@@ -267,19 +364,9 @@ class _CampDetailPageState extends State<CampDetailPage>
             children: [
               const Text('reviews'),
               const SizedBox(width: 8),
-              Row(
-                children: List.generate(
-                  5,
-                  (index) => Icon(
-                    Icons.star,
-                    color:
-                        index < 4 ? Colors.greenAccent : Colors.grey.shade300,
-                    size: 20,
-                  ),
-                ),
-              ),
+              Row(children: [RatingComponent(rating: overallRating)]),
               const SizedBox(width: 8),
-              const Text('7.7'),
+              Text(overallRating.toStringAsFixed(2)),
               const Spacer(),
               ElevatedButton(
                 onPressed: toggleFollow,
