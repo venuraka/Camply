@@ -45,7 +45,7 @@ class Comment {
       text: data['commentText'] ?? '',
       timestamp: (data['timestamp'] as Timestamp?)?.toDate() ?? DateTime.now(),
       profilePic:
-          data['profilePic'] ??
+      data['profilePic'] ??
           'https://randomuser.me/api/portraits/men/30.jpg',
       // add this field in Firestore
       isReplied: data['isReplied'] ?? false,

@@ -1,3 +1,4 @@
+import 'package:camply/models/post_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
@@ -413,5 +414,34 @@ class PostService {
     final bookmarks = userDoc.data()?['bookmarks'] ?? [];
 
     return bookmarks.any((item) => item is Map && item['postId'] == postId);
+  }
+
+  static Future<List<Post>> fetchBookmarkedPosts() async {
+    final currentUserId = _auth.currentUser!.uid;
+    final userDoc =
+        await _firestore.collection('users').doc(currentUserId).get();
+
+    final bookmarks = userDoc.data()?['bookmarks'] ?? [];
+
+    final List<Post> bookmarkedPosts = [];
+
+    for (var item in bookmarks) {
+      final postId = item['postId'];
+      final ownerId = item['ownerId'];
+
+      final doc =
+          await _firestore
+              .collection('posts')
+              .doc(ownerId)
+              .collection('user_posts')
+              .doc(postId)
+              .get();
+
+      if (doc.exists) {
+        bookmarkedPosts.add(Post.fromFirestore(doc));
+      }
+    }
+
+    return bookmarkedPosts;
   }
 }
