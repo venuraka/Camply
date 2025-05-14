@@ -103,7 +103,11 @@ class _CreateCampPageState extends State<CreateCampPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Create Camp Site'),
+        iconTheme: const IconThemeData(color: Colors.white),
+        backgroundColor: const Color(0xFF2ECC71),
+        title: const Text('Create Camp Site',
+            style: TextStyle(color: Colors.white),
+      ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),

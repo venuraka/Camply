@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class WeatherInfoCard extends StatelessWidget {
   final double temperature;
   final String description;
-  final String icon; // e.g., "03n"
+  final String icon;
 
   const WeatherInfoCard({
     super.key,
